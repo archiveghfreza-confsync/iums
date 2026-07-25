@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>هوش‌طب - پلتفرم هوشمند پزشکی</title>
-
+    <link rel="stylesheet" href="assets/style.css">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
@@ -21,758 +21,235 @@
     <link rel="icon" type="image/png" sizes="192x192" href="android-chrome-192x192.png">
     <link rel="icon" type="image/png" sizes="512x512" href="android-chrome-512x512.png">
     <style>
-        /* ===== Reset & Base ===== */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            font-family: 'Vazirmatn', sans-serif;
-            background: #f8fafc;
-            color: #0b1e33;
-            line-height: 1.7;
-            transition: all 0.3s ease;
-        }
-
-            /* زبان فارسی */
-            body.lang-fa {
-                font-family: 'Vazirmatn', sans-serif;
-                direction: rtl;
-                text-align: right;
-            }
-
-            /* زبان انگلیسی */
-            body.lang-en {
-                font-family: 'Inter', sans-serif;
-                direction: ltr;
-                text-align: left;
-            }
-
-            /* زبان عربی */
-            body.lang-ar {
-                font-family: 'Cairo', sans-serif;
-                direction: rtl;
-                text-align: right;
-            }
-
-        .container {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        /* ===== Language Switcher ===== */
-        .lang-switcher {
-            display: flex;
-            gap: 4px;
-            background: #eef2f6;
-            padding: 4px;
-            border-radius: 30px;
-        }
-
-            .lang-switcher button {
-                padding: 6px 14px;
-                border: none;
-                border-radius: 30px;
-                font-size: 13px;
-                font-weight: 600;
-                cursor: pointer;
-                transition: all 0.3s ease;
-                background: transparent;
-                color: #4a5b6e;
-                font-family: inherit;
-            }
-
-                .lang-switcher button:hover {
-                    background: rgba(37, 99, 235, 0.1);
-                    color: #2563eb;
-                }
-
-                .lang-switcher button.active {
-                    background: #2563eb;
-                    color: white;
-                    box-shadow: 0 2px 12px rgba(37, 99, 235, 0.3);
-                }
-
-                .lang-switcher button .lang-label {
-                    font-size: 10px;
-                    opacity: 0.7;
-                    display: block;
-                }
-
-        /* ===== Header / Navbar ===== */
-        .navbar {
-            background: rgba(255, 255, 255, 0.92);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border-bottom: 1px solid rgba(226, 232, 240, 0.6);
-            padding: 16px 0;
-            position: sticky;
+        /* استایل مودال */
+        .login-modal {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            left: 0;
             top: 0;
-            z-index: 1000;
-            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.04);
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            animation: fadeIn 0.3s;
+            padding: 20px;
+            overflow-y: auto;
+            align-items: center;
+            justify-content: center;
         }
 
-            .navbar .container {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                flex-wrap: wrap;
-                gap: 12px;
-            }
+        .login-modal-content {
+            position: relative;
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 450px;
+            max-height: 90vh;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            animation: slideDown 0.3s;
+            display: flex;
+            flex-direction: column;
+        }
 
-            .navbar .logo {
-                display: flex;
-                align-items: center;
-                gap: 10px;
-                font-size: 26px;
-                font-weight: 900;
-                color: #0b1e33;
-                text-decoration: none;
-            }
+        .iframe-wrapper {
+            width: 100%;
+            height: 660px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 10px;
+        }
 
-                .navbar .logo i {
-                    font-size: 32px;
-                    background: linear-gradient(135deg, #2563eb, #7c3aed);
-                    -webkit-background-clip: text;
-                    -webkit-text-fill-color: transparent;
-                    background-clip: text;
-                }
+        #loginIframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+        }
 
-                .navbar .logo span {
-                    background: linear-gradient(135deg, #2563eb, #7c3aed);
-                    -webkit-background-clip: text;
-                    -webkit-text-fill-color: transparent;
-                    background-clip: text;
-                }
-
-        .nav-links {
+        .login-close {
+            position: absolute;
+            right: 15px;
+            top: 10px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #aaa;
+            z-index: 10;
+            width: 40px;
+            height: 40px;
             display: flex;
             align-items: center;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-            .nav-links a {
-                color: #4a5b6e;
-                text-decoration: none;
-                font-size: 14px;
-                font-weight: 500;
-                padding: 8px 16px;
-                border-radius: 30px;
-                transition: all 0.2s ease;
-            }
-
-                .nav-links a:hover {
-                    background: #eef2f6;
-                    color: #2563eb;
-                }
-
-            .nav-links .btn-primary-nav {
-                background: linear-gradient(135deg, #2563eb, #7c3aed);
-                color: white;
-                padding: 8px 22px;
-                border-radius: 30px;
-                font-weight: 600;
-            }
-
-                .nav-links .btn-primary-nav:hover {
-                    transform: translateY(-2px);
-                    box-shadow: 0 8px 24px rgba(37, 99, 235, 0.3);
-                    background: linear-gradient(135deg, #1d4ed8, #6d28d9);
-                }
-
-        /* ===== Hero / About ===== */
-        .hero {
-            padding: 60px 0 40px;
-            text-align: center;
-        }
-
-            .hero .badge {
-                display: inline-block;
-                background: #dbeafe;
-                color: #1d4ed8;
-                font-size: 13px;
-                font-weight: 600;
-                padding: 4px 18px;
-                border-radius: 30px;
-                margin-bottom: 16px;
-            }
-
-            .hero h1 {
-                font-size: 44px;
-                font-weight: 900;
-                line-height: 1.2;
-                margin-bottom: 16px;
-            }
-
-                .hero h1 span {
-                    background: linear-gradient(135deg, #2563eb, #7c3aed);
-                    -webkit-background-clip: text;
-                    -webkit-text-fill-color: transparent;
-                    background-clip: text;
-                }
-
-            .hero p {
-                font-size: 18px;
-                color: #4a5b6e;
-                max-width: 700px;
-                margin: 0 auto 24px;
-            }
-
-            .hero .features {
-                display: flex;
-                justify-content: center;
-                gap: 30px;
-                flex-wrap: wrap;
-                margin-top: 20px;
-            }
-
-                .hero .features .feat {
-                    display: flex;
-                    align-items: center;
-                    gap: 8px;
-                    font-size: 14px;
-                    color: #1e2b3c;
-                    background: white;
-                    padding: 8px 20px;
-                    border-radius: 30px;
-                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-                }
-
-                    .hero .features .feat i {
-                        color: #2563eb;
-                    }
-
-        /* ===== Sections ===== */
-        section {
-            padding: 60px 0;
-            border-bottom: 1px solid #e9edf2;
-        }
-
-            section:last-of-type {
-                border-bottom: none;
-            }
-
-        .section-title {
-            font-size: 30px;
-            font-weight: 800;
-            margin-bottom: 12px;
-            text-align: center;
-        }
-
-            .section-title i {
-                color: #2563eb;
-                margin-left: 10px;
-            }
-
-        body.lang-en .section-title i {
-            margin-left: 0;
-            margin-right: 10px;
-        }
-
-        .section-desc {
-            text-align: center;
-            color: #4a5b6e;
-            max-width: 600px;
-            margin: 0 auto 36px;
-            font-size: 16px;
-        }
-
-        /* ===== Cards Grid ===== */
-        .cards-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 24px;
-        }
-
-        .card {
-            background: white;
-            border-radius: 24px;
-            padding: 30px 28px;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
-            border: 1px solid #eef2f6;
-            transition: all 0.3s ease;
-        }
-
-            .card:hover {
-                transform: translateY(-4px);
-                box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
-                border-color: #dbeafe;
-            }
-
-            .card .icon {
-                font-size: 36px;
-                margin-bottom: 12px;
-                display: inline-block;
-                background: #eff6ff;
-                padding: 12px;
-                border-radius: 16px;
-                color: #2563eb;
-            }
-
-            .card h3 {
-                font-size: 18px;
-                font-weight: 700;
-                margin-bottom: 8px;
-            }
-
-            .card p {
-                color: #4a5b6e;
-                font-size: 14px;
-                margin-bottom: 16px;
-            }
-
-            .card .btn-card {
-                display: inline-block;
-                padding: 8px 24px;
-                border-radius: 30px;
-                font-size: 14px;
-                font-weight: 600;
-                text-decoration: none;
-                transition: all 0.2s ease;
-                border: 2px solid #2563eb;
-                color: #2563eb;
-                background: transparent;
-            }
-
-                .card .btn-card:hover {
-                    background: #2563eb;
-                    color: white;
-                }
-
-                .card .btn-card.primary {
-                    background: linear-gradient(135deg, #2563eb, #7c3aed);
-                    color: white;
-                    border: none;
-                }
-
-                    .card .btn-card.primary:hover {
-                        transform: scale(1.02);
-                        box-shadow: 0 8px 24px rgba(37, 99, 235, 0.3);
-                    }
-
-        /* ===== Form Styles ===== */
-        .form-container {
-            max-width: 700px;
-            margin: 0 auto;
-            background: white;
-            padding: 40px 36px;
-            border-radius: 28px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-            border: 1px solid #eef2f6;
-        }
-
-            .form-container .form-title {
-                font-size: 20px;
-                font-weight: 700;
-                margin-bottom: 4px;
-            }
-
-            .form-container .form-sub {
-                color: #4a5b6e;
-                font-size: 14px;
-                margin-bottom: 24px;
-            }
-
-        .form-group {
-            margin-bottom: 18px;
-        }
-
-            .form-group label {
-                display: block;
-                font-size: 14px;
-                font-weight: 600;
-                margin-bottom: 4px;
-                color: #1e2b3c;
-            }
-
-                .form-group label .required {
-                    color: #ef4444;
-                }
-
-            .form-group input,
-            .form-group select,
-            .form-group textarea {
-                width: 100%;
-                padding: 12px 16px;
-                border: 2px solid #e2e8f0;
-                border-radius: 14px;
-                font-size: 14px;
-                font-family: inherit;
-                transition: all 0.2s ease;
-                background: #fafbfc;
-            }
-
-                .form-group input:focus,
-                .form-group select:focus,
-                .form-group textarea:focus {
-                    border-color: #2563eb;
-                    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.08);
-                    background: white;
-                    outline: none;
-                }
-
-            .form-group textarea {
-                min-height: 100px;
-                resize: vertical;
-            }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-        }
-
-        .btn-submit-form {
-            width: 100%;
-            padding: 14px;
-            font-family: inherit;
-            font-size: 16px;
-            font-weight: 700;
-            color: white;
-            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            justify-content: center;
+            border-radius: 50%;
+            background: rgba(0,0,0,0.05);
+            transition: all 0.2s;
             border: none;
-            border-radius: 30px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 8px;
         }
 
-            .btn-submit-form:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 8px 24px rgba(37, 99, 235, 0.3);
+            .login-close:hover {
+                color: #333;
+                background: rgba(0,0,0,0.1);
             }
 
-            .btn-submit-form:disabled {
-                opacity: 0.6;
-                cursor: not-allowed;
-                transform: none;
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
             }
 
-        .status-msg {
-            padding: 12px 16px;
-            border-radius: 14px;
-            font-size: 14px;
-            display: none;
-            margin-top: 12px;
+            to {
+                opacity: 1;
+            }
         }
 
-            .status-msg.success {
-                display: block;
-                background: #dcfce7;
-                color: #166534;
-                border: 1px solid #86efac;
+        @keyframes slideDown {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
             }
 
-            .status-msg.error {
-                display: block;
-                background: #fee2e2;
-                color: #991b1b;
-                border: 1px solid #fca5a5;
+            to {
+                transform: translateY(0);
+                opacity: 1;
             }
-
-            .status-msg.loading {
-                display: block;
-                background: #e0e7ff;
-                color: #3730a3;
-                border: 1px solid #a5b4fc;
-            }
-
-        /* ===== Video Section ===== */
-        .video-wrapper {
-            max-width: 800px;
-            margin: 0 auto;
-            border-radius: 28px;
-            overflow: hidden;
-            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.1);
-            background: #0b1e33;
-            aspect-ratio: 16 / 9;
         }
 
-            .video-wrapper iframe {
-                width: 100%;
-                height: 100%;
-                border: none;
-                display: block;
-            }
+        /* ===== رسپانسیو ===== */
 
-        /* ===== CTA Section ===== */
-        .cta-section {
-            background: linear-gradient(135deg, #0b1e33, #1a2f4a);
-            border-radius: 32px;
-            padding: 50px 40px;
-            text-align: center;
-            color: white;
-            margin-top: 20px;
-        }
-
-            .cta-section h2 {
-                font-size: 32px;
-                font-weight: 800;
-                margin-bottom: 12px;
-            }
-
-                .cta-section h2 i {
-                    color: #60a5fa;
-                }
-
-            .cta-section p {
-                font-size: 16px;
-                opacity: 0.8;
-                max-width: 500px;
-                margin: 0 auto 24px;
-            }
-
-            .btn-cta-main {
-                display: inline-flex;
-                align-items: center;
-                gap: 14px;
-                padding: 18px 48px;
-                font-size: 20px;
-                font-weight: 700;
-                color: #fff;
-                background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-                border: none;
-                border-radius: 50px;
-                cursor: pointer;
-                transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-                box-shadow: 0 8px 30px rgba(79, 172, 254, 0.4);
-                position: relative;
-                overflow: hidden;
-                animation: float 3s ease-in-out infinite;
-            }
-            
-            .btn-cta-main:hover {
-                transform: translateY(-5px) scale(1.03);
-                box-shadow: 0 15px 45px rgba(79, 172, 254, 0.6);
-            }
-            
-            .btn-cta-main:active {
-                transform: scale(0.95);
-            }
-            
-            .btn-cta-main i {
-                transition: transform 0.3s ease;
-            }
-            
-            .btn-cta-main:hover i {
-                transform: translateX(-8px);
-            }
-            
-            .sparkle {
-                position: absolute;
-                right: -5px;
-                top: -10px;
-                font-size: 18px;
-                animation: sparkle 1.5s ease-in-out infinite;
-            }
-            
-            @keyframes float {
-                0%, 100% {
-                    transform: translateY(0px);
-                }
-                50% {
-                    transform: translateY(-8px);
-                }
-            }
-            
-            @keyframes sparkle {
-                0%, 100% {
-                    transform: scale(1) rotate(0deg);
-                    opacity: 1;
-                }
-                50% {
-                    transform: scale(1.5) rotate(180deg);
-                    opacity: 0.5;
-                }
-            }
-            
-            /* افکت شیشه‌ای */
-            .btn-cta-main::before {
-                content: '';
-                position: absolute;
-                top: 0;
-                left: -100%;
-                width: 100%;
-                height: 100%;
-                background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-                transition: left 0.6s ease;
-            }
-            
-            .btn-cta-main:hover::before {
-                left: 100%;
-            }
-        .cta-section .btn-cta {
-                display: inline-block;
-                padding: 16px 48px;
-                font-size: 18px;
-                font-weight: 700;
-                color: #0b1e33;
-                background: white;
-                border-radius: 30px;
-                border: none;
-                cursor: pointer;
-                transition: all 0.3s ease;
-                box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
-                font-family: inherit;
-            }
-
-                .cta-section .btn-cta:hover:not(:disabled) {
-                    transform: translateY(-3px) scale(1.02);
-                    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
-                }
-
-                .cta-section .btn-cta:disabled {
-                    opacity: 0.6;
-                    cursor: not-allowed;
-                    transform: none;
-                }
-
-                .cta-section .btn-cta i {
-                    margin-left: 10px;
-                }
-
-        body.lang-en .cta-section .btn-cta i {
-            margin-left: 0;
-            margin-right: 10px;
-        }
-
-        /* ===== Status Message for CTA ===== */
-        .cta-status {
-            margin-top: 16px;
-            padding: 14px 20px;
-            border-radius: 16px;
-            display: none;
-            font-size: 14px;
-            font-weight: 500;
-            text-align: center;
-        }
-
-            .cta-status.show {
-                display: block;
-            }
-
-            .cta-status.checking {
-                background: #e0e7ff;
-                color: #3730a3;
-                border: 1px solid #a5b4fc;
-            }
-
-            .cta-status.offline {
-                background: #fef3c7;
-                color: #92400e;
-                border: 1px solid #fcd34d;
-            }
-
-            .cta-status.online {
-                background: #dcfce7;
-                color: #166534;
-                border: 1px solid #86efac;
-            }
-
-            .cta-status i {
-                margin-left: 8px;
-            }
-
-        body.lang-en .cta-status i {
-            margin-left: 0;
-            margin-right: 8px;
-        }
-
-        /* ===== Footer ===== */
-        .footer {
-            text-align: center;
-            padding: 32px 0 24px;
-            font-size: 13px;
-            color: #94a3b8;
-            border-top: 1px solid #e9edf2;
-            margin-top: 20px;
-        }
-
-            .footer a {
-                color: #2563eb;
-                text-decoration: none;
-            }
-
-        /* ===== Responsive ===== */
+        /* تبلت */
         @media (max-width: 768px) {
-            .navbar .container {
-                flex-direction: column;
-                align-items: center;
+            .login-modal {
+                padding: 15px;
             }
 
-            .nav-links {
-                justify-content: center;
+            .login-modal-content {
+                margin: 8% auto;
+                padding: 20px;
+                max-width: 100%;
+                border-radius: 18px;
             }
 
-            .hero h1 {
-                font-size: 30px;
-            }
-
-            .hero .features {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-
-            .form-container {
-                padding: 24px 18px;
-            }
-
-            .cta-section {
-                padding: 32px 20px;
-            }
-
-                .cta-section h2 {
-                    font-size: 24px;
-                }
-
-            section {
-                padding: 40px 0;
-            }
-
-            .lang-switcher button {
-                padding: 4px 10px;
-                font-size: 11px;
-            }
-
-            .cta-section .btn-cta {
-                padding: 14px 28px;
-                font-size: 16px;
+            .iframe-wrapper {
+                height: 600px;
             }
         }
 
-        @media (max-width: 480px) {
-            .nav-links a {
-                font-size: 12px;
-                padding: 6px 12px;
+        /* موبایل - افزایش 20% دیگر */
+        @media (max-width: 576px) {
+            .login-modal {
+                padding: 10px;
+                align-items: flex-end;
+                display: flex;
             }
 
-            .hero h1 {
+            .login-modal-content {
+                margin: 0;
+                width: 100%;
+                max-width: 100%;
+                border-radius: 20px 20px 0 0;
+                padding: 20px 15px 15px;
+                max-height: 95vh;
+                animation: slideUp 0.3s ease;
+            }
+
+            .iframe-wrapper {
+                height: 690px; /* افزایش 20% دیگر از 575 به 690 */
+            }
+
+            .login-close {
+                right: 10px;
+                top: 8px;
+                width: 35px;
+                height: 35px;
                 font-size: 24px;
             }
+        }
 
-            .section-title {
-                font-size: 22px;
+        /* موبایل کوچک - افزایش 20% دیگر */
+        @media (max-width: 400px) {
+            .login-modal-content {
+                padding: 15px 12px 12px;
+                border-radius: 16px 16px 0 0;
             }
 
-            .cta-section .btn-cta {
-                padding: 12px 24px;
-                font-size: 14px;
+            .iframe-wrapper {
+                height: 605px; /* افزایش 20% دیگر از 505 به 605 */
+            }
+
+            .login-close {
+                right: 8px;
+                top: 6px;
+                width: 32px;
+                height: 32px;
+                font-size: 20px;
+            }
+        }
+
+        /* موبایل خیلی کوچک - افزایش 20% دیگر */
+        @media (max-width: 360px) {
+            .iframe-wrapper {
+                height: 515px; /* افزایش 20% دیگر از 430 به 515 */
+            }
+        }
+
+        /* ارتفاع کم - موبایل */
+        @media (max-height: 700px) {
+            .iframe-wrapper {
+                height: 505px;
+            }
+        }
+
+        @media (max-height: 600px) {
+            .iframe-wrapper {
+                height: 420px;
+            }
+
+            .login-modal-content {
+                padding: 12px;
+            }
+        }
+
+        @media (max-height: 500px) {
+            .iframe-wrapper {
+                height: 335px;
+            }
+
+            .login-modal-content {
+                margin: 2% auto;
+                padding: 10px;
+            }
+
+            .login-close {
+                width: 28px;
+                height: 28px;
+                font-size: 18px;
+                right: 8px;
+                top: 5px;
+            }
+        }
+
+        @media (max-height: 400px) {
+            .iframe-wrapper {
+                height: 240px;
+            }
+        }
+
+        /* انیمیشن موبایل */
+        @keyframes slideUp {
+            from {
+                transform: translateY(100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
             }
         }
     </style>
 </head>
+
 <body class="lang-fa">
 
     <!-- ===== NAVBAR ===== -->
@@ -822,18 +299,34 @@
                 </p>
 
                 <!-- دکمه ورود به هوش طب -->
-                <button onclick="handleSmartVisit()"  class="btn-cta-main"  id="smartVisitBtn" >
+                <button onclick="handleSmartVisit()" class="btn-cta-main" id="smartVisitBtn">
                     <i class="fas fa-arrow-left"></i>
                     <span data-i18n="cta_button">ورود به هوش طب</span>
                     <span class="sparkle">✨</span>
                 </button>
 
                 <!-- ✅ دکمه جدید ویزیت هوشمند -->
-                <button onclick="checkAndEnterHooshteb()" class="btn-cta-main"  id="enterBtn" style="margin-top: 10px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+
+                <button onclick="checkAndEnterHooshteb()" class="btn-cta-main" id="enterBtn" style="display:none; margin-top: 10px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
                     <i class="fas fa-stethoscope"></i>
                     <span data-i18n="smart_visit">ویزیت هوشمند</span>
                     <span class="sparkle">🌟</span>
                 </button>
+
+                <button class="btn-cta-main" id="enterBtnoffline" style="margin-top: 10px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                    <i class="fas fa-stethoscope"></i>
+                    <span data-i18n="smart_visit">ویزیت هوشمند آفلاین</span>
+                    <span class="sparkle">🌟</span>
+                </button>
+
+                <div id="loginModal" class="login-modal">
+                    <div class="login-modal-content">
+                        <span class="login-close" onclick="closeLoginModal()">✕</span>
+                        <div class="iframe-wrapper">
+                            <iframe src="login.html" id="loginIframe"></iframe>
+                        </div>
+                    </div>
+                </div>
 
                 <div id="ctaStatus" class="cta-status">
                     <i class="fas fa-info-circle"></i>
@@ -843,789 +336,959 @@
         </div>
     </section>
     <!-- ===== HERO / ABOUT ===== -->
-    <section id="about" class="hero">
-        <div class="container">
-            <div class="badge" data-i18n="hero_badge">پلتفرم پذیرش هوشمند پزشکی</div>
-            <h1><span data-i18n="hero_title">هوش‌طب چیست؟</span></h1>
-            <p data-i18n="hero_desc">
-                <strong>هوش‌طب</strong> یک پلتفرم پذیرش پزشکی مبتنی بر <strong>هوش مصنوعی</strong> است
-                که برای کلینیک‌ها و مطب‌های پزشکی طراحی شده است.
-                این پلتفرم به بیماران اجازه می‌دهد تا قبل از ملاقات با پزشک،
-                سابقه پزشکی خود را تکمیل کنند، علائم خود را شرح دهند و دلیل مراجعه خود را ارائه دهند.
-                این امر به <strong>کاهش زمان انتظار</strong>، <strong>بهبود کیفیت مشاوره‌ها</strong>
-                و امکان بررسی اطلاعات بیمار از قبل کمک می‌کند.
-            </p>
-            <div class="features">
-                <span class="feat"><i class="fas fa-clock"></i> <span data-i18n="feat_1">کاهش ۶۰٪ زمان انتظار</span></span>
-                <span class="feat"><i class="fas fa-stethoscope"></i> <span data-i18n="feat_2">مشاوره دقیق‌تر</span></span>
-                <span class="feat"><i class="fas fa-robot"></i> <span data-i18n="feat_3">مبتنی بر هوش مصنوعی</span></span>
-                <span class="feat"><i class="fas fa-lock"></i> <span data-i18n="feat_4">امن و محرمانه</span></span>
-            </div>
-        </div>
-    </section>
-
-    <!-- ===== VIDEO DEMO ===== -->
-    <section id="demo">
-        <div class="container">
-            <h2 class="section-title"><i class="fas fa-play-circle"></i> <span data-i18n="demo_title">فیلم دموی هوش طب</span></h2>
-            <p class="section-desc" data-i18n="demo_desc">
-                با مشاهده این فیلم، با <strong>عملکرد مدل زبانی هوش طب</strong> و نحوه استفاده از آن آشنا شوید.
-            </p>
-            <div class="video-wrapper">
-                <iframe id="demoVideo"
-                        src="https://www.youtube.com/embed/dQw4w9WgXcQ"
-                        title="دموی هوش طب"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowfullscreen>
-                </iframe>
-            </div>
-        </div>
-    </section>
-
-    <!-- ===== REGISTER DOCTORS ===== -->
-    <section id="doctors">
-        <div class="container">
-            <h2 class="section-title"><i class="fas fa-user-md"></i> <span data-i18n="doctors_title">ثبت نام پزشکان</span></h2>
-            <p class="section-desc" data-i18n="doctors_desc">
-                اگر پزشک هستید و می‌خواهید <strong>مدل زبانی هوش طب</strong> را در مطب خود راه‌اندازی کنید،
-                اطلاعات خود را ثبت کنید تا کارشناسان ما با شما تماس بگیرند.
-            </p>
-            <div class="form-container">
-                <div class="form-title" data-i18n="doctors_form_title">ثبت نام پزشکان</div>
-                <div class="form-sub" data-i18n="doctors_form_sub">راه‌اندازی مدل زبانی هوش طب در مطب شما</div>
-                <form id="doctorForm">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label data-i18n="doctors_fullname">نام و نام خانوادگی <span class="required">*</span></label>
-                            <input type="text" id="docFullName" placeholder="" required />
-                        </div>
-                        <div class="form-group">
-                            <label data-i18n="doctors_medical_code">شماره نظام پزشکی <span class="required">*</span></label>
-                            <input type="text" id="docMedicalCode" placeholder="" required />
+                <section id="about" class="hero">
+                    <div class="container">
+                        <div class="badge" data-i18n="hero_badge">پلتفرم پذیرش هوشمند پزشکی</div>
+                        <h1><span data-i18n="hero_title">هوش‌طب چیست؟</span></h1>
+                        <p data-i18n="hero_desc">
+                            <strong>هوش‌طب</strong> یک پلتفرم پذیرش پزشکی مبتنی بر <strong>هوش مصنوعی</strong> است
+                            که برای کلینیک‌ها و مطب‌های پزشکی طراحی شده است.
+                            این پلتفرم به بیماران اجازه می‌دهد تا قبل از ملاقات با پزشک،
+                            سابقه پزشکی خود را تکمیل کنند، علائم خود را شرح دهند و دلیل مراجعه خود را ارائه دهند.
+                            این امر به <strong>کاهش زمان انتظار</strong>، <strong>بهبود کیفیت مشاوره‌ها</strong>
+                            و امکان بررسی اطلاعات بیمار از قبل کمک می‌کند.
+                        </p>
+                        <div class="features">
+                            <span class="feat"><i class="fas fa-clock"></i> <span data-i18n="feat_1">کاهش ۶۰٪ زمان انتظار</span></span>
+                            <span class="feat"><i class="fas fa-stethoscope"></i> <span data-i18n="feat_2">مشاوره دقیق‌تر</span></span>
+                            <span class="feat"><i class="fas fa-robot"></i> <span data-i18n="feat_3">مبتنی بر هوش مصنوعی</span></span>
+                            <span class="feat"><i class="fas fa-lock"></i> <span data-i18n="feat_4">امن و محرمانه</span></span>
                         </div>
                     </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label data-i18n="doctors_specialty">تخصص</label>
-                            <select id="docSpecialty">
-                                <option value="" data-i18n="select_option">انتخاب کنید</option>
-                                <option value="داخلی" data-i18n="specialty_internal">داخلی</option>
-                                <option value="قلب و عروق" data-i18n="specialty_cardiology">قلب و عروق</option>
-                                <option value="مغز و اعصاب" data-i18n="specialty_neurology">مغز و اعصاب</option>
-                                <option value="ارتوپدی" data-i18n="specialty_orthopedics">ارتوپدی</option>
-                                <option value="پوست و مو" data-i18n="specialty_dermatology">پوست و مو</option>
-                                <option value="چشم پزشکی" data-i18n="specialty_ophthalmology">چشم پزشکی</option>
-                                <option value="گوش و حلق و بینی" data-i18n="specialty_ent">گوش و حلق و بینی</option>
-                                <option value="روانپزشکی" data-i18n="specialty_psychiatry">روانپزشکی</option>
-                                <option value="زنان و زایمان" data-i18n="specialty_obgyn">زنان و زایمان</option>
-                                <option value="کودکان" data-i18n="specialty_pediatrics">کودکان</option>
-                                <option value="سایر" data-i18n="specialty_other">سایر</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label data-i18n="doctors_mobile">شماره موبایل <span class="required">*</span></label>
-                            <input type="tel" id="docMobile" placeholder="" required />
+                </section>
+
+                <!-- ===== VIDEO DEMO ===== -->
+                <section id="demo">
+                    <div class="container">
+                        <h2 class="section-title"><i class="fas fa-play-circle"></i> <span data-i18n="demo_title">فیلم دموی هوش طب</span></h2>
+                        <p class="section-desc" data-i18n="demo_desc">
+                            با مشاهده این فیلم، با <strong>عملکرد مدل زبانی هوش طب</strong> و نحوه استفاده از آن آشنا شوید.
+                        </p>
+                        <div class="video-wrapper">
+                            <iframe id="demoVideo"
+                                    src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+                                    title="دموی هوش طب"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    allowfullscreen>
+                            </iframe>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label data-i18n="doctors_address">آدرس مطب</label>
-                        <input type="text" id="docAddress" placeholder="تهران، خیابان ..." />
-                    </div>
-                    <div class="form-group">
-                        <label data-i18n="doctors_description">توضیحات تکمیلی</label>
-                        <textarea id="docDesc" placeholder="نیازها، تعداد بیماران روزانه، سیستم‌های موجود و ..."></textarea>
-                    </div>
-                    <button type="submit" class="btn-submit-form" id="docSubmitBtn">
-                        <i class="fas fa-paper-plane"></i> <span data-i18n="doctors_submit">ثبت درخواست</span>
-                    </button>
-                    <div id="docStatus" class="status-msg"></div>
-                </form>
-            </div>
-        </div>
-    </section>
+                </section>
 
-    <!-- ===== REGISTER MARKETERS ===== -->
-    <section id="marketers">
-        <div class="container">
-            <h2 class="section-title"><i class="fas fa-bullhorn"></i> <span data-i18n="marketers_title">معرفی‌کنندگان هوش طب</span></h2>
-            <p class="section-desc" data-i18n="marketers_desc">
-                اگر به <strong>معرفی و توسعه هوش طب</strong> به پزشکان و کلینیک‌ها علاقه‌مند هستید،
-                ثبت نام کنید و از پورسانت ویژه بهره‌مند شوید.
-            </p>
-            <div class="form-container">
-                <div class="form-title" data-i18n="marketers_form_title">ثبت نام معرفی‌کنندگان</div>
-                <div class="form-sub" data-i18n="marketers_form_sub">همکاری در توسعه هوش طب و دریافت پورسانت</div>
-                <form id="marketerForm">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label data-i18n="marketers_fullname">نام و نام خانوادگی <span class="required">*</span></label>
-                            <input type="text" id="mktFullName" placeholder="" required />
+                <!-- ===== REGISTER DOCTORS ===== -->
+                <section id="doctors">
+                    <div class="container">
+                        <h2 class="section-title"><i class="fas fa-user-md"></i> <span data-i18n="doctors_title">ثبت نام پزشکان</span></h2>
+                        <p class="section-desc" data-i18n="doctors_desc">
+                            اگر پزشک هستید و می‌خواهید <strong>مدل زبانی هوش طب</strong> را در مطب خود راه‌اندازی کنید،
+                            اطلاعات خود را ثبت کنید تا کارشناسان ما با شما تماس بگیرند.
+                        </p>
+                        <div class="form-container">
+                            <div class="form-title" data-i18n="doctors_form_title">ثبت نام پزشکان</div>
+                            <div class="form-sub" data-i18n="doctors_form_sub">راه‌اندازی مدل زبانی هوش طب در مطب شما</div>
+                            <form id="doctorForm">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label data-i18n="doctors_fullname">نام و نام خانوادگی <span class="required">*</span></label>
+                                        <input type="text" id="docFullName" placeholder="" required />
+                                    </div>
+                                    <div class="form-group">
+                                        <label data-i18n="doctors_medical_code">شماره نظام پزشکی <span class="required">*</span></label>
+                                        <input type="text" id="docMedicalCode" placeholder="" required />
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label data-i18n="doctors_specialty">تخصص</label>
+                                        <select id="docSpecialty">
+                                            <option value="" data-i18n="select_option">انتخاب کنید</option>
+                                            <option value="داخلی" data-i18n="specialty_internal">داخلی</option>
+                                            <option value="قلب و عروق" data-i18n="specialty_cardiology">قلب و عروق</option>
+                                            <option value="مغز و اعصاب" data-i18n="specialty_neurology">مغز و اعصاب</option>
+                                            <option value="ارتوپدی" data-i18n="specialty_orthopedics">ارتوپدی</option>
+                                            <option value="پوست و مو" data-i18n="specialty_dermatology">پوست و مو</option>
+                                            <option value="چشم پزشکی" data-i18n="specialty_ophthalmology">چشم پزشکی</option>
+                                            <option value="گوش و حلق و بینی" data-i18n="specialty_ent">گوش و حلق و بینی</option>
+                                            <option value="روانپزشکی" data-i18n="specialty_psychiatry">روانپزشکی</option>
+                                            <option value="زنان و زایمان" data-i18n="specialty_obgyn">زنان و زایمان</option>
+                                            <option value="کودکان" data-i18n="specialty_pediatrics">کودکان</option>
+                                            <option value="سایر" data-i18n="specialty_other">سایر</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label data-i18n="doctors_mobile">شماره موبایل <span class="required">*</span></label>
+                                        <input type="tel" id="docMobile" placeholder="" required />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label data-i18n="doctors_address">آدرس مطب</label>
+                                    <input type="text" id="docAddress" placeholder="تهران، خیابان ..." />
+                                </div>
+                                <div class="form-group">
+                                    <label data-i18n="doctors_description">توضیحات تکمیلی</label>
+                                    <textarea id="docDesc" placeholder="نیازها، تعداد بیماران روزانه، سیستم‌های موجود و ..."></textarea>
+                                </div>
+                                <button type="submit" class="btn-submit-form" id="docSubmitBtn">
+                                    <i class="fas fa-paper-plane"></i> <span data-i18n="doctors_submit">ثبت درخواست</span>
+                                </button>
+                                <div id="docStatus" class="status-msg"></div>
+                            </form>
                         </div>
-                        <div class="form-group">
-                            <label data-i18n="marketers_mobile">شماره موبایل <span class="required">*</span></label>
-                            <input type="tel" id="mktMobile" placeholder="" required />
+                    </div>
+                </section>
+
+                <!-- ===== REGISTER MARKETERS ===== -->
+                <section id="marketers">
+                    <div class="container">
+                        <h2 class="section-title"><i class="fas fa-bullhorn"></i> <span data-i18n="marketers_title">معرفی‌کنندگان هوش طب</span></h2>
+                        <p class="section-desc" data-i18n="marketers_desc">
+                            اگر به <strong>معرفی و توسعه هوش طب</strong> به پزشکان و کلینیک‌ها علاقه‌مند هستید،
+                            ثبت نام کنید و از پورسانت ویژه بهره‌مند شوید.
+                        </p>
+                        <div class="form-container">
+                            <div class="form-title" data-i18n="marketers_form_title">ثبت نام معرفی‌کنندگان</div>
+                            <div class="form-sub" data-i18n="marketers_form_sub">همکاری در توسعه هوش طب و دریافت پورسانت</div>
+                            <form id="marketerForm">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label data-i18n="marketers_fullname">نام و نام خانوادگی <span class="required">*</span></label>
+                                        <input type="text" id="mktFullName" placeholder="" required />
+                                    </div>
+                                    <div class="form-group">
+                                        <label data-i18n="marketers_mobile">شماره موبایل <span class="required">*</span></label>
+                                        <input type="tel" id="mktMobile" placeholder="" required />
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label data-i18n="marketers_email">ایمیل</label>
+                                        <input type="email" id="mktEmail" placeholder="ali@example.com" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label data-i18n="marketers_city">شهر</label>
+                                        <input type="text" id="mktCity" placeholder="تهران" />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label data-i18n="marketers_experience">سابقه و تجربه</label>
+                                    <textarea id="mktExp" placeholder="تجربه در حوزه پزشکی، بازاریابی، فروش و ..."></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label data-i18n="marketers_help">چطور می‌توانید به توسعه هوش طب کمک کنید؟</label>
+                                    <textarea id="mktHelp" placeholder="ارتباط با پزشکان، برگزاری وبینار، بازاریابی دیجیتال و ..."></textarea>
+                                </div>
+                                <button type="submit" class="btn-submit-form" id="mktSubmitBtn">
+                                    <i class="fas fa-handshake"></i> <span data-i18n="marketers_submit">ثبت درخواست همکاری</span>
+                                </button>
+                                <div id="mktStatus" class="status-msg"></div>
+                            </form>
                         </div>
                     </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label data-i18n="marketers_email">ایمیل</label>
-                            <input type="email" id="mktEmail" placeholder="ali@example.com" />
-                        </div>
-                        <div class="form-group">
-                            <label data-i18n="marketers_city">شهر</label>
-                            <input type="text" id="mktCity" placeholder="تهران" />
-                        </div>
+                </section>
+
+                <!-- ===== FOOTER ===== -->
+                <footer class="footer">
+                    <div class="container">
+                        <p>
+                            <i class="fas fa-brain" style="color: #2563eb;"></i>
+                            <span data-i18n="footer_name">هوش‌طب &bull; پلتفرم پذیرش هوشمند پزشکی</span>
+                        </p>
+                        <p style="margin-top: 4px;">
+                            <a href="#" data-i18n="footer_about">درباره ما</a> &bull;
+                            <a href="#" data-i18n="footer_contact">تماس با ما</a> &bull;
+                            <a href="#" data-i18n="footer_privacy">حریم خصوصی</a>
+                        </p>
                     </div>
-                    <div class="form-group">
-                        <label data-i18n="marketers_experience">سابقه و تجربه</label>
-                        <textarea id="mktExp" placeholder="تجربه در حوزه پزشکی، بازاریابی، فروش و ..."></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label data-i18n="marketers_help">چطور می‌توانید به توسعه هوش طب کمک کنید؟</label>
-                        <textarea id="mktHelp" placeholder="ارتباط با پزشکان، برگزاری وبینار، بازاریابی دیجیتال و ..."></textarea>
-                    </div>
-                    <button type="submit" class="btn-submit-form" id="mktSubmitBtn">
-                        <i class="fas fa-handshake"></i> <span data-i18n="marketers_submit">ثبت درخواست همکاری</span>
-                    </button>
-                    <div id="mktStatus" class="status-msg"></div>
-                </form>
-            </div>
-        </div>
-    </section>
+                </footer>
 
-    <!-- ===== FOOTER ===== -->
-    <footer class="footer">
-        <div class="container">
-            <p>
-                <i class="fas fa-brain" style="color: #2563eb;"></i>
-                <span data-i18n="footer_name">هوش‌طب &bull; پلتفرم پذیرش هوشمند پزشکی</span>
-            </p>
-            <p style="margin-top: 4px;">
-                <a href="#" data-i18n="footer_about">درباره ما</a> &bull;
-                <a href="#" data-i18n="footer_contact">تماس با ما</a> &bull;
-                <a href="#" data-i18n="footer_privacy">حریم خصوصی</a>
-            </p>
-        </div>
-    </footer>
+                <!-- ===== JAVASCRIPT ===== -->
+                <script>
+                    // ============================================================
+                    //  تنظیمات
+                    // ============================================================
+                    var SCRIPT_URL_REGISTER = 'https://hooshteb-api.ghfreza.workers.dev/api/register'
 
-    <!-- ===== JAVASCRIPT ===== -->
-    <script>
-        // ============================================================
-        //  تنظیمات
-        // ============================================================
-        //var SCRIPT_URL_REGISTER = 'https://script.google.com/macros/s/AKfycbxnrtF9MmS_j4uCx3G7Io8KAWBM0jMk7VxjkzaG3Wn2wRNRJX37P7_3_jSXD1TGsj0f/exec';
-        var SCRIPT_URL_REGISTER = 'https://hooshteb-api.ghfreza.workers.dev/api/register'
-        
-        var LLM_URL = 'http://llm.hooshteb.ir';
-        var LLM_URLS = 'https://llm.hooshteb.ir';
+                    var LLM_URL = 'http://llm.hooshteb.ir';
+                    var LLM_URLS = 'https://llm.hooshteb.ir';
 
-        // ============================================================
-        //  دیکشنری چند زبانه
-        // ============================================================
-        var translations = {
-            // ==================== فارسی (fa) ====================
-            fa: {
-                // --- بخش عمومی و ناوبری (General & Navigation) ---
-                site_name: 'هوش‌طب',
-                nav_about: 'هوش‌طب چیست؟',
-                nav_doctors: 'ثبت نام پزشکان',
-                nav_doctors_list: 'لیست پزشکان',  // ← جدید
-                nav_marketers: 'همکاری با ما',
-                nav_demo: 'نحوه عملکرد',
-                nav_enter: 'شروع پذیرش',
-        
-                // --- بخش دعوت به اقدام (Call To Action) ---
-                cta_title: 'پذیرش هوشمند خود را آغاز کنید',
-                cta_desc: 'پیش از مراجعه به پزشک، اطلاعات پزشکی، علائم و دلیل مراجعه خود را در <strong>دستیار هوش‌طب</strong> ثبت کنید تا ویزیت شما سریع‌تر و دقیق‌تر انجام شود.',
-                cta_button: 'شروع پذیرش هوشمند',
-                cta_checking: 'در حال بررسی وضعیت سامانه...',
-                cta_offline: '⚠️ سامانه هوش‌طب فقط در ساعات کاری مطب فعال است. لطفاً در زمان فعالیت پزشک دوباره مراجعه کنید.',
-                cta_online: '✅ سامانه آماده پذیرش شماست. در حال انتقال...',
-        
-                // --- بخش قهرمان (Hero) ---
-                hero_badge: 'دستیار هوشمند پذیرش پزشکی',
-                hero_title: 'قبل از ویزیت پزشک، اطلاعات پزشکی خود را ثبت کنید.',
-                hero_desc: '<strong>هوش‌طب</strong> دستیار هوشمند پذیرش پزشکی است که پیش از مراجعه به پزشک، علائم، سوابق پزشکی و دلیل مراجعه شما را دریافت می‌کند تا پزشک پیش از شروع ویزیت، تصویر دقیق‌تری از وضعیت شما داشته باشد. این کار باعث کاهش زمان انتظار، افزایش دقت ویزیت و بهبود کیفیت خدمات درمانی می‌شود.',
-        
-                // --- بخش ویژگی‌ها (Features) ---
-                feat_1: 'کاهش زمان انتظار',
-                feat_2: 'ویزیت دقیق‌تر',
-                feat_3: 'پذیرش هوشمند',
-                feat_4: 'امن و محرمانه',
-        
-                // --- بخش دمو (Demo) ---
-                demo_title: 'هوش‌طب چگونه کار می‌کند؟',
-                demo_desc: 'در این ویدئو با نحوه عملکرد دستیار هوشمند هوش‌طب و مراحل پذیرش بیمار آشنا شوید.',
-        
-                // --- بخش پزشکان (Doctors) ---
-                doctors_title: 'ثبت نام پزشکان',
-                doctors_desc: 'اگر پزشک هستید و می‌خواهید <strong>مدل زبانی هوش طب</strong> را در مطب خود راه‌اندازی کنید، اطلاعات خود را ثبت کنید تا کارشناسان ما با شما تماس بگیرند.',
-                doctors_form_title: 'ثبت نام پزشکان',
-                doctors_form_sub: 'راه‌اندازی مدل زبانی هوش طب در مطب شما',
-                doctors_fullname: 'نام و نام خانوادگی *',
-                doctors_medical_code: 'شماره نظام پزشکی *',
-                doctors_specialty: 'تخصص',
-                doctors_mobile: 'شماره موبایل *',
-                doctors_address: 'آدرس مطب',
-                doctors_description: 'توضیحات تکمیلی',
-                doctors_submit: 'ثبت درخواست',
-        
-                // --- بخش بازاریابان (Marketers) ---
-                marketers_title: 'معرفی‌کنندگان هوش طب',
-                marketers_desc: 'اگر به <strong>معرفی و توسعه هوش طب</strong> به پزشکان و کلینیک‌ها علاقه‌مند هستید، ثبت نام کنید و از پورسانت ویژه بهره‌مند شوید.',
-                marketers_form_title: 'ثبت نام معرفی‌کنندگان',
-                marketers_form_sub: 'همکاری در توسعه هوش طب و دریافت پورسانت',
-                marketers_fullname: 'نام و نام خانوادگی *',
-                marketers_mobile: 'شماره موبایل *',
-                marketers_email: 'ایمیل',
-                marketers_city: 'شهر',
-                marketers_experience: 'سابقه و تجربه',
-                marketers_help: 'چطور می‌توانید به توسعه هوش طب کمک کنید؟',
-                marketers_submit: 'ثبت درخواست همکاری',
-        
-                // --- بخش لیست‌ها و انتخاب‌ها (Select Options) ---
-                select_option: 'انتخاب کنید',
-                specialty_internal: 'داخلی',
-                specialty_cardiology: 'قلب و عروق',
-                specialty_neurology: 'مغز و اعصاب',
-                specialty_orthopedics: 'ارتوپدی',
-                specialty_dermatology: 'پوست و مو',
-                specialty_ophthalmology: 'چشم پزشکی',
-                specialty_ent: 'گوش و حلق و بینی',
-                specialty_psychiatry: 'روانپزشکی',
-                specialty_obgyn: 'زنان و زایمان',
-                specialty_pediatrics: 'کودکان',
-                specialty_other: 'سایر',
-        
-                // --- بخش فوتر (Footer) ---
-                footer_name: 'هوش‌طب • پلتفرم پذیرش هوشمند پزشکی',
-                footer_about: 'درباره ما',
-                footer_contact: 'تماس با ما',
-                footer_privacy: 'حریم خصوصی',
-        
-                // --- بخش وضعیت‌ها (Status Messages) ---
-                status_loading: 'در حال ثبت اطلاعات...',
-                status_success_doctor: '✅ درخواست شما با موفقیت ثبت شد! کارشناسان ما با شما تماس می‌گیرند.',
-                status_success_marketer: '✅ درخواست همکاری شما ثبت شد! با شما تماس می‌گیریم.',
-                status_error_required: 'لطفاً تمام فیلدهای ضروری را پر کنید.',
-                status_error_server: '❌ خطا در ارتباط با سرور: ',
-                // ... سایر کلیدها
-                demo_video: 'https://www.aparat.com/video/video/embed/videohash/snlvoaa/vt/frame'  // آدرس فیلم فارسی
-            },
-        
-            // ==================== انگلیسی (English - en) ====================
-            en: {
-                site_name: 'HooshTab (Smart Medical Intake)',
-                nav_about: 'What is HooshTab?',
-                nav_doctors: 'For Doctors',
-                nav_doctors_list: 'Doctors List',  // ← جدید
-                nav_marketers: 'Partners',
-                nav_demo: 'How It Works',
-                nav_enter: 'Start Intake',
-                cta_title: 'Start Your Smart Intake',
-                cta_desc: 'Before visiting your doctor, enter your medical info, symptoms, and reason for visit in <strong>HooshTab Assistant</strong> to make your appointment faster and more accurate.',
-                cta_button: 'Start Smart Intake',
-                cta_checking: 'Checking system status...',
-                cta_offline: '⚠️ HooshTab is available during office hours. Please try again when the doctor is available.',
-                cta_online: '✅ System is ready for your intake. Redirecting...',
-                hero_badge: 'Smart Medical Intake Assistant',
-                hero_title: 'Enter your medical info before your visit.',
-                hero_desc: '<strong>HooshTab</strong> is a smart medical intake assistant that collects your symptoms, medical history, and reason for visit before you see the doctor. This helps reduce wait times, improve diagnostic accuracy, and enhance overall care quality.',
-                feat_1: 'Reduced Waiting Time',
-                feat_2: 'More Accurate Visits',
-                feat_3: 'Smart Intake',
-                feat_4: 'Secure & Private',
-                demo_title: 'How Does HooshTab Work?',
-                demo_desc: 'Watch this video to learn how HooshTab’s smart assistant and patient intake process works.',
-                doctors_title: 'Doctor Registration',
-                doctors_desc: 'If you\'re a doctor and want to set up the <strong>HooshTab Language Model</strong> in your practice, register your info and our team will contact you.',
-                doctors_form_title: 'Doctor Registration',
-                doctors_form_sub: 'Set up HooshTab Language Model at your clinic',
-                doctors_fullname: 'Full Name *',
-                doctors_medical_code: 'Medical License Number *',
-                doctors_specialty: 'Specialty',
-                doctors_mobile: 'Mobile Number *',
-                doctors_address: 'Clinic Address',
-                doctors_description: 'Additional Info',
-                doctors_submit: 'Submit Request',
-                marketers_title: 'HooshTab Referral Partners',
-                marketers_desc: 'If you\'re interested in <strong>introducing and promoting HooshTab</strong> to doctors and clinics, sign up to earn special commissions.',
-                marketers_form_title: 'Partner Registration',
-                marketers_form_sub: 'Collaborate on HooshTab growth & earn commissions',
-                marketers_fullname: 'Full Name *',
-                marketers_mobile: 'Mobile Number *',
-                marketers_email: 'Email',
-                marketers_city: 'City',
-                marketers_experience: 'Background & Experience',
-                marketers_help: 'How can you help grow HooshTab?',
-                marketers_submit: 'Submit Partnership Request',
-                select_option: 'Select an option',
-                specialty_internal: 'Internal Medicine',
-                specialty_cardiology: 'Cardiology',
-                specialty_neurology: 'Neurology',
-                specialty_orthopedics: 'Orthopedics',
-                specialty_dermatology: 'Dermatology',
-                specialty_ophthalmology: 'Ophthalmology',
-                specialty_ent: 'ENT',
-                specialty_psychiatry: 'Psychiatry',
-                specialty_obgyn: 'OB/GYN',
-                specialty_pediatrics: 'Pediatrics',
-                specialty_other: 'Other',
-                footer_name: 'HooshTab • Smart Medical Intake Platform',
-                footer_about: 'About Us',
-                footer_contact: 'Contact Us',
-                footer_privacy: 'Privacy Policy',
-                status_loading: 'Submitting info...',
-                status_success_doctor: '✅ Your request was submitted! Our team will contact you shortly.',
-                status_success_marketer: '✅ Your partnership request was submitted! We\'ll be in touch.',
-                status_error_required: 'Please fill in all required fields.',
-                status_error_server: '❌ Server error: ',
-                // ... سایر کلیدها
-                demo_video: 'https://www.aparat.com/video/video/embed/videohash/xiyhg7q/vt/frame'  // آدرس فیلم انگلیسی
-            },
-        
-            // ==================== عربی (Arabic - ar) ====================
-            ar: {
-                site_name: 'هوش طب (الذكاء الطبي)',
-                nav_about: 'ما هو هوش طب؟',
-                nav_doctors: 'للأطباء',
-                nav_doctors_list: 'قائمة الأطباء',  // ← جدید
-                nav_marketers: 'التعاون معنا',
-                nav_demo: 'طريقة العمل',
-                nav_enter: 'ابدأ الاستقبال',
-                cta_title: 'ابدأ الاستقبال الذكي',
-                cta_desc: 'قبل زيارة الطبيب، قم بتسجيل معلوماتك الطبية والأعراض وسبب الزيارة في <strong>مساعد هوش طب</strong> لجعل موعدك أسرع وأكثر دقة.',
-                cta_button: 'ابدأ الاستقبال الذكي',
-                cta_checking: 'جاري التحقق من حالة النظام...',
-                cta_offline: '⚠️ نظام هوش طب متاح فقط خلال ساعات العمل. يرجى المحاولة مرة أخرى عندما يكون الطبيب متاحاً.',
-                cta_online: '✅ النظام جاهز لاستقبالك. جاري التحويل...',
-                hero_badge: 'المساعد الذكي للاستقبال الطبي',
-                hero_title: 'سجل معلوماتك الطبية قبل موعدك.',
-                hero_desc: '<strong>هوش طب</strong> هو مساعد ذكي للاستقبال الطبي يقوم بجمع الأعراض والتاريخ الطبي وسبب الزيارة قبل مقابلة الطبيب، مما يساعد على تقليل أوقات الانتظار وزيادة دقة التشخيص وتحسين جودة الرعاية.',
-                feat_1: 'تقليل وقت الانتظار',
-                feat_2: 'زيارة أكثر دقة',
-                feat_3: 'استقبال ذكي',
-                feat_4: 'آمن وسري',
-                demo_title: 'كيف يعمل هوش طب؟',
-                demo_desc: 'شاهد هذا الفيديو للتعرف على آلية عمل المساعد الذكي لهوش طب وخطوات استقبال المريض.',
-                doctors_title: 'تسجيل الأطباء',
-                doctors_desc: 'إذا كنت طبيباً وترغب في تشغيل <strong>النموذج اللغوي لهوش طب</strong> في عيادتك، سجل معلوماتك وسيتواصل معك فريقنا.',
-                doctors_form_title: 'تسجيل الأطباء',
-                doctors_form_sub: 'تشغيل النموذج اللغوي لهوش طب في عيادتك',
-                doctors_fullname: 'الاسم الكامل *',
-                doctors_medical_code: 'رقم الترخيص الطبي *',
-                doctors_specialty: 'التخصص',
-                doctors_mobile: 'رقم الجوال *',
-                doctors_address: 'عنوان العيادة',
-                doctors_description: 'معلومات إضافية',
-                doctors_submit: 'إرسال الطلب',
-                marketers_title: 'شركاء هوش طب',
-                marketers_desc: 'إذا كنت مهتماً بـ <strong>تقديم هوش طب وتسويقه</strong> للأطباء والعيادات، سجل للحصول على عمولات خاصة.',
-                marketers_form_title: 'تسجيل الشركاء',
-                marketers_form_sub: 'التعاون في تطوير هوش طب والحصول على عمولات',
-                marketers_fullname: 'الاسم الكامل *',
-                marketers_mobile: 'رقم الجوال *',
-                marketers_email: 'البريد الإلكتروني',
-                marketers_city: 'المدينة',
-                marketers_experience: 'الخبرة السابقة',
-                marketers_help: 'كيف يمكنك المساعدة في تطوير هوش طب؟',
-                marketers_submit: 'إرسال طلب الشراكة',
-                select_option: 'اختر من القائمة',
-                specialty_internal: 'الباطنة',
-                specialty_cardiology: 'أمراض القلب',
-                specialty_neurology: 'أمراض الأعصاب',
-                specialty_orthopedics: 'جراحة العظام',
-                specialty_dermatology: 'الأمراض الجلدية',
-                specialty_ophthalmology: 'طب العيون',
-                specialty_ent: 'أنف وأذن وحنجرة',
-                specialty_psychiatry: 'الطب النفسي',
-                specialty_obgyn: 'نساء وتوليد',
-                specialty_pediatrics: 'طب الأطفال',
-                specialty_other: 'أخرى',
-                footer_name: 'هوش طب • منصة الاستقبال الطبي الذكي',
-                footer_about: 'من نحن',
-                footer_contact: 'اتصل بنا',
-                footer_privacy: 'سياسة الخصوصية',
-                status_loading: 'جاري تسجيل المعلومات...',
-                status_success_doctor: '✅ تم تسجيل طلبك بنجاح! سيتواصل معك فريقنا قريباً.',
-                status_success_marketer: '✅ تم تسجيل طلب الشراكة! سنتواصل معك.',
-                status_error_required: 'يرجى ملء جميع الحقول المطلوبة.',
-                status_error_server: '❌ خطأ في الاتصال بالخادم: ',
-                // ... سایر کلیدها
-                demo_video: 'https://www.aparat.com/video/video/embed/videohash/dai8ow0/vt/frame'  // آدرس فیلم عربی
-            }
-        };
-        var currentLang = 'fa';
+                    const SESSION_KEY = 'hooshteb_offline_session';
+                    const DOCTOR_NAME_KEY = 'doctor_name';
+                    const DOCTOR_DATA_KEY = 'doctor_data';
+                    // ============================================================
+                    //  دیکشنری چند زبانه
+                    // ============================================================
+                    var translations = {
+                        // ==================== فارسی (fa) ====================
+                        fa: {
+                            // --- بخش عمومی و ناوبری (General & Navigation) ---
+                            site_name: 'هوش‌طب',
+                            nav_about: 'هوش‌طب چیست؟',
+                            nav_doctors: 'ثبت نام پزشکان',
+                            nav_doctors_list: 'لیست پزشکان',  // ← جدید
+                            nav_marketers: 'همکاری با ما',
+                            nav_demo: 'نحوه عملکرد',
+                            nav_enter: 'شروع پذیرش',
 
-        // ============================================================
-        //  تابع تغییر زبان
-        // ============================================================
-        function switchLanguage(lang) {
-            currentLang = lang;
+                            // --- بخش دعوت به اقدام (Call To Action) ---
+                            cta_title: 'پذیرش هوشمند خود را آغاز کنید',
+                            cta_desc: 'پیش از مراجعه به پزشک، اطلاعات پزشکی، علائم و دلیل مراجعه خود را در <strong>دستیار هوش‌طب</strong> ثبت کنید تا ویزیت شما سریع‌تر و دقیق‌تر انجام شود.',
+                            cta_button: 'شروع پذیرش هوشمند',
+                            cta_checking: 'در حال بررسی وضعیت سامانه...',
+                            cta_offline: '⚠️ سامانه هوش‌طب فقط در ساعات کاری مطب فعال است. لطفاً در زمان فعالیت پزشک دوباره مراجعه کنید.',
+                            cta_online: '✅ سامانه آماده پذیرش شماست. در حال انتقال...',
 
-            document.body.className = 'lang-' + lang;
+                            // --- بخش قهرمان (Hero) ---
+                            hero_badge: 'دستیار هوشمند پذیرش پزشکی',
+                            hero_title: 'قبل از ویزیت پزشک، اطلاعات پزشکی خود را ثبت کنید.',
+                            hero_desc: '<strong>هوش‌طب</strong> دستیار هوشمند پذیرش پزشکی است که پیش از مراجعه به پزشک، علائم، سوابق پزشکی و دلیل مراجعه شما را دریافت می‌کند تا پزشک پیش از شروع ویزیت، تصویر دقیق‌تری از وضعیت شما داشته باشد. این کار باعث کاهش زمان انتظار، افزایش دقت ویزیت و بهبود کیفیت خدمات درمانی می‌شود.',
 
-            if (lang === 'en') {
-                document.documentElement.dir = 'ltr';
-                document.documentElement.lang = 'en';
-            } else {
-                document.documentElement.dir = 'rtl';
-                document.documentElement.lang = lang;
-            }
+                            // --- بخش ویژگی‌ها (Features) ---
+                            feat_1: 'کاهش زمان انتظار',
+                            feat_2: 'ویزیت دقیق‌تر',
+                            feat_3: 'پذیرش هوشمند',
+                            feat_4: 'امن و محرمانه',
 
-            document.querySelectorAll('.lang-switcher button').forEach(function (btn) {
-                btn.classList.remove('active');
-                if (btn.dataset.lang === lang) {
-                    btn.classList.add('active');
-                }
-            });
+                            // --- بخش دمو (Demo) ---
+                            demo_title: 'هوش‌طب چگونه کار می‌کند؟',
+                            demo_desc: 'در این ویدئو با نحوه عملکرد دستیار هوشمند هوش‌طب و مراحل پذیرش بیمار آشنا شوید.',
 
-            document.querySelectorAll('[data-i18n]').forEach(function (el) {
-                var key = el.dataset.i18n;
-                if (translations[lang] && translations[lang][key] !== undefined) {
-                    if (key === 'hero_desc' || key === 'cta_desc' || key === 'demo_desc' ||
-                        key === 'doctors_desc' || key === 'marketers_desc') {
-                        el.innerHTML = translations[lang][key];
-                    } else {
-                        el.textContent = translations[lang][key];
-                    }
-                }
-            });
+                            // --- بخش پزشکان (Doctors) ---
+                            doctors_title: 'ثبت نام پزشکان',
+                            doctors_desc: 'اگر پزشک هستید و می‌خواهید <strong>مدل زبانی هوش طب</strong> را در مطب خود راه‌اندازی کنید، اطلاعات خود را ثبت کنید تا کارشناسان ما با شما تماس بگیرند.',
+                            doctors_form_title: 'ثبت نام پزشکان',
+                            doctors_form_sub: 'راه‌اندازی مدل زبانی هوش طب در مطب شما',
+                            doctors_fullname: 'نام و نام خانوادگی *',
+                            doctors_medical_code: 'شماره نظام پزشکی *',
+                            doctors_specialty: 'تخصص',
+                            doctors_mobile: 'شماره موبایل *',
+                            doctors_address: 'آدرس مطب',
+                            doctors_description: 'توضیحات تکمیلی',
+                            doctors_submit: 'ثبت درخواست',
 
-            // به‌روزرسانی ویدئو
-            var videoIframe = document.getElementById('demoVideo');
-            if (videoIframe && translations[lang] && translations[lang].demo_video) {
-                videoIframe.src = translations[lang].demo_video;
-            }
+                            // --- بخش بازاریابان (Marketers) ---
+                            marketers_title: 'معرفی‌کنندگان هوش طب',
+                            marketers_desc: 'اگر به <strong>معرفی و توسعه هوش طب</strong> به پزشکان و کلینیک‌ها علاقه‌مند هستید، ثبت نام کنید و از پورسانت ویژه بهره‌مند شوید.',
+                            marketers_form_title: 'ثبت نام معرفی‌کنندگان',
+                            marketers_form_sub: 'همکاری در توسعه هوش طب و دریافت پورسانت',
+                            marketers_fullname: 'نام و نام خانوادگی *',
+                            marketers_mobile: 'شماره موبایل *',
+                            marketers_email: 'ایمیل',
+                            marketers_city: 'شهر',
+                            marketers_experience: 'سابقه و تجربه',
+                            marketers_help: 'چطور می‌توانید به توسعه هوش طب کمک کنید؟',
+                            marketers_submit: 'ثبت درخواست همکاری',
 
-            // به‌روزرسانی placeholder ها
-            var placeholderMap = {
-                /*
-                'docFullName': { fa: 'دکتر رضا محمدی', en: 'Dr. Reza Mohammadi', ar: 'دكتور رضا محمدي' },
-                'docMedicalCode': { fa: '۱۲۳۴۵۶', en: '123456', ar: '١٢٣٤٥٦' },
-                'docMobile': { fa: '۰۹۱۲۳۴۵۶۷۸۹', en: '09123456789', ar: '٠٩١٢٣٤٥٦٧٨٩' },
-                */
-                'docFullName': '',
-                'docMedicalCode': '',
-                'docMobile': '',
-                'docAddress': { fa: 'تهران، خیابان ...', en: 'Tehran, Street ...', ar: 'طهران، شارع ...' },
-                'docDesc': { fa: 'نیازها، تعداد بیماران روزانه، سیستم‌های موجود و ...', en: 'Requirements, daily patient count, existing systems ...', ar: 'الاحتياجات، عدد المرضى اليومي، الأنظمة الموجودة ...' },
-                /*
-                'mktFullName': { fa: 'علی رضایی', en: 'Ali Rezaei', ar: 'علي رضائي' },
-                'mktMobile': { fa: '۰۹۱۲۳۴۵۶۷۸۹', en: '09123456789', ar: '٠٩١٢٣٤٥٦٧٨٩' },
-                */
-                'mktFullName': '',
-                'mktMobile': '',
-                'mktEmail': { fa: 'ali@example.com', en: 'ali@example.com', ar: 'ali@example.com' },
-                'mktCity': { fa: 'تهران', en: 'Tehran', ar: 'طهران' },
-                'mktExp': { fa: 'تجربه در حوزه پزشکی، بازاریابی، فروش و ...', en: 'Experience in medical, marketing, sales ...', ar: 'الخبرة في المجال الطبي والتسويق والمبيعات ...' },
-                'mktHelp': { fa: 'ارتباط با پزشکان، برگزاری وبینار، بازاریابی دیجیتال و ...', en: 'Connecting with doctors, webinars, digital marketing ...', ar: 'التواصل مع الأطباء، تنظيم ندوات عبر الإنترنت، التسويق الرقمي ...' }
-            };
+                            // --- بخش لیست‌ها و انتخاب‌ها (Select Options) ---
+                            select_option: 'انتخاب کنید',
+                            specialty_internal: 'داخلی',
+                            specialty_cardiology: 'قلب و عروق',
+                            specialty_neurology: 'مغز و اعصاب',
+                            specialty_orthopedics: 'ارتوپدی',
+                            specialty_dermatology: 'پوست و مو',
+                            specialty_ophthalmology: 'چشم پزشکی',
+                            specialty_ent: 'گوش و حلق و بینی',
+                            specialty_psychiatry: 'روانپزشکی',
+                            specialty_obgyn: 'زنان و زایمان',
+                            specialty_pediatrics: 'کودکان',
+                            specialty_other: 'سایر',
 
-            document.querySelectorAll('input[placeholder], textarea[placeholder]').forEach(function (el) {
-                if (placeholderMap[el.id] && placeholderMap[el.id][lang]) {
-                    el.placeholder = placeholderMap[el.id][lang];
-                }
-            });
+                            // --- بخش فوتر (Footer) ---
+                            footer_name: 'هوش‌طب • پلتفرم پذیرش هوشمند پزشکی',
+                            footer_about: 'درباره ما',
+                            footer_contact: 'تماس با ما',
+                            footer_privacy: 'حریم خصوصی',
 
-            document.querySelectorAll('select option').forEach(function (opt) {
-                var key = opt.dataset.i18n;
-                if (key && translations[lang] && translations[lang][key] !== undefined) {
-                    opt.textContent = translations[lang][key];
-                }
-            });
+                            // --- بخش وضعیت‌ها (Status Messages) ---
+                            status_loading: 'در حال ثبت اطلاعات...',
+                            status_success_doctor: '✅ درخواست شما با موفقیت ثبت شد! کارشناسان ما با شما تماس می‌گیرند.',
+                            status_success_marketer: '✅ درخواست همکاری شما ثبت شد! با شما تماس می‌گیریم.',
+                            status_error_required: 'لطفاً تمام فیلدهای ضروری را پر کنید.',
+                            status_error_server: '❌ خطا در ارتباط با سرور: ',
+                            // ... سایر کلیدها
+                            demo_video: 'https://www.aparat.com/video/video/embed/videohash/lakzxzx/vt/frame'  // آدرس فیلم فارسی
+                        },
 
-            try {
-                localStorage.setItem('hooshteb_lang', lang);
-            } catch (e) { }
-        }
+                        // ==================== انگلیسی (English - en) ====================
+                        en: {
+                            site_name: 'HooshTab (Smart Medical Intake)',
+                            nav_about: 'What is HooshTab?',
+                            nav_doctors: 'For Doctors',
+                            nav_doctors_list: 'Doctors List',  // ← جدید
+                            nav_marketers: 'Partners',
+                            nav_demo: 'How It Works',
+                            nav_enter: 'Start Intake',
+                            cta_title: 'Start Your Smart Intake',
+                            cta_desc: 'Before visiting your doctor, enter your medical info, symptoms, and reason for visit in <strong>HooshTab Assistant</strong> to make your appointment faster and more accurate.',
+                            cta_button: 'Start Smart Intake',
+                            cta_checking: 'Checking system status...',
+                            cta_offline: '⚠️ HooshTab is available during office hours. Please try again when the doctor is available.',
+                            cta_online: '✅ System is ready for your intake. Redirecting...',
+                            hero_badge: 'Smart Medical Intake Assistant',
+                            hero_title: 'Enter your medical info before your visit.',
+                            hero_desc: '<strong>HooshTab</strong> is a smart medical intake assistant that collects your symptoms, medical history, and reason for visit before you see the doctor. This helps reduce wait times, improve diagnostic accuracy, and enhance overall care quality.',
+                            feat_1: 'Reduced Waiting Time',
+                            feat_2: 'More Accurate Visits',
+                            feat_3: 'Smart Intake',
+                            feat_4: 'Secure & Private',
+                            demo_title: 'How Does HooshTab Work?',
+                            demo_desc: 'Watch this video to learn how HooshTab’s smart assistant and patient intake process works.',
+                            doctors_title: 'Doctor Registration',
+                            doctors_desc: 'If you\'re a doctor and want to set up the <strong>HooshTab Language Model</strong> in your practice, register your info and our team will contact you.',
+                            doctors_form_title: 'Doctor Registration',
+                            doctors_form_sub: 'Set up HooshTab Language Model at your clinic',
+                            doctors_fullname: 'Full Name *',
+                            doctors_medical_code: 'Medical License Number *',
+                            doctors_specialty: 'Specialty',
+                            doctors_mobile: 'Mobile Number *',
+                            doctors_address: 'Clinic Address',
+                            doctors_description: 'Additional Info',
+                            doctors_submit: 'Submit Request',
+                            marketers_title: 'HooshTab Referral Partners',
+                            marketers_desc: 'If you\'re interested in <strong>introducing and promoting HooshTab</strong> to doctors and clinics, sign up to earn special commissions.',
+                            marketers_form_title: 'Partner Registration',
+                            marketers_form_sub: 'Collaborate on HooshTab growth & earn commissions',
+                            marketers_fullname: 'Full Name *',
+                            marketers_mobile: 'Mobile Number *',
+                            marketers_email: 'Email',
+                            marketers_city: 'City',
+                            marketers_experience: 'Background & Experience',
+                            marketers_help: 'How can you help grow HooshTab?',
+                            marketers_submit: 'Submit Partnership Request',
+                            select_option: 'Select an option',
+                            specialty_internal: 'Internal Medicine',
+                            specialty_cardiology: 'Cardiology',
+                            specialty_neurology: 'Neurology',
+                            specialty_orthopedics: 'Orthopedics',
+                            specialty_dermatology: 'Dermatology',
+                            specialty_ophthalmology: 'Ophthalmology',
+                            specialty_ent: 'ENT',
+                            specialty_psychiatry: 'Psychiatry',
+                            specialty_obgyn: 'OB/GYN',
+                            specialty_pediatrics: 'Pediatrics',
+                            specialty_other: 'Other',
+                            footer_name: 'HooshTab • Smart Medical Intake Platform',
+                            footer_about: 'About Us',
+                            footer_contact: 'Contact Us',
+                            footer_privacy: 'Privacy Policy',
+                            status_loading: 'Submitting info...',
+                            status_success_doctor: '✅ Your request was submitted! Our team will contact you shortly.',
+                            status_success_marketer: '✅ Your partnership request was submitted! We\'ll be in touch.',
+                            status_error_required: 'Please fill in all required fields.',
+                            status_error_server: '❌ Server error: ',
+                            // ... سایر کلیدها
+                            demo_video: 'https://www.aparat.com/video/video/embed/videohash/iifly37/vt/frame'  // آدرس فیلم انگلیسی
+                        },
 
-        // ============================================================
-        //  بارگذاری زبان ذخیره شده
-        // ============================================================
-        (function loadSavedLanguage() {
-            try {
-                var saved = localStorage.getItem('hooshteb_lang');
-                if (saved && translations[saved]) {
-                    switchLanguage(saved);
-                    return;
-                }
-            } catch (e) { }
-            switchLanguage('fa');
-        })();
+                        // ==================== عربی (Arabic - ar) ====================
+                        ar: {
+                            site_name: 'هوش طب (الذكاء الطبي)',
+                            nav_about: 'ما هو هوش طب؟',
+                            nav_doctors: 'للأطباء',
+                            nav_doctors_list: 'قائمة الأطباء',  // ← جدید
+                            nav_marketers: 'التعاون معنا',
+                            nav_demo: 'طريقة العمل',
+                            nav_enter: 'ابدأ الاستقبال',
+                            cta_title: 'ابدأ الاستقبال الذكي',
+                            cta_desc: 'قبل زيارة الطبيب، قم بتسجيل معلوماتك الطبية والأعراض وسبب الزيارة في <strong>مساعد هوش طب</strong> لجعل موعدك أسرع وأكثر دقة.',
+                            cta_button: 'ابدأ الاستقبال الذكي',
+                            cta_checking: 'جاري التحقق من حالة النظام...',
+                            cta_offline: '⚠️ نظام هوش طب متاح فقط خلال ساعات العمل. يرجى المحاولة مرة أخرى عندما يكون الطبيب متاحاً.',
+                            cta_online: '✅ النظام جاهز لاستقبالك. جاري التحويل...',
+                            hero_badge: 'المساعد الذكي للاستقبال الطبي',
+                            hero_title: 'سجل معلوماتك الطبية قبل موعدك.',
+                            hero_desc: '<strong>هوش طب</strong> هو مساعد ذكي للاستقبال الطبي يقوم بجمع الأعراض والتاريخ الطبي وسبب الزيارة قبل مقابلة الطبيب، مما يساعد على تقليل أوقات الانتظار وزيادة دقة التشخيص وتحسين جودة الرعاية.',
+                            feat_1: 'تقليل وقت الانتظار',
+                            feat_2: 'زيارة أكثر دقة',
+                            feat_3: 'استقبال ذكي',
+                            feat_4: 'آمن وسري',
+                            demo_title: 'كيف يعمل هوش طب؟',
+                            demo_desc: 'شاهد هذا الفيديو للتعرف على آلية عمل المساعد الذكي لهوش طب وخطوات استقبال المريض.',
+                            doctors_title: 'تسجيل الأطباء',
+                            doctors_desc: 'إذا كنت طبيباً وترغب في تشغيل <strong>النموذج اللغوي لهوش طب</strong> في عيادتك، سجل معلوماتك وسيتواصل معك فريقنا.',
+                            doctors_form_title: 'تسجيل الأطباء',
+                            doctors_form_sub: 'تشغيل النموذج اللغوي لهوش طب في عيادتك',
+                            doctors_fullname: 'الاسم الكامل *',
+                            doctors_medical_code: 'رقم الترخيص الطبي *',
+                            doctors_specialty: 'التخصص',
+                            doctors_mobile: 'رقم الجوال *',
+                            doctors_address: 'عنوان العيادة',
+                            doctors_description: 'معلومات إضافية',
+                            doctors_submit: 'إرسال الطلب',
+                            marketers_title: 'شركاء هوش طب',
+                            marketers_desc: 'إذا كنت مهتماً بـ <strong>تقديم هوش طب وتسويقه</strong> للأطباء والعيادات، سجل للحصول على عمولات خاصة.',
+                            marketers_form_title: 'تسجيل الشركاء',
+                            marketers_form_sub: 'التعاون في تطوير هوش طب والحصول على عمولات',
+                            marketers_fullname: 'الاسم الكامل *',
+                            marketers_mobile: 'رقم الجوال *',
+                            marketers_email: 'البريد الإلكتروني',
+                            marketers_city: 'المدينة',
+                            marketers_experience: 'الخبرة السابقة',
+                            marketers_help: 'كيف يمكنك المساعدة في تطوير هوش طب؟',
+                            marketers_submit: 'إرسال طلب الشراكة',
+                            select_option: 'اختر من القائمة',
+                            specialty_internal: 'الباطنة',
+                            specialty_cardiology: 'أمراض القلب',
+                            specialty_neurology: 'أمراض الأعصاب',
+                            specialty_orthopedics: 'جراحة العظام',
+                            specialty_dermatology: 'الأمراض الجلدية',
+                            specialty_ophthalmology: 'طب العيون',
+                            specialty_ent: 'أنف وأذن وحنجرة',
+                            specialty_psychiatry: 'الطب النفسي',
+                            specialty_obgyn: 'نساء وتوليد',
+                            specialty_pediatrics: 'طب الأطفال',
+                            specialty_other: 'أخرى',
+                            footer_name: 'هوش طب • منصة الاستقبال الطبي الذكي',
+                            footer_about: 'من نحن',
+                            footer_contact: 'اتصل بنا',
+                            footer_privacy: 'سياسة الخصوصية',
+                            status_loading: 'جاري تسجيل المعلومات...',
+                            status_success_doctor: '✅ تم تسجيل طلبك بنجاح! سيتواصل معك فريقنا قريباً.',
+                            status_success_marketer: '✅ تم تسجيل طلب الشراكة! سنتواصل معك.',
+                            status_error_required: 'يرجى ملء جميع الحقول المطلوبة.',
+                            status_error_server: '❌ خطأ في الاتصال بالخادم: ',
+                            // ... سایر کلیدها
+                            demo_video: 'https://www.aparat.com/video/video/embed/videohash/ajm7792/vt/frame'  // آدرس فیلم عربی
+                        }
+                    };
+                    var currentLang = 'fa';
 
-        // ============================================================
-        //  بررسی وضعیت مدل زبانی هوش طب با Image (دقیق‌ترین روش)
-        // ============================================================
-        function handleSmartVisit() {
-            // نمایش پیام وضعیت
-            document.getElementById('ctaStatusText').textContent = 'در حال انتقال به بخش ویزیت هوشمند...';
+                    // ============================================================
+                    // اتصال دکمه ویزیت هوشمند آفلاین
+                    // ============================================================
+                    document.addEventListener('DOMContentLoaded', function () {
 
-            // باز کردن در تب جدید
-            window.open('doctors.html', '_blank');
-        }
+                        const offlineBtn = document.getElementById('enterBtnoffline');
 
-        function checkAndEnterHooshteb() {
-            var statusEl = document.getElementById('ctaStatus');
-            var statusText = document.getElementById('ctaStatusText');
-            var btn = document.getElementById('enterBtn');
+                        if (offlineBtn) {
 
-            statusEl.className = 'cta-status show checking';
-            statusText.innerHTML = translations[currentLang].cta_checking;
-            btn.disabled = true;
-            //alert(4000)
-            if (window.location.protocol === "https:") {
+                            offlineBtn.addEventListener('click', function (e) {
 
-                // سایت با HTTPS باز شده است
-                fetch(LLM_URLS + '/is_access_hooshteb', {
-                    method: 'GET',
-                    cache: 'no-cache'
-                })
-                    .then(function (response) {
+                                e.preventDefault();
 
-                        btn.disabled = false;
+                                openOfflineLogin();
 
-                        if (response.ok) {
-                            showOnlineMessage();
-                            window.open(LLM_URLS, '_blank');
-                        } else {
-                            showOfflineMessage();
+                            });
+
                         }
 
-                    })
-                    .catch(function (error) {
-
-                        btn.disabled = false;
-                        console.error(error);
-                        showOfflineMessage();
-
                     });
-                
-                /*
-                const win = window.open("", "_blank");
+                    /*
+                    document.addEventListener('DOMContentLoaded', function () {
+                        const offlineBtn = document.getElementById('enterBtnoffline');
+                        if (offlineBtn) {
+                            offlineBtn.addEventListener('click', function (e) {
+                                e.preventDefault();
 
-                fetch(SCRIPT_URL_LOGIN_LLM + "?action=check_llm")
-                    .then(r => r.text())
-                    .then(text => {
+                                // بررسی نشست قبلی
+                                try {
+                                    const session = localStorage.getItem('hooshteb_offline_session');
+                                    if (session) {
+                                        const data = JSON.parse(session);
+                                        const now = Date.now();
+                                        const sessionAge = now - data.timestamp;
 
-                        if (text.includes("Status = 200")) {
-                            win.location = LLM_URL;
-                        } else {
-                            win.close();
-                            showOfflineMessage();
+                                        // اگر نشست معتبر است (کمتر از 8 ساعت)
+                                        if (sessionAge < 8 * 60 * 60 * 1000 && data.username) {
+                                            // ✅ استفاده از تابع مشترک
+                                            openDoctorDashboard(data.username);
+                                            return;
+                                        }
+                                    }
+                                } catch (e) {
+                                    console.error('Error checking session:', e);
+                                }
+
+                                // اگر نشست معتبر نبود، نمایش پنجره لاگین
+                                openOfflineLogin();
+                            });
                         }
-
-                    })
-                    .catch(() => {
-                        win.close();
-                        showOfflineMessage();
-                    });
+                    });                    
                     */
-            }
-            else {
+                    // ============================================================
+                    //  تابع تغییر زبان
+                    // ============================================================
+                    function switchLanguage(lang) {
+                        currentLang = lang;
 
-                // سایت با HTTP باز شده است
-                fetch(LLM_URL + '/is_access_hooshteb', {
-                    method: 'GET',
-                    cache: 'no-cache'
-                })
-                    .then(function (response) {
+                        document.body.className = 'lang-' + lang;
 
-                        btn.disabled = false;
-
-                        if (response.ok) {
-                            showOnlineMessage();
-                            window.open(LLM_URL, '_blank');
+                        if (lang === 'en') {
+                            document.documentElement.dir = 'ltr';
+                            document.documentElement.lang = 'en';
                         } else {
-                            showOfflineMessage();
+                            document.documentElement.dir = 'rtl';
+                            document.documentElement.lang = lang;
                         }
 
-                    })
-                    .catch(function (error) {
+                        document.querySelectorAll('.lang-switcher button').forEach(function (btn) {
+                            btn.classList.remove('active');
+                            if (btn.dataset.lang === lang) {
+                                btn.classList.add('active');
+                            }
+                        });
 
-                        btn.disabled = false;
-                        console.error(error);
-                        showOfflineMessage();
+                        document.querySelectorAll('[data-i18n]').forEach(function (el) {
+                            var key = el.dataset.i18n;
+                            if (translations[lang] && translations[lang][key] !== undefined) {
+                                if (key === 'hero_desc' || key === 'cta_desc' || key === 'demo_desc' ||
+                                    key === 'doctors_desc' || key === 'marketers_desc') {
+                                    el.innerHTML = translations[lang][key];
+                                } else {
+                                    el.textContent = translations[lang][key];
+                                }
+                            }
+                        });
 
+                        // به‌روزرسانی ویدئو
+                        var videoIframe = document.getElementById('demoVideo');
+                        if (videoIframe && translations[lang] && translations[lang].demo_video) {
+                            videoIframe.src = translations[lang].demo_video;
+                        }
+
+                        // به‌روزرسانی placeholder ها
+                        var placeholderMap = {
+                            /*
+                            'docFullName': { fa: 'دکتر رضا محمدی', en: 'Dr. Reza Mohammadi', ar: 'دكتور رضا محمدي' },
+                            'docMedicalCode': { fa: '۱۲۳۴۵۶', en: '123456', ar: '١٢٣٤٥٦' },
+                            'docMobile': { fa: '۰۹۱۲۳۴۵۶۷۸۹', en: '09123456789', ar: '٠٩١٢٣٤٥٦٧٨٩' },
+                            */
+                            'docFullName': '',
+                            'docMedicalCode': '',
+                            'docMobile': '',
+                            'docAddress': { fa: 'تهران، خیابان ...', en: 'Tehran, Street ...', ar: 'طهران، شارع ...' },
+                            'docDesc': { fa: 'نیازها، تعداد بیماران روزانه، سیستم‌های موجود و ...', en: 'Requirements, daily patient count, existing systems ...', ar: 'الاحتياجات، عدد المرضى اليومي، الأنظمة الموجودة ...' },
+                            /*
+                            'mktFullName': { fa: 'علی رضایی', en: 'Ali Rezaei', ar: 'علي رضائي' },
+                            'mktMobile': { fa: '۰۹۱۲۳۴۵۶۷۸۹', en: '09123456789', ar: '٠٩١٢٣٤٥٦٧٨٩' },
+                            */
+                            'mktFullName': '',
+                            'mktMobile': '',
+                            'mktEmail': { fa: 'ali@example.com', en: 'ali@example.com', ar: 'ali@example.com' },
+                            'mktCity': { fa: 'تهران', en: 'Tehran', ar: 'طهران' },
+                            'mktExp': { fa: 'تجربه در حوزه پزشکی، بازاریابی، فروش و ...', en: 'Experience in medical, marketing, sales ...', ar: 'الخبرة في المجال الطبي والتسويق والمبيعات ...' },
+                            'mktHelp': { fa: 'ارتباط با پزشکان، برگزاری وبینار، بازاریابی دیجیتال و ...', en: 'Connecting with doctors, webinars, digital marketing ...', ar: 'التواصل مع الأطباء، تنظيم ندوات عبر الإنترنت، التسويق الرقمي ...' }
+                        };
+
+                        document.querySelectorAll('input[placeholder], textarea[placeholder]').forEach(function (el) {
+                            if (placeholderMap[el.id] && placeholderMap[el.id][lang]) {
+                                el.placeholder = placeholderMap[el.id][lang];
+                            }
+                        });
+
+                        document.querySelectorAll('select option').forEach(function (opt) {
+                            var key = opt.dataset.i18n;
+                            if (key && translations[lang] && translations[lang][key] !== undefined) {
+                                opt.textContent = translations[lang][key];
+                            }
+                        });
+
+                        try {
+                            localStorage.setItem('hooshteb_lang', lang);
+                        } catch (e) { }
+                    }
+
+                    // ============================================================
+                    //  بارگذاری زبان ذخیره شده
+                    // ============================================================
+                    (function loadSavedLanguage() {
+                        try {
+                            var saved = localStorage.getItem('hooshteb_lang');
+                            if (saved && translations[saved]) {
+                                switchLanguage(saved);
+                                return;
+                            }
+                        } catch (e) { }
+                        switchLanguage('fa');
+                    })();
+
+                    // ============================================================
+                    //  بررسی وضعیت مدل زبانی هوش طب با Image (دقیق‌ترین روش)
+                    // ============================================================
+                    function handleSmartVisit() {
+                        // نمایش پیام وضعیت
+                        document.getElementById('ctaStatusText').textContent = 'در حال انتقال به بخش ویزیت هوشمند...';
+
+                        // باز کردن در تب جدید
+                        window.open('doctors.html', '_blank');
+                    }
+
+                    function checkAndEnterHooshteb() {
+                        var statusEl = document.getElementById('ctaStatus');
+                        var statusText = document.getElementById('ctaStatusText');
+                        var btn = document.getElementById('enterBtn');
+
+                        statusEl.className = 'cta-status show checking';
+                        statusText.innerHTML = translations[currentLang].cta_checking;
+                        btn.disabled = true;
+                        //alert(4000)
+                        if (window.location.protocol === "https:") {
+
+                            // سایت با HTTPS باز شده است
+                            fetch(LLM_URLS + '/is_access_hooshteb', {
+                                method: 'GET',
+                                cache: 'no-cache'
+                            })
+                                .then(function (response) {
+
+                                    btn.disabled = false;
+
+                                    if (response.ok) {
+                                        showOnlineMessage();
+                                        window.open(LLM_URLS, '_blank');
+                                    } else {
+                                        showOfflineMessage();
+                                    }
+
+                                })
+                                .catch(function (error) {
+
+                                    btn.disabled = false;
+                                    console.error(error);
+                                    showOfflineMessage();
+
+                                });
+
+                            /*
+                            const win = window.open("", "_blank");
+
+                            fetch(SCRIPT_URL_LOGIN_LLM + "?action=check_llm")
+                                .then(r => r.text())
+                                .then(text => {
+
+                                    if (text.includes("Status = 200")) {
+                                        win.location = LLM_URL;
+                                    } else {
+                                        win.close();
+                                        showOfflineMessage();
+                                    }
+
+                                })
+                                .catch(() => {
+                                    win.close();
+                                    showOfflineMessage();
+                                });
+                                */
+                        }
+                        else {
+
+                            // سایت با HTTP باز شده است
+                            fetch(LLM_URL + '/is_access_hooshteb', {
+                                method: 'GET',
+                                cache: 'no-cache'
+                            })
+                                .then(function (response) {
+
+                                    btn.disabled = false;
+
+                                    if (response.ok) {
+                                        showOnlineMessage();
+                                        window.open(LLM_URL, '_blank');
+                                    } else {
+                                        showOfflineMessage();
+                                    }
+
+                                })
+                                .catch(function (error) {
+
+                                    btn.disabled = false;
+                                    console.error(error);
+                                    showOfflineMessage();
+
+                                });
+
+                        }
+
+                    }
+
+
+                    // ============================================================
+                    //  نمایش فرم Login
+                    // ============================================================
+
+                    function openOfflineLogin_OLD() {
+                        document.getElementById('loginModal').style.display = 'block';
+                        document.body.style.overflow = 'hidden'; // جلوگیری از اسکرول
+                    }
+
+
+                    function openOfflineLogin() {
+                        const sessionText = localStorage.getItem(SESSION_KEY);
+
+                        if (sessionText) {
+
+                            try {
+
+                                const session = JSON.parse(sessionText);
+
+                                // اعتبار Session (مثلاً 12 ساعت)
+                                const SESSION_TIMEOUT =
+                                    12 * 60 * 60 * 1000;
+
+                                if (
+                                    session.token &&
+                                    (Date.now() - session.loginTime) < SESSION_TIMEOUT
+                                ) {
+
+                                    // مستقیماً داشبورد را باز کن
+                                    openDoctorDashboard(session.username);
+
+                                    return;
+
+                                }
+
+                            }
+                            catch (e) {
+
+                                localStorage.removeItem(SESSION_KEY);
+
+                            }
+
+                        }
+
+                        document.getElementById('loginModal').style.display = 'block';
+                        document.body.style.overflow = 'hidden';
+                    }
+
+                    function closeLoginModal() {
+                        document.getElementById('loginModal').style.display = 'none';
+                        document.body.style.overflow = 'auto';
+
+                        const iframe = document.getElementById("loginIframe");
+                        iframe.src = iframe.src;
+                    }
+
+                    // بستن مودال با کلیک روی پس‌زمینه
+                    window.onclick = function (event) {
+                        const modal = document.getElementById('loginModal');
+                        if (event.target === modal) {
+                            closeLoginModal();
+                        }
+                    }
+                    // ============================================================
+                    // باز کردن داشبورد پزشک
+                    // ============================================================
+                    function openDoctorDashboard(username) {
+                        // نشانه‌گذاری برای تأیید لاگین
+                        sessionStorage.setItem('login_verified', 'true');
+
+                        // ذخیره نام کاربری
+                        localStorage.setItem('offline_username', username);
+
+                        // باز کردن داشبورد
+                        const doctorPage = window.open('dashboard.html', '_blank');
+
+                        if (!doctorPage) {
+
+                            alert('لطفاً باز شدن پنجره‌های popup را در مرورگر خود مجاز کنید.');
+
+                            window.location.href = 'dashboard.html';
+
+                        }
+                    }
+                    // ============================================================
+                    // باز کردن مستقیم صفحه پزشک (برای نشست معتبر)
+                    // ============================================================
+                    function openDoctorDashboardDirect(username) {
+                        // نشانه‌گذاری برای تأیید لاگین
+                        sessionStorage.setItem('login_verified', 'true');
+
+                        // باز کردن صفحه داشبورد
+                        const doctorPage = window.open('dashboard.html', '_blank');
+
+                        if (!doctorPage) {
+                            alert('لطفاً باز شدن پنجره‌های popup را در مرورگر خود مجاز کنید.');
+                            // باز کردن در همان پنجره
+                            window.location.href = 'dashboard.html';
+                        }
+                    }
+                    // ============================================================
+                    //  نمایش پیام آنلاین بودن
+                    // ============================================================
+                    function showOnlineMessage() {
+                        var statusEl = document.getElementById('ctaStatus');
+                        var statusText = document.getElementById('ctaStatusText');
+
+                        statusEl.className = 'cta-status show online';
+                        statusText.innerHTML = translations[currentLang].cta_online;
+
+                        setTimeout(function () {
+                            statusEl.className = 'cta-status';
+                        }, 3000);
+                    }
+
+                    // ============================================================
+                    //  نمایش پیام عدم دسترسی
+                    // ============================================================
+                    function showOfflineMessage() {
+                        var statusEl = document.getElementById('ctaStatus');
+                        var statusText = document.getElementById('ctaStatusText');
+
+                        statusEl.className = 'cta-status show offline';
+                        statusText.innerHTML = translations[currentLang].cta_offline;
+
+                        setTimeout(function () {
+                            statusEl.className = 'cta-status';
+                        }, 12000);
+                    }
+
+                    // ============================================================
+                    //  تابع کمکی برای نمایش وضعیت فرم‌ها
+                    // ============================================================
+                    function setStatus(element, message, type) {
+                        element.className = 'status-msg ' + type;
+                        element.textContent = message;
+                        if (type !== 'loading') {
+                            setTimeout(function () {
+                                element.className = 'status-msg';
+                            }, 6000);
+                        }
+                    }
+
+                    // ============================================================
+                    //  ارسال فرم پزشکان
+                    // ============================================================
+                    document.getElementById('doctorForm').addEventListener('submit', async function (e) {
+                        e.preventDefault();
+
+                        var fullName = document.getElementById('docFullName').value.trim();
+                        var medicalCode = document.getElementById('docMedicalCode').value.trim();
+                        var specialty = document.getElementById('docSpecialty').value;
+                        var mobile = document.getElementById('docMobile').value.trim();
+                        var address = document.getElementById('docAddress').value.trim();
+                        var desc = document.getElementById('docDesc').value.trim();
+
+                        if (!fullName || !medicalCode || !mobile) {
+                            setStatus(document.getElementById('docStatus'), translations[currentLang].status_error_required, 'error');
+                            return;
+                        }
+
+                        var data = {
+                            type: 'doctor',
+                            fullName: fullName,
+                            medicalCode: medicalCode,
+                            specialty: specialty || (currentLang === 'fa' ? 'نامشخص' : currentLang === 'en' ? 'Unspecified' : 'غير محدد'),
+                            mobile: mobile,
+                            address: address || '',
+                            description: desc || '',
+                            timestamp: new Date().toLocaleString('fa-IR', { timeZone: 'Asia/Tehran' })
+                        };
+
+                        var statusEl = document.getElementById('docStatus');
+                        var btn = document.getElementById('docSubmitBtn');
+                        setStatus(statusEl, translations[currentLang].status_loading, 'loading');
+                        btn.disabled = true;
+
+                        try {
+                            var formData = new URLSearchParams();
+                            for (var key in data) {
+                                formData.append(key, data[key]);
+                            }
+
+                            var response = await fetch(SCRIPT_URL_REGISTER, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                                body: formData.toString()
+                            });
+
+                            var result = await response.json();
+
+                            if (result.result === 'success') {
+                                setStatus(statusEl, translations[currentLang].status_success_doctor, 'success');
+                                this.reset();
+                            } else {
+                                setStatus(statusEl, '❌ ' + (result.error || (currentLang === 'fa' ? 'خطای ناشناخته' : currentLang === 'en' ? 'Unknown error' : 'خطأ غير معروف')), 'error');
+                            }
+                        } catch (error) {
+                            setStatus(statusEl, translations[currentLang].status_error_server + error.message, 'error');
+                        } finally {
+                            btn.disabled = false;
+                        }
                     });
 
-            }
+                    // ============================================================
+                    //  ارسال فرم معرفی‌کنندگان
+                    // ============================================================
+                    document.getElementById('marketerForm').addEventListener('submit', async function (e) {
+                        e.preventDefault();
 
-        }
-        // ============================================================
-        //  نمایش پیام آنلاین بودن
-        // ============================================================
-        function showOnlineMessage() {
-            var statusEl = document.getElementById('ctaStatus');
-            var statusText = document.getElementById('ctaStatusText');
+                        var fullName = document.getElementById('mktFullName').value.trim();
+                        var mobile = document.getElementById('mktMobile').value.trim();
+                        var email = document.getElementById('mktEmail').value.trim();
+                        var city = document.getElementById('mktCity').value.trim();
+                        var exp = document.getElementById('mktExp').value.trim();
+                        var help = document.getElementById('mktHelp').value.trim();
 
-            statusEl.className = 'cta-status show online';
-            statusText.innerHTML = translations[currentLang].cta_online;
+                        if (!fullName || !mobile) {
+                            setStatus(document.getElementById('mktStatus'), translations[currentLang].status_error_required, 'error');
+                            return;
+                        }
 
-            setTimeout(function () {
-                statusEl.className = 'cta-status';
-            }, 3000);
-        }
+                        var data = {
+                            type: 'marketer',
+                            fullName: fullName,
+                            mobile: mobile,
+                            email: email || '',
+                            city: city || '',
+                            experience: exp || '',
+                            help: help || '',
+                            timestamp: new Date().toLocaleString('fa-IR', { timeZone: 'Asia/Tehran' })
+                        };
 
-        // ============================================================
-        //  نمایش پیام عدم دسترسی
-        // ============================================================
-        function showOfflineMessage() {
-            var statusEl = document.getElementById('ctaStatus');
-            var statusText = document.getElementById('ctaStatusText');
+                        var statusEl = document.getElementById('mktStatus');
+                        var btn = document.getElementById('mktSubmitBtn');
+                        setStatus(statusEl, translations[currentLang].status_loading, 'loading');
+                        btn.disabled = true;
 
-            statusEl.className = 'cta-status show offline';
-            statusText.innerHTML = translations[currentLang].cta_offline;
+                        try {
+                            var formData = new URLSearchParams();
+                            for (var key in data) {
+                                formData.append(key, data[key]);
+                            }
 
-            setTimeout(function () {
-                statusEl.className = 'cta-status';
-            }, 12000);
-        }
+                            var response = await fetch(SCRIPT_URL_REGISTER, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                                body: formData.toString()
+                            });
 
-        // ============================================================
-        //  تابع کمکی برای نمایش وضعیت فرم‌ها
-        // ============================================================
-        function setStatus(element, message, type) {
-            element.className = 'status-msg ' + type;
-            element.textContent = message;
-            if (type !== 'loading') {
-                setTimeout(function () {
-                    element.className = 'status-msg';
-                }, 6000);
-            }
-        }
+                            var result = await response.json();
 
-        // ============================================================
-        //  ارسال فرم پزشکان
-        // ============================================================
-        document.getElementById('doctorForm').addEventListener('submit', async function (e) {
-            e.preventDefault();
+                            if (result.result === 'success') {
+                                setStatus(statusEl, translations[currentLang].status_success_marketer, 'success');
+                                this.reset();
+                            } else {
+                                setStatus(statusEl, '❌ ' + (result.error || (currentLang === 'fa' ? 'خطای ناشناخته' : currentLang === 'en' ? 'Unknown error' : 'خطأ غير معروف')), 'error');
+                            }
+                        } catch (error) {
+                            setStatus(statusEl, translations[currentLang].status_error_server + error.message, 'error');
+                        } finally {
+                            btn.disabled = false;
+                        }
+                    });
 
-            var fullName = document.getElementById('docFullName').value.trim();
-            var medicalCode = document.getElementById('docMedicalCode').value.trim();
-            var specialty = document.getElementById('docSpecialty').value;
-            var mobile = document.getElementById('docMobile').value.trim();
-            var address = document.getElementById('docAddress').value.trim();
-            var desc = document.getElementById('docDesc').value.trim();
+                    // ============================================================
+                    //  محدودیت ورودی موبایل
+                    // ============================================================
+                    document.querySelectorAll('input[type="tel"]').forEach(function (input) {
+                        input.addEventListener('input', function () {
+                            this.value = this.value.replace(/\D/g, '').slice(0, 11);
+                        });
+                    });
 
-            if (!fullName || !medicalCode || !mobile) {
-                setStatus(document.getElementById('docStatus'), translations[currentLang].status_error_required, 'error');
-                return;
-            }
+                        window.addEventListener("message", function (event) {
 
-            var data = {
-                type: 'doctor',
-                fullName: fullName,
-                medicalCode: medicalCode,
-                specialty: specialty || (currentLang === 'fa' ? 'نامشخص' : currentLang === 'en' ? 'Unspecified' : 'غير محدد'),
-                mobile: mobile,
-                address: address || '',
-                description: desc || '',
-                timestamp: new Date().toLocaleString('fa-IR', { timeZone: 'Asia/Tehran' })
-            };
+                            if (event.data.action === "loginSuccess") {
 
-            var statusEl = document.getElementById('docStatus');
-            var btn = document.getElementById('docSubmitBtn');
-            setStatus(statusEl, translations[currentLang].status_loading, 'loading');
-            btn.disabled = true;
+                                // بستن فرم Login
+                                closeLoginModal();
 
-            try {
-                var formData = new URLSearchParams();
-                for (var key in data) {
-                    formData.append(key, data[key]);
-                }
+                                // باز کردن Dashboard
+                                openDoctorDashboard(event.data.uid);
 
-                var response = await fetch(SCRIPT_URL_REGISTER, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: formData.toString()
-                });
+                            }
 
-                var result = await response.json();
-
-                if (result.result === 'success') {
-                    setStatus(statusEl, translations[currentLang].status_success_doctor, 'success');
-                    this.reset();
-                } else {
-                    setStatus(statusEl, '❌ ' + (result.error || (currentLang === 'fa' ? 'خطای ناشناخته' : currentLang === 'en' ? 'Unknown error' : 'خطأ غير معروف')), 'error');
-                }
-            } catch (error) {
-                setStatus(statusEl, translations[currentLang].status_error_server + error.message, 'error');
-            } finally {
-                btn.disabled = false;
-            }
-        });
-
-        // ============================================================
-        //  ارسال فرم معرفی‌کنندگان
-        // ============================================================
-        document.getElementById('marketerForm').addEventListener('submit', async function (e) {
-            e.preventDefault();
-
-            var fullName = document.getElementById('mktFullName').value.trim();
-            var mobile = document.getElementById('mktMobile').value.trim();
-            var email = document.getElementById('mktEmail').value.trim();
-            var city = document.getElementById('mktCity').value.trim();
-            var exp = document.getElementById('mktExp').value.trim();
-            var help = document.getElementById('mktHelp').value.trim();
-
-            if (!fullName || !mobile) {
-                setStatus(document.getElementById('mktStatus'), translations[currentLang].status_error_required, 'error');
-                return;
-            }
-
-            var data = {
-                type: 'marketer',
-                fullName: fullName,
-                mobile: mobile,
-                email: email || '',
-                city: city || '',
-                experience: exp || '',
-                help: help || '',
-                timestamp: new Date().toLocaleString('fa-IR', { timeZone: 'Asia/Tehran' })
-            };
-
-            var statusEl = document.getElementById('mktStatus');
-            var btn = document.getElementById('mktSubmitBtn');
-            setStatus(statusEl, translations[currentLang].status_loading, 'loading');
-            btn.disabled = true;
-
-            try {
-                var formData = new URLSearchParams();
-                for (var key in data) {
-                    formData.append(key, data[key]);
-                }
-
-                var response = await fetch(SCRIPT_URL_REGISTER, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: formData.toString()
-                });
-
-                var result = await response.json();
-
-                if (result.result === 'success') {
-                    setStatus(statusEl, translations[currentLang].status_success_marketer, 'success');
-                    this.reset();
-                } else {
-                    setStatus(statusEl, '❌ ' + (result.error || (currentLang === 'fa' ? 'خطای ناشناخته' : currentLang === 'en' ? 'Unknown error' : 'خطأ غير معروف')), 'error');
-                }
-            } catch (error) {
-                setStatus(statusEl, translations[currentLang].status_error_server + error.message, 'error');
-            } finally {
-                btn.disabled = false;
-            }
-        });
-
-        // ============================================================
-        //  محدودیت ورودی موبایل
-        // ============================================================
-        document.querySelectorAll('input[type="tel"]').forEach(function (input) {
-            input.addEventListener('input', function () {
-                this.value = this.value.replace(/\D/g, '').slice(0, 11);
-            });
-        });
-    </script>
+                        }); 
+           </script>
 
 </body>
 </html>
