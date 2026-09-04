@@ -421,14 +421,14 @@
                     'Network error:',
                     error
                 );
-                /*
+                
                 alert(
                     'AUTH ERROR\n\n' +
                     'Name: ' + (error?.name || '') +
                     '\nMessage: ' + (error?.message || '') +
                     '\nURL: ' + REGISTER_API_URL
                 );
-                */
+                
                 throw new Error(
                     'Unable to connect to the authentication server.'
                 );
