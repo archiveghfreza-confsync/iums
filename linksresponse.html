@@ -262,7 +262,7 @@
                 if (now > expiry) {
                     expiryWarning.classList.remove('hidden');
                     showError('Link Expired', 'This verification link has expired. Please request a new one.');
-                    resendBtn.href = '/linksresponse.html?action=resendverifyEmail&email=' + encodeURIComponent(email) 
+                    resendBtn.href = '/linksresponse.html?action=resendverifyEmail&urllocation=window.location.origin&email=' + encodeURIComponent(email) 
                     resendBtn.classList.remove('hidden');
                     return;
                 }
@@ -381,17 +381,15 @@
                 'Please wait while we verify your email address.'
             );
 
-            const params = new URLSearchParams({
-                action: 'verifyEmail',
-                email: email
-            });
-
             fetch(REGISTER_API_URL, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
+                    'Content-Type': 'text/plain;charset=utf-8'
                 },
-                body: params
+                body: JSON.stringify({
+                    action: 'verifyEmail',
+                    email: email
+                })
             })
                 .then(function (response) {
                     if (!response.ok) {
@@ -420,7 +418,7 @@
                         );
 
                         resendBtn.href =
-                            '/linksresponse.html?action=resendverifyEmail&email=' +email;
+                            '/linksresponse.html?action=resendverifyEmail&urllocation=window.location.origin&email=' +email;
                         if (response.status && response.status == true) {
                             resendBtn.classList.add('hidden')
                             retryBtn.classList.add('hidden');
@@ -465,17 +463,15 @@
         function callChangePassword(email) {
             showLoading('Changing Password...', 'Please wait while we process your password change request.');
 
-            const params = new URLSearchParams({
-                action: 'resetPassword',
-                email: email
-            });
-
             fetch(REGISTER_API_URL, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
+                    'Content-Type': 'application/json',
                 },
-                body: params
+                body: JSON.stringify({
+                    action: 'changePassword',
+                    email: email
+                })
             })
                 .then(function (response) {
                     return response.json();
@@ -615,7 +611,7 @@
                     if (now > expiry) {
                         expiryWarning.classList.remove('hidden');
                         showError('Link Expired', 'This verification link has expired. Please request a new one.');
-                        resendBtn.href = '/linksresponse.html?action=resendverifyEmail&email=' + newEmail;
+                        resendBtn.href = '/linksresponse.html?action=resendverifyEmail&urllocation=window.location.origin&email=' + newEmail;
                         resendBtn.classList.remove('hidden');
                         homeBtn.classList.remove('hidden');  // ✅ نمایش homeBtn
                         return;
