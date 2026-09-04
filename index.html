@@ -421,6 +421,14 @@
                     'Network error:',
                     error
                 );
+                /*
+                alert(
+                    'AUTH ERROR\n\n' +
+                    'Name: ' + (error?.name || '') +
+                    '\nMessage: ' + (error?.message || '') +
+                    '\nURL: ' + REGISTER_API_URL
+                );
+                */
                 throw new Error(
                     'Unable to connect to the authentication server.'
                 );
@@ -473,7 +481,8 @@
                     degree:
                         userData.degree,
                     researchInterest:
-                        userData.researchInterest
+                        userData.researchInterest,
+                    urllocation: window.location.origin
                 });
             if (!result.success) {
                 throw new Error(
@@ -1874,6 +1883,7 @@
         async function forgotPasswordUser(phoneNumber, emailAddress) {
             const result = await authRequest({
                 action: 'forgotPassword',
+                urllocation: window.location.origin,
                 email: emailAddress
             });
 
