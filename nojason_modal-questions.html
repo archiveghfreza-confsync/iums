@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>نمونه سوالات کنفرانس</title>
+    
+    <style>
+        /* ============================================ */
+        /* Reset & Base Styles */
+        /* ============================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f1f5f9;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* ============================================ */
+        /* کانتینر اصلی */
+        /* ============================================ */
+        .container {
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* ============================================ */
+        /* هدر صفحه */
+        /* ============================================ */
+        .page-header {
+            text-align: center;
+            margin-bottom: 24px;
+            padding: 20px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .page-header h1 {
+            font-size: 24px;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .page-header p {
+            color: #64748b;
+            margin-top: 8px;
+            font-size: 14px;
+        }
+
+        /* ============================================ */
+        /* جعبه مودال */
+        /* ============================================ */
+        .modal-box {
+            background: #ffffff;
+            width: 100%;
+            max-width: 900px;
+            height: auto;
+            max-height: 92vh;
+            border-radius: 24px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            margin: 0 auto;
+        }
+
+        /* ============================================ */
+        /* هدر مودال */
+        /* ============================================ */
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 24px;
+            border-bottom: 2px solid #f1f5f9;
+            background: #fafcff;
+            flex-shrink: 0;
+            gap: 12px;
+            min-height: 60px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            font-size: clamp(16px, 2.5vw, 22px);
+            font-weight: 700;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .modal-header .badge {
+            background: #4F46E5;
+            color: white;
+            font-size: clamp(10px, 1.2vw, 12px);
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .btn-close {
+            background: none;
+            border: none;
+            font-size: clamp(24px, 3vw, 28px);
+            cursor: pointer;
+            color: #94a3b8;
+            transition: all 0.3s ease;
+            width: clamp(36px, 4vw, 44px);
+            height: clamp(36px, 4vw, 44px);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .btn-close:hover {
+            color: #ef4444;
+            background: #fef2f2;
+            transform: rotate(90deg);
+        }
+
+        .btn-close:active {
+            transform: rotate(90deg) scale(0.9);
+        }
+
+        /* ============================================ */
+        /* جستجو */
+        /* ============================================ */
+        .modal-search {
+            padding: 10px 24px;
+            background: #fafcff;
+            border-bottom: 1px solid #f1f5f9;
+            flex-shrink: 0;
+            position: sticky;
+            top: 60px;
+            z-index: 9;
+        }
+
+        .modal-search .search-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .modal-search .search-icon {
+            position: absolute;
+            right: 14px;
+            font-size: 18px;
+            color: #94a3b8;
+            pointer-events: none;
+        }
+
+        .modal-search input {
+            width: 100%;
+            padding: 10px 44px 10px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 30px;
+            font-size: clamp(13px, 1.4vw, 15px);
+            outline: none;
+            transition: all 0.3s ease;
+            background: white;
+            font-family: inherit;
+            color: #0f172a;
+        }
+
+        .modal-search input:focus {
+            border-color: #4F46E5;
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+        }
+
+        .modal-search input::placeholder {
+            color: #94a3b8;
+        }
+
+        .modal-search .clear-search-btn {
+            position: absolute;
+            left: 14px;
+            background: none;
+            border: none;
+            font-size: 18px;
+            color: #94a3b8;
+            cursor: pointer;
+            padding: 4px;
+            display: none;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .modal-search .clear-search-btn:hover {
+            color: #ef4444;
+            background: #fef2f2;
+        }
+
+        .modal-search .clear-search-btn.visible {
+            display: block;
+        }
+
+        /* ============================================ */
+        /* بدنه مودال - با اسکرول عمودی */
+        /* ============================================ */
+        .modal-body {
+            padding: 16px 24px 24px;
+            overflow-y: auto !important;
+            overflow-x: hidden !important;
+            flex: 1 1 auto !important;
+            -webkit-overflow-scrolling: touch;
+            max-height: calc(92vh - 170px);
+            min-height: 200px;
+            position: relative;
+        }
+
+        /* اسکرول‌بار زیبا */
+        .modal-body::-webkit-scrollbar {
+            width: 6px;
+        }
+        .modal-body::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 10px;
+        }
+        .modal-body::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+        .modal-body::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        /* ============================================ */
+        /* دسته‌بندی سوالات */
+        /* ============================================ */
+        .category {
+            margin-bottom: 24px;
+        }
+
+        .category:last-child {
+            margin-bottom: 0;
+        }
+
+        .category-title {
+            font-size: clamp(14px, 1.6vw, 16px);
+            font-weight: 700;
+            color: #334155;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            letter-spacing: -0.3px;
+            padding-bottom: 6px;
+            border-bottom: 2px dashed #e2e8f0;
+            flex-wrap: wrap;
+        }
+
+        .category-title .count {
+            font-size: clamp(10px, 1vw, 12px);
+            font-weight: 600;
+            color: #94a3b8;
+            background: #f1f5f9;
+            padding: 0 10px;
+            border-radius: 20px;
+            margin-right: auto;
+            white-space: nowrap;
+        }
+
+        .question-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        /* ============================================ */
+        /* دکمه‌های سوال */
+        /* ============================================ */
+        .question-btn {
+            background: #f8fafc;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 30px;
+            padding: 10px 18px;
+            font-size: clamp(12px, 1.2vw, 14px);
+            font-weight: 500;
+            color: #0f172a;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            text-align: right;
+            font-family: inherit;
+            line-height: 1.5;
+            word-break: break-word;
+            position: relative;
+            width: 100%;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .question-btn:hover {
+            background: #dbeafe;
+            border-color: #4F46E5;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(79, 70, 229, 0.12);
+        }
+
+        .question-btn:active {
+            transform: scale(0.97);
+            background: #c7d2fe;
+        }
+
+        .question-btn .icon {
+            font-size: clamp(14px, 1.4vw, 16px);
+            flex-shrink: 0;
+        }
+
+        .question-btn .text {
+            flex: 1;
+        }
+
+        /* ============================================ */
+        /* وضعیت خالی (نتیجه جستجو) */
+        /* ============================================ */
+        .no-results {
+            display: none;
+            text-align: center;
+            padding: 40px 20px;
+            color: #94a3b8;
+        }
+
+        .no-results.show {
+            display: block;
+        }
+
+        .no-results .emoji {
+            font-size: clamp(40px, 5vw, 56px);
+            display: block;
+            margin-bottom: 12px;
+        }
+
+        .no-results p {
+            font-size: clamp(14px, 1.4vw, 16px);
+            font-weight: 500;
+        }
+
+        .no-results .sub-text {
+            font-size: clamp(12px, 1.2vw, 14px);
+            color: #cbd5e1;
+            margin-top: 4px;
+        }
+
+        /* ============================================ */
+        /* فوتر مودال */
+        /* ============================================ */
+        .modal-footer {
+            padding: 12px 24px;
+            border-top: 1px solid #f1f5f9;
+            background: #fafcff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            flex-shrink: 0;
+            min-height: 52px;
+            position: sticky;
+            bottom: 0;
+            z-index: 10;
+        }
+
+        .modal-footer .info {
+            font-size: clamp(11px, 1.1vw, 13px);
+            color: #94a3b8;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .modal-footer .info strong {
+            color: #4F46E5;
+        }
+
+        .btn-clear-search {
+            background: none;
+            border: none;
+            color: #4F46E5;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: clamp(12px, 1.2vw, 13px);
+            padding: 4px 12px;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .btn-clear-search:hover {
+            background: #eef2ff;
+        }
+
+        .btn-clear-search:active {
+            transform: scale(0.95);
+        }
+
+        /* ============================================ */
+        /* انیمیشن کلیک */
+        /* ============================================ */
+        .question-btn.clicked {
+            animation: clickPop 0.3s ease;
+        }
+
+        @keyframes clickPop {
+            0% { transform: scale(1); }
+            50% { transform: scale(0.92); }
+            100% { transform: scale(1); }
+        }
+
+        /* ============================================ */
+        /* ریسپانسیو */
+        /* ============================================ */
+        @media (max-width: 768px) {
+            body {
+                padding: 12px;
+            }
+
+            .modal-box {
+                max-height: 94vh;
+                border-radius: 20px;
+            }
+
+            .modal-body {
+                max-height: calc(94vh - 160px);
+                padding: 12px 18px 20px;
+                min-height: 150px;
+            }
+
+            .modal-header {
+                padding: 14px 18px;
+                min-height: 54px;
+                top: 0;
+            }
+
+            .modal-search {
+                padding: 10px 18px;
+                top: 54px;
+            }
+
+            .modal-footer {
+                padding: 10px 18px;
+                min-height: 46px;
+            }
+
+            .question-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+            }
+
+            .question-btn {
+                padding: 8px 14px;
+                min-height: 40px;
+                border-radius: 24px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 8px;
+            }
+
+            .modal-box {
+                max-height: 96vh;
+                border-radius: 16px;
+            }
+
+            .modal-body {
+                max-height: calc(96vh - 150px);
+                padding: 10px 14px 16px;
+                min-height: 120px;
+            }
+
+            .modal-header {
+                padding: 10px 14px;
+                min-height: 46px;
+                top: 0;
+            }
+
+            .modal-header h2 {
+                font-size: 15px;
+            }
+
+            .modal-header .badge {
+                font-size: 9px;
+                padding: 1px 8px;
+            }
+
+            .btn-close {
+                font-size: 20px;
+                width: 30px;
+                height: 30px;
+            }
+
+            .modal-search {
+                padding: 8px 14px;
+                top: 46px;
+            }
+
+            .modal-search input {
+                padding: 8px 38px 8px 12px;
+                font-size: 13px;
+                border-radius: 24px;
+            }
+
+            .modal-search .search-icon {
+                right: 12px;
+                font-size: 16px;
+            }
+
+            .modal-footer {
+                padding: 8px 14px;
+                min-height: 38px;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 6px;
+                bottom: 0;
+            }
+
+            .modal-footer .info {
+                font-size: 11px;
+            }
+
+            .btn-clear-search {
+                font-size: 11px;
+                padding: 2px 10px;
+            }
+
+            .category {
+                margin-bottom: 16px;
+            }
+
+            .category-title {
+                font-size: 13px;
+                margin-bottom: 8px;
+                padding-bottom: 4px;
+            }
+
+            .category-title .count {
+                font-size: 9px;
+                padding: 0 8px;
+            }
+
+            .question-grid {
+                grid-template-columns: 1fr;
+                gap: 6px;
+            }
+
+            .question-btn {
+                padding: 8px 14px;
+                font-size: 12px;
+                min-height: 36px;
+                border-radius: 20px;
+            }
+
+            .no-results {
+                padding: 24px 16px;
+            }
+
+            .no-results .emoji {
+                font-size: 36px;
+            }
+
+            .no-results p {
+                font-size: 13px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .modal-body {
+                max-height: calc(96vh - 140px);
+                padding: 8px 12px 12px;
+            }
+
+            .question-btn {
+                font-size: 11px;
+                padding: 6px 12px;
+                min-height: 32px;
+            }
+
+            .modal-header h2 {
+                font-size: 13px;
+            }
+        }
+
+        @media (min-width: 1025px) {
+            .question-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 12px;
+            }
+
+            .question-btn {
+                padding: 12px 20px;
+                min-height: 48px;
+            }
+        }
+
+        @media (min-width: 1400px) {
+            .modal-box {
+                max-width: 1000px;
+            }
+
+            .question-grid {
+                grid-template-columns: 1fr 1fr 1fr;
+                gap: 14px;
+            }
+        }
+
+        /* ============================================ */
+        /* حالت تاریک */
+        /* ============================================ */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background: #0f172a;
+            }
+
+            .page-header {
+                background: #1e293b;
+            }
+
+            .page-header h1 {
+                color: #f1f5f9;
+            }
+
+            .page-header p {
+                color: #94a3b8;
+            }
+
+            .modal-box {
+                background: #1e293b;
+            }
+
+            .modal-header {
+                background: #1e293b;
+                border-bottom-color: #334155;
+            }
+
+            .modal-header h2 {
+                color: #f1f5f9;
+            }
+
+            .modal-search {
+                background: #1e293b;
+                border-bottom-color: #334155;
+            }
+
+            .modal-search input {
+                background: #0f172a;
+                border-color: #334155;
+                color: #f1f5f9;
+            }
+
+            .modal-search input:focus {
+                border-color: #4F46E5;
+                box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.2);
+            }
+
+            .modal-search input::placeholder {
+                color: #64748b;
+            }
+
+            .modal-body {
+                background: #1e293b;
+            }
+
+            .modal-body::-webkit-scrollbar-track {
+                background: #1e293b;
+            }
+            .modal-body::-webkit-scrollbar-thumb {
+                background: #334155;
+            }
+            .modal-body::-webkit-scrollbar-thumb:hover {
+                background: #475569;
+            }
+
+            .category-title {
+                color: #e2e8f0;
+                border-bottom-color: #334155;
+            }
+
+            .category-title .count {
+                background: #334155;
+                color: #94a3b8;
+            }
+
+            .question-btn {
+                background: #0f172a;
+                border-color: #334155;
+                color: #e2e8f0;
+            }
+
+            .question-btn:hover {
+                background: #1e293b;
+                border-color: #4F46E5;
+                box-shadow: 0 8px 20px rgba(79, 70, 229, 0.2);
+            }
+
+            .modal-footer {
+                background: #1e293b;
+                border-top-color: #334155;
+            }
+
+            .modal-footer .info {
+                color: #94a3b8;
+            }
+
+            .modal-footer .info strong {
+                color: #818cf8;
+            }
+
+            .btn-clear-search {
+                color: #818cf8;
+            }
+
+            .btn-clear-search:hover {
+                background: #334155;
+            }
+
+            .no-results {
+                color: #94a3b8;
+            }
+
+            .no-results .sub-text {
+                color: #64748b;
+            }
+
+            .btn-close {
+                color: #94a3b8;
+            }
+
+            .btn-close:hover {
+                color: #f87171;
+                background: #450a0a;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <!-- ============================================ -->
+        <!-- هدر صفحه -->
+        <!-- ============================================ -->
+        <div class="page-header">
+            <h1>📚 نمونه سوالات کنفرانس</h1>
+            <p>برای استفاده در چت، روی هر سوال کلیک کنید</p>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- جعبه مودال -->
+        <!-- ============================================ -->
+        <div class="modal-box" id="modalBox">
+            
+            <!-- هدر مودال -->
+            <div class="modal-header">
+                <h2>
+                    💡 نمونه سوالات
+                    <span class="badge">۲۶ سوال</span>
+                </h2>
+                <button class="btn-close" onclick="closeModal()" aria-label="بستن">✕</button>
+            </div>
+
+            <!-- جستجو -->
+            <div class="modal-search">
+                <div class="search-wrapper">
+                    <span class="search-icon">🔍</span>
+                    <input 
+                        type="text" 
+                        id="searchInput" 
+                        placeholder="جستجو در نمونه سوالات..."
+                        oninput="filterQuestions(this.value)"
+                        autocomplete="off"
+                    >
+                    <button 
+                        class="clear-search-btn" 
+                        id="clearBtn" 
+                        onclick="clearSearch()"
+                        aria-label="پاک کردن جستجو"
+                    >
+                        ✕
+                    </button>
+                </div>
+            </div>
+
+            <!-- ============================================ -->
+            <!-- بدنه مودال - با اسکرول عمودی -->
+            <!-- ============================================ -->
+            <div class="modal-body" id="modalBody">
+                
+                <!-- ============================================ -->
+                <!-- دسته 1: جستجوی ارائه بر اساس موضوع -->
+                <!-- ============================================ -->
+                <div class="category" data-category="topic">
+                    <div class="category-title">
+                        🔎 جستجوی ارائه بر اساس موضوع
+                        <span class="count">۳</span>
+                    </div>
+                    <div class="question-grid">
+                        <button class="question-btn" onclick="selectQuestion('ارائه‌های مرتبط با [موضوع] را پیدا کن.')">
+                            <span class="icon">📌</span>
+                            <span class="text">ارائه‌های مرتبط با [موضوع] را پیدا کن.</span>
+                        </button>
+                        <button class="question-btn" onclick="selectQuestion('کدام ارائه‌ها درباره [موضوع] هستند؟')">
+                            <span class="icon">🔍</span>
+                            <span class="text">کدام ارائه‌ها درباره [موضوع] هستند؟</span>
+                        </button>
+                        <button class="question-btn" onclick="selectQuestion('مهم‌ترین ارائه‌های مرتبط با [موضوع] کدامند؟')">
+                            <span class="icon">⭐</span>
+                            <span class="text">مهم‌ترین ارائه‌های مرتبط با [موضوع] کدامند؟</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ============================================ -->
+                <!-- دسته 2: جستجوی ارائه‌های یک سخنران -->
+                <!-- ============================================ -->
+                <div class="category" data-category="speaker">
+                    <div class="category-title">
+                        👨‍🏫 جستجوی ارائه‌های یک سخنران
+                        <span class="count">۳</span>
+                    </div>
+                    <div class="question-grid">
+                        <button class="question-btn" onclick="selectQuestion('همه ارائه‌های [نام سخنران] را لیست کن.')">
+                            <span class="icon">👤</span>
+                            <span class="text">همه ارائه‌های [نام سخنران] را لیست کن.</span>
+                        </button>
+                        <button class="question-btn" onclick="selectQuestion('[نام سخنران] در چه زمان‌هایی ارائه دارد؟')">
+                            <span class="icon">🕐</span>
+                            <span class="text">[نام سخنران] در چه زمان‌هایی ارائه دارد؟</span>
+                        </button>
+                        <button class="question-btn" onclick="selectQuestion('آخرین مقاله [نام سخنران] درباره چیست؟')">
+                            <span class="icon">📄</span>
+                            <span class="text">آخرین مقاله [نام سخنران] درباره چیست؟</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ============================================ -->
+                <!-- دسته 3: تحلیل و خلاصه مقاله -->
+                <!-- ============================================ -->
+                <div class="category" data-category="paper">
+                    <div class="category-title">
+                        📄 تحلیل و خلاصه مقاله
+                        <span class="count">۳</span>
+                    </div>
+                    <div class="question-grid">
+                        <button class="question-btn" onclick="selectQuestion('خلاصه‌ای از مقاله [عنوان] بده.')">
+                            <span class="icon">📝</span>
+                            <span class="text">خلاصه‌ای از مقاله [عنوان] بده.</span>
+                        </button>
+                        <button class="question-btn" onclick="selectQuestion('نتیجه اصلی مقاله [عنوان] چیست؟')">
+                            <span class="icon">🎯</span>
+                            <span class="text">نتیجه اصلی مقاله [عنوان] چیست؟</span>
+                        </button>
+                        <button class="question-btn" onclick="selectQuestion('نویسندگان مقاله [عنوان] چه کسانی هستند؟')">
+                            <span class="icon">✍️</span>
+                            <span class="text">نویسندگان مقاله [عنوان] چه کسانی هستند؟</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ============================================ -->
+                <!-- دسته 4: جستجو بر اساس زمان -->
+                <!-- ============================================ -->
+                <div class="category" data-category="time">
+                    <div class="category-title">
+                        🕒 جستجو بر اساس زمان
+                        <span class="count">۳</span>
+                    </div>
+                    <div class="question-grid">
+                        <button class="question-btn" onclick="selectQuestion('در تاریخ [تاریخ] چه ارائه‌هایی برگزار می‌شود؟')">
+                            <span class="icon">📅</span>
+                            <span class="text">در تاریخ [تاریخ] چه ارائه‌هایی برگزار می‌شود؟</span>
+                        </button>
+                        <button class="question-btn" onclick="selectQuestion('ارائه‌های امروز را نشان بده.')">
+                            <span class="icon">📆</span>
+                            <span class="text">ارائه‌های امروز را نشان بده.</span>
+                        </button>
+                        <button class="question-btn" onclick="selectQuestion('الان چه ارائه‌هایی در حال برگزاری هستند؟')">
+                            <span class="icon">⏰</span>
+                            <span class="text">الان چه ارائه‌هایی در حال برگزاری هستند؟</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ============================================ -->
+                <!-- دسته 5: جستجو بر اساس سالن -->
+                <!-- ============================================ -->
+                <div class="category" data-category="venue">
+                    <div class="category-title">
+                        📍 جستجو بر اساس سالن
+                        <span class="count">۲</span>
+                    </div>
+                    <div class="question-grid">
+                        <button class="question-btn" onclick="selectQuestion('ارائه‌های سالن [نام سالن] را نشان بده.')">
+                            <span class="icon">🏛️</span>
+                            <span class="text">ارائه‌های سالن [نام سالن] را نشان بده.</span>
+                        </button>
+                        <button class="question-btn" onclick="selectQuestion('برنامه سالن [نام سالن] را بده.')">
+                            <span class="icon">📋</span>
+                            <span class="text">برنامه سالن [نام سالن] را بده.</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ============================================ -->
+                <!-- دسته 6: سوالات ترکیبی -->
+                <!-- ============================================ -->
+                <div class="category" data-category="combined">
+                    <div class="category-title">
+                        🧩 سوالات ترکیبی
+                        <span class="count">۳</span>
+                    </div>
+                    <div class="question-grid">
+                        <button class="question-btn" onclick="selectQuestion('ارائه‌های [موضوع] در روز [تاریخ] کدامند؟')">
+                            <span class="icon">🔗</span>
+                            <span class="text">ارائه‌های [موضوع] در روز [تاریخ] کدامند؟</span>
+                        </button>
+                        <button class="question-btn" onclick="selectQuestion('ارائه‌های [موضوع] در سالن [نام سالن] را پیدا کن.')">
+                            <span class="icon">📍</span>
+                            <span class="text">ارائه‌های [موضوع] در سالن [نام سالن] را پیدا کن.</span>
+                        </button>
+                        <button class="question-btn" onclick="selectQuestion('ارائه‌های [نام سخنران] در روز [تاریخ] چه زمانی هستند؟')">
+                            <span class="icon">🔄</span>
+                            <span class="text">ارائه‌های [نام سخنران] در روز [تاریخ] چه زمانی هستند؟</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ============================================ -->
+                <!-- دسته 7: مقایسه و ارتباط -->
+                <!-- ============================================ -->
+                <div class="category" data-category="compare">
+                    <div class="category-title">
+                        ⚖️ مقایسه و ارتباط
+                        <span class="count">۲</span>
+                    </div>
+                    <div class="question-grid">
+                        <button class="question-btn" onclick="selectQuestion('ارائه‌های [عنوان ۱] و [عنوان ۲] را با هم مقایسه کن.')">
+                            <span class="icon">⚖️</span>
+                            <span class="text">ارائه‌های [عنوان ۱] و [عنوان ۲] را با هم مقایسه کن.</span>
+                        </button>
+                        <button class="question-btn" onclick="selectQuestion('چه ارتباطی بین مقاله [عنوان ۱] و [عنوان ۲] وجود دارد؟')">
+                            <span class="icon">🔗</span>
+                            <span class="text">چه ارتباطی بین مقاله [عنوان ۱] و [عنوان ۲] وجود دارد؟</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ============================================ -->
+                <!-- دسته 8: پیشنهاد هوشمند -->
+                <!-- ============================================ -->
+                <div class="category" data-category="recommend">
+                    <div class="category-title">
+                        🎯 پیشنهاد هوشمند
+                        <span class="count">۲</span>
+                    </div>
+                    <div class="question-grid">
+                        <button class="question-btn" onclick="selectQuestion('با توجه به علاقه‌ام به [موضوع]، کدام ارائه‌ها را پیشنهاد می‌دهی؟')">
+                            <span class="icon">🤖</span>
+                            <span class="text">با توجه به علاقه‌ام به [موضوع]، کدام ارائه‌ها را پیشنهاد می‌دهی؟</span>
+                        </button>
+                        <button class="question-btn" onclick="selectQuestion('اگر فقط ۳ ارائه وقت دارم، بهترین‌ها کدامند؟')">
+                            <span class="icon">🎯</span>
+                            <span class="text">اگر فقط ۳ ارائه وقت دارم، بهترین‌ها کدامند؟</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ============================================ -->
+                <!-- دسته 9: برنامه‌ریزی شخصی -->
+                <!-- ============================================ -->
+                <div class="category" data-category="schedule">
+                    <div class="category-title">
+                        🗓️ برنامه‌ریزی شخصی
+                        <span class="count">۲</span>
+                    </div>
+                    <div class="question-grid">
+                        <button class="question-btn" onclick="selectQuestion('یک برنامه پیشنهادی برای من بر اساس علایقم بساز.')">
+                            <span class="icon">📊</span>
+                            <span class="text">یک برنامه پیشنهادی برای من بر اساس علایقم بساز.</span>
+                        </button>
+                        <button class="question-btn" onclick="selectQuestion('آیا بین ارائه‌های انتخاب‌شده من تداخل زمانی وجود دارد؟')">
+                            <span class="icon">⏳</span>
+                            <span class="text">آیا بین ارائه‌های انتخاب‌شده من تداخل زمانی وجود دارد؟</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ============================================ -->
+                <!-- دسته 10: سوالات آزاد -->
+                <!-- ============================================ -->
+                <div class="category" data-category="free">
+                    <div class="category-title">
+                        💬 سوالات آزاد
+                        <span class="count">۳</span>
+                    </div>
+                    <div class="question-grid">
+                        <button class="question-btn" onclick="selectQuestion('امروز در کنفرانس چه چیزهای جالبی برای دیدن وجود دارد؟')">
+                            <span class="icon">✨</span>
+                            <span class="text">امروز در کنفرانس چه چیزهای جالبی برای دیدن وجود دارد؟</span>
+                        </button>
+                        <button class="question-btn" onclick="selectQuestion('اگر تازه‌وارد هستم، از کجا شروع کنم؟')">
+                            <span class="icon">🚀</span>
+                            <span class="text">اگر تازه‌وارد هستم، از کجا شروع کنم؟</span>
+                        </button>
+                        <button class="question-btn" onclick="selectQuestion('پرطرفدارترین موضوعات این کنفرانس چیست؟')">
+                            <span class="icon">🔥</span>
+                            <span class="text">پرطرفدارترین موضوعات این کنفرانس چیست؟</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ============================================ -->
+                <!-- پیام بدون نتیجه -->
+                <!-- ============================================ -->
+                <div class="no-results" id="noResults">
+                    <span class="emoji">🔍</span>
+                    <p>هیچ سوالی با این کلمه پیدا نشد.</p>
+                    <p class="sub-text">کلمه دیگری را جستجو کنید.</p>
+                </div>
+
+            </div>
+
+            <!-- ============================================ -->
+            <!-- فوتر مودال -->
+            <!-- ============================================ -->
+            <div class="modal-footer">
+                <div class="info">💡 با کلیک روی هر سوال، در <strong>چت</strong> قرار می‌گیرد</div>
+                <button class="btn-clear-search" onclick="clearSearch()">✕ پاک کردن جستجو</button>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ============================================ -->
+    <!-- جاوااسکریپت -->
+    <!-- ============================================ -->
+    <script>
+        'use strict';
+
+        // ============================================
+        // انتخاب سوال
+        // ============================================
+        function selectQuestion(text, buttonElement) {
+            // انیمیشن کلیک
+            if (buttonElement) {
+                buttonElement.classList.add('clicked');
+                setTimeout(() => {
+                    buttonElement.classList.remove('clicked');
+                }, 300);
+            }
+
+            console.log('سوال انتخاب شد:', text);
+            
+            // قرار دادن سوال در textarea چت (اگر وجود داشته باشد)
+            try {
+                // اگر در iframe هستیم
+                window.parent.postMessage({
+                    type: 'selectQuestion',
+                    question: text,
+                    timestamp: Date.now()
+                }, '*');
+            } catch (error) {
+                console.warn('خطا در ارسال پیام:', error);
+            }
+
+            // ذخیره در localStorage برای بازیابی
+            try {
+                localStorage.setItem('selectedQuestion', text);
+                localStorage.setItem('selectedQuestionTimestamp', Date.now());
+            } catch (e) {}
+
+            // نمایش alert برای تست
+            alert('سوال انتخاب شد:\n\n' + text);
+        }
+
+        // ============================================
+        // بستن مودال
+        // ============================================
+        function closeModal() {
+            // در صورت نیاز، مودال را ببندید
+            // اینجا فقط یک پیام نمایش داده می‌شود
+            console.log('مودال بسته شد');
+            
+            // اگر در iframe هستیم، به parent اطلاع بده
+            try {
+                window.parent.postMessage({
+                    type: 'closeModal'
+                }, '*');
+            } catch (e) {}
+        }
+
+        // ============================================
+        // جستجو در سوالات
+        // ============================================
+        let searchTimeout;
+
+        function filterQuestions(searchText) {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                const normalizedSearch = searchText.trim().toLowerCase();
+                const categories = document.querySelectorAll('.category');
+                let totalVisible = 0;
+                const clearBtn = document.getElementById('clearBtn');
+
+                // نمایش/مخفی کردن دکمه پاک کردن
+                if (clearBtn) {
+                    if (normalizedSearch.length > 0) {
+                        clearBtn.classList.add('visible');
+                    } else {
+                        clearBtn.classList.remove('visible');
+                    }
+                }
+
+                categories.forEach(category => {
+                    const buttons = category.querySelectorAll('.question-btn');
+                    let hasVisible = false;
+
+                    buttons.forEach(btn => {
+                        const questionText = btn.textContent.trim();
+                        const normalizedQuestion = questionText.toLowerCase();
+
+                        if (normalizedSearch === '' || normalizedQuestion.includes(normalizedSearch)) {
+                            btn.style.display = '';
+                            hasVisible = true;
+                            totalVisible++;
+                        } else {
+                            btn.style.display = 'none';
+                        }
+                    });
+
+                    if (hasVisible || normalizedSearch === '') {
+                        category.style.display = '';
+                    } else {
+                        category.style.display = 'none';
+                    }
+                });
+
+                // نمایش پیام "نتیجه‌ای یافت نشد"
+                const noResults = document.getElementById('noResults');
+                if (noResults) {
+                    if (normalizedSearch !== '' && totalVisible === 0) {
+                        noResults.classList.add('show');
+                    } else {
+                        noResults.classList.remove('show');
+                    }
+                }
+            }, 150);
+        }
+
+        // ============================================
+        // پاک کردن جستجو
+        // ============================================
+        function clearSearch() {
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.value = '';
+                filterQuestions('');
+                searchInput.focus();
+                
+                const clearBtn = document.getElementById('clearBtn');
+                if (clearBtn) {
+                    clearBtn.classList.remove('visible');
+                }
+            }
+        }
+
+        // ============================================
+        // دریافت پیام از parent (برای باز کردن مودال)
+        // ============================================
+        window.addEventListener('message', function(event) {
+            if (event.data && event.data.type === 'openModal') {
+                console.log('درخواست باز کردن مودال دریافت شد');
+                // مودال قبلاً باز است، نیازی به اقدام نیست
+            }
+            
+            if (event.data && event.data.type === 'closeModal') {
+                console.log('درخواست بستن مودال دریافت شد');
+            }
+        });
+
+        // ============================================
+        // بستن با کلید Escape
+        // ============================================
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        console.log('📚 نمونه سوالات کنفرانس بارگذاری شد');
+        console.log('📊 تعداد کل سوالات: 26');
+        console.log('📂 تعداد دسته‌بندی‌ها: 10');
+    </script>
+
+</body>
+</html>

@@ -6,7 +6,96 @@
     <title>ConfSync - AI Conference Assistant</title>
     <link rel="stylesheet" href="assets/index.css">
     <script src="js/marked.min.js"></script>
-    <script src="js/config.js"></script>
+    <style>
+        /* ===== TOAST ===== */
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            padding: 14px 24px;
+            border-radius: var(--radius-sm);
+            border-radius: 8px;
+            background-color: #3d3d40; /* رنگ زمینه */
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 14px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+            display: none;
+            align-items: center;
+            gap: 12px;
+            animation: slideDown 0.4s ease-out;
+            max-width: 90%;
+        }
+
+            .toast.show {
+                display: flex;
+            }
+
+            .toast.success {
+                background: var(--success);
+            }
+
+            .toast.error {
+                background: var(--error);
+            }
+
+            .toast.warning {
+                background: var(--warning);
+            }
+
+            .toast.info {
+                background: var(--info);
+            }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+        .message-toolbar {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 6px;
+            margin-bottom: 6px;
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.04);
+            direction: ltr;
+        }
+
+        .message-tool {
+            border: none;
+            background: transparent;
+            width: 32px;
+            height: 30px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.15s;
+        }
+
+            .message-tool:hover {
+                background: rgba(0, 0, 0, 0.10);
+            }
+
+            .message-tool.delete-btn:hover {
+                background: rgba(220, 50, 50, 0.15);
+            }
+            .message-tool.copied {
+                color: #10a37f;
+            }
+    </style>
 </head>
 <body>
     <!-- ================================================================
@@ -28,7 +117,7 @@
             </div>
             <button class="new-chat-btn" id="newChatBtn" onclick="openCongressModal()" >
                 <span>➕/➖</span>
-                update Congress List
+                update from Congress List
             </button>
         </div>
         <div class="history-list"
@@ -45,17 +134,30 @@
     <div class="main-content">
         <!-- HEADER -->
         <div class="chat-header">
-            <div style="display:flex;align-items:center;gap:12px;">
-                <button class="menu-toggle" id="menuToggle">☰</button>
-                <span class="title" id="chatTitle">Please select a conference first...</span>
+            <div style="
+                display:flex;
+                align-items:center;
+                gap:12px;
+            ">
+                <button class="menu-toggle"
+                        id="menuToggle">
+                    ☰
+                </button>
+                <span class="title"
+                      id="chatTitle">
+                    New Conversation
+                </span>
             </div>
-            <!-- دکمه‌های قبلی -->
+            <!-- دکمه جدید برای باز کردن مودال -->
             <div class="input-actions">
+                <!-- دکمه و badge در یک div کنار هم -->
                 <div class="action-group">
-                    <span class="conf-badge">🎯 AI Conference Assistant</span>
-                    <button class="modal-trigger-btn" id="modalTriggerBtn" onclick="openQuestionModal()">
-                        <svg viewBox="0 0 24 24" width="18" height="18">
-                            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zM7 10h2v7H7zm4-3h2v10h-2zm4-3h2v13h-2z" />
+                    <span class="conf-badge">
+                        🎯 AI Conference Assistant
+                    </span>
+                    <button class="modal-trigger-btn" id="modalTriggerBtn" onclick="openQuestionModal()" >
+                        <svg viewBox="0 0 24 24">
+                            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zM7 10h2v7H7zm4-3h2v10h-2zm4-3h2v13h-2z"/>
                         </svg>
                         <span class="btn-text">Questions</span>
                     </button>
@@ -81,7 +183,7 @@
                 ">
                     <img src="assets/centericon.png"
                          alt="Confsync Logo"
-                         style="width:280px;height:280px;display:block;margin:0 auto 10px;border-radius:50%;" />
+                         style="width:280px;height:280px;display:block;margin:0 auto 10px;border-radius:50%;" />                    
                 </div>
                 <h3 style="
                     color:#202123;
@@ -109,16 +211,18 @@
         <!-- CHAT INPUT -->
         <div class="chat-input-area">
             <div class="input-wrapper" id="inputWrapper">
-                <textarea id="messageInput"
-                          rows="1"
-                          maxlength="250"
-                          placeholder="Please select a conference first..."
-                          disabled></textarea>
+                <textarea
+                    id="messageInput"
+                    rows="1"
+                    maxlength="250"
+                    placeholder="Please select a conference first..."
+                    disabled
+                ></textarea>
                 <div class="input-actions">
                     <!--<div class="loading-spinner" id="loadingSpinner" style="display:none;">
-                    <div class="spinner"></div>
-                </div>
-                    -->
+                <div class="spinner"></div>
+            </div>
+                -->
                     <div class="loading-spinner" id="loadingSpinner" style="display:none;">
                         <div class="spinner-dots">
                             <span></span>
@@ -255,7 +359,7 @@
         ================================================================ */
         const REGISTER_API_URL = CONFIG.REGISTER_API_URL;
         const ASK_CONGRESS_API_URL = CONFIG.ASK_CONGRESS_API_URL;
-       /* ================================================================
+        /* ================================================================
            STORAGE
         ================================================================ */
         const SESSION_KEY =
@@ -595,7 +699,7 @@
                 !messages ||
                 messages.length === 0
             ) {
-                return 'Please select a conference first...';
+                return 'New Conversation';
             }
             const firstMsg =
                 messages.find(
@@ -609,7 +713,7 @@
                     ? text.substring(0, 30) + '...'
                     : text;
             }
-            return 'Please select a conference first...';
+            return 'New Conversation';
         }
         function formatTime() {
             return new Date()
@@ -680,7 +784,95 @@
                     `;
         }
 
-        
+        /* ================================================================
+           RENDER MESSAGES
+        ================================================================ */
+        function renderMessages(chatId) {
+            const chat =
+                allChats.find(
+                    chat =>
+                        chat.id === chatId
+                );
+            if (!chat) {
+                renderWelcome();
+                return;
+            }
+            if (
+                !chat.messages ||
+                chat.messages.length === 0
+            ) {
+                messagesArea.innerHTML = `
+                            <div
+                                style="
+                                    display:flex;
+                                    flex-direction:column;
+                                    align-items:center;
+                                    justify-content:center;
+                                    height:100%;
+                                    color:#8e8ea0;
+                                    text-align:center;
+                                    padding:40px;
+                                "
+                            >
+                                <div
+                                    style="
+                                        font-size:48px;
+                                        margin-bottom:16px;
+                                    "
+                                >
+                                    💬
+                                </div>
+                                <p style="font-size:14px;">
+                                    No messages yet.
+                                    Start the conversation!
+                                </p>
+                            </div>
+                        `;
+                return;
+            }
+            let html = '';
+            chat.messages.forEach(
+                function (message) {
+                    const avatar =
+                        message.role === 'user'
+                            ? '👤'
+                            : '🤖';
+                    const roleClass =
+                        message.role === 'user'
+                            ? 'user'
+                            : 'assistant';
+                    html += `
+                                <div
+                                    class="message ${roleClass}"
+                                >
+                                    <div
+                                        class="msg-avatar"
+                                    >
+                                        ${avatar}
+                                    </div>
+                                    <div
+                                        class="msg-content"
+                                    >
+                                        ${escapeHtml(
+                        message.content
+                    )}
+                                        <span
+                                            class="msg-time"
+                                        >
+                                            ${message.time ||
+                        formatTime()
+                        }
+                                        </span>
+                                    </div>
+                                </div>
+                            `;
+                }
+            );
+            messagesArea.innerHTML =
+                html;
+            messagesArea.scrollTop =
+                messagesArea.scrollHeight;
+        }
         /* ================================================================
            SIDEBAR USER
         ================================================================ */
@@ -752,6 +944,34 @@
                     );
             }
         }
+        /* ================================================================
+           LOAD CHAT
+        ================================================================ */
+        function loadChat(chatId) {
+            currentChatId =
+                chatId;
+            const chat =
+                allChats.find(
+                    item =>
+                        item.id === chatId
+                );
+            if (!chat) return;
+            chatTitle.textContent =
+                chat.title ||
+                'New Conversation';
+            renderMessages(
+                chatId
+            );
+            
+            messageInput.disabled =
+                false;
+            sendBtn.disabled = false;
+            //newChatBtn.disabled = false;
+
+            messageInput.focus();
+            closeMobileSidebar();
+        }
+        
 
         /* ================================================================
            RENDER CONFERENCE HISTORY (SIDEBAR)
@@ -862,12 +1082,13 @@
             // ذخیره در localStorage
             localStorage.setItem(key, JSON.stringify(data));
 
-            //console.log("Conference messages saved:", data);
+            console.log("Conference messages saved:", data);
         }
 
         function loadConferenceMessages(email, conferenceId) {
             const key = `conferenceMessages_${email}_${conferenceId}`;
             const saved = localStorage.getItem(key);
+
             // اگر چیزی ذخیره نشده باشد
             if (!saved) {
                 conferenceMessages[conferenceId] = {
@@ -904,12 +1125,11 @@
                         : []
                 };
 
-                /*
                 console.log(
                     "Conference messages loaded:",
                     conferenceMessages[conferenceId]
                 );
-                */
+
             } catch (error) {
                 console.error(
                     "Error loading conference messages:",
@@ -928,7 +1148,7 @@
         /* ================================================================
            SELECT CONFERENCE
         ================================================================ */
-        async function selectConference(email, congress) {
+        function selectConference(email, congress) {
             const user = getCurrentUser();
             if (!user) {
                 openModal('login');
@@ -945,17 +1165,9 @@
             messageInput.focus();
             // به‌روزرسانی سایدبار
             //==================
-            const key = `conferenceMessages_${email}_${congress.id}`;
-            const saved = localStorage.getItem(key);
-            // اگر چیزی ذخیره نشده باشد
-            if (!saved) {
-                await featchconferencebyId(email, congress.id, congress.nameFa)
-            }
-            else {
-                loadConferenceMessages(email, congress.id)
-            }
-            //==================
+            loadConferenceMessages(email, congress.id) 
             renderConferenceMessages(congress.id);
+            //==================
             closeMobileSidebar();
         }
 
@@ -963,115 +1175,8 @@
            RENDER CONFERENCE MESSAGES
         ================================================================ */
         
-        // ================================================================
-        // تابع دریافت پیام‌ها از سرور
-        // ================================================================
-        async function featchConferenceMessages(email, conferenceId) {
-            try {
-                //console.log("========== FETCH CONFERENCE MESSAGES ==========");
-                //console.log("Email:", email);
-                //console.log("Conference ID:", conferenceId);
-
-                const response = await fetch(ASK_CONGRESS_API_URL, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/x-www-form-urlencoded"
-                    },
-                    body: new URLSearchParams({
-                        action: "loadchats",
-                        email: email,
-                        congressId: conferenceId
-                    })
-                });
-
-                if (!response.ok) {
-                    throw new Error("HTTP error: " + response.status);
-                }
-
-                const result = await response.json();
-                //console.log("📦 LOAD CHATS RESPONSE:", result);
-
-                if (result.success !== true) {
-                    throw new Error(result.error || "خطا در دریافت تاریخچه گفتگو");
-                }
-
-                // دریافت پیام‌ها از سرور
-                const rawMessages = Array.isArray(result.messages) ? result.messages : [];
-                //console.log(`📊 RAW MESSAGES: ${rawMessages.length} messages`);
-
-                // 🔥 ساخت پیام‌ها با role صحیح
-                const messages = rawMessages.map(function (msg, index) {
-                    // استخراج role
-                    let role = String(msg.role || "").toLowerCase().trim();
-
-                    // اگر role خالی بود، از روی محتوا تشخیص بده
-                    if (!role) {
-                        const content = String(msg.content || "").toLowerCase();
-                        if (content.includes("?") || content.includes("please") || content.includes("tell me")) {
-                            role = "user";
-                        } else if (content.length > 0) {
-                            role = "assistant";
-                        } else {
-                            role = "user";
-                        }
-                    }
-
-                    // اگر role معتبر نبود، تصحیح کن
-                    if (role !== 'user' && role !== 'assistant') {
-                        const content = String(msg.content || "").toLowerCase();
-                        if (content.includes("?") || content.includes("please")) {
-                            role = "user";
-                        } else {
-                            role = "assistant";
-                        }
-                    }
-
-                    //console.log(`📝 Message ${index}: role=${role}`);
-
-                    return {
-                        id: generateId(),
-                        dbId: msg.requestId || msg.id || null,
-                        requestId: msg.requestId || msg.id || null,
-                        role: role,
-                        content: String(msg.content || ""),
-                        time: msg.time || formatTime()
-                    };
-                });
-
-                //console.log(`📊 NORMALIZED MESSAGES: ${messages.length}`);
-                //console.log("📊 ROLES:", messages.map(m => m.role));
-
-                // 🔥 مهم: ذخیره در conferenceMessages
-                conferenceMessages[conferenceId] = {
-                    requestId: result.requestId || null,
-                    messages: messages
-                };
-                //console.log("✅ conferenceMessages updated:", conferenceMessages[conferenceId]);
-
-                // ذخیره در localStorage
-                const key = `conferenceMessages_${email}_${conferenceId}`;
-                const data = {
-                    requestId: result.requestId || null,
-                    messages: messages,
-                    expiresAt: Date.now() + (15 * 24 * 60 * 60 * 1000)
-                };
-                localStorage.setItem(key, JSON.stringify(data));
-                //console.log("💾 Saved to localStorage:", key);
-
-                //console.log("✅ Conference messages fetched and saved successfully!");
-                return true;
-
-            } catch (error) {
-                console.error("❌ Error:", error);
-                return false;
-            }
-        }        
-
-        // ================================================================
-        // تابع رندر پیام‌ها - اصلاح شده برای نمایش در دو سمت
-        // ================================================================
         function renderConferenceMessages(conferenceId) {
-
+            
             const conferenceData =
                 conferenceMessages[conferenceId] || {
                     messages: []
@@ -1092,11 +1197,7 @@
                 text-align:center;
                 padding:40px;
             ">
-                <div style="font-size:48px; margin-bottom:16px;">
-                    <img src="assets/centericon.png"
-                         alt="Confsync Logo"
-                         style="width:280px;height:280px;display:block;margin:0 auto 10px;border-radius:50%;" />
-                </div>
+                <div style="font-size:48px; margin-bottom:16px;">💬</div>
 
                 <h3 style="
                     color:#202123;
@@ -1163,54 +1264,54 @@
                 if (message.dbId) {
 
                     toolbar = `
-        <div class="message-toolbar"
-             data-db-id="${dbId}">
+                <div class="message-toolbar"
+                     data-db-id="${dbId}">
 
-            <button
-                type="button"
-                class="message-tool copy-btn"
-                data-action="copy"
-                data-db-id="${dbId}"
-                title="Copy">
+                    <button
+                        type="button"
+                        class="message-tool copy-btn"
+                        data-action="copy"
+                        data-db-id="${dbId}"
+                        title="Copy">
 
-                <svg
-                    width="18"
-                    height="18"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                >
-                    <rect
-                        x="9"
-                        y="9"
-                        width="13"
-                        height="13"
-                        rx="2"
-                        ry="2"
-                    ></rect>
+                        <svg
+                            width="18"
+                            height="18"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <rect
+                                x="9"
+                                y="9"
+                                width="13"
+                                height="13"
+                                rx="2"
+                                ry="2"
+                            ></rect>
 
-                    <path
-                        d="M5 15H4a2 2 0 0 1-2-2V4
-                           a2 2 0 0 1 2-2h9
-                           a2 2 0 0 1 2 2v1"
-                    ></path>
-                </svg>
+                            <path
+                                d="M5 15H4a2 2 0 0 1-2-2V4
+                                   a2 2 0 0 1 2-2h9
+                                   a2 2 0 0 1 2 2v1"
+                            ></path>
+                        </svg>
 
-            </button>
+                    </button>
 
-            <button
-                type="button"
-                class="message-tool align-btn"
-                data-action="align"
-                data-db-id="${dbId}"
-                title="Toggle alignment">
-                ⇤⇥
-            </button>
-        </div>
-    `;
+                    <button
+                        type="button"
+                        class="message-tool align-btn"
+                        data-action="align"
+                        data-db-id="${dbId}"
+                        title="Toggle alignment">
+                        ⇤⇥
+                    </button>
+                </div>
+            `;
                 }
 
                 // --------------------------------------------------------
@@ -1218,37 +1319,37 @@
                 // --------------------------------------------------------
 
                 html += `
-    <div
-        class="message ${roleClass}"
-        ${attributes}
-    >
+            <div
+                class="message ${roleClass}"
+                ${attributes}
+            >
 
-        ${toolbar}
+                ${toolbar}
 
-        <div class="msg-content">
+                <div class="msg-content">
 
-            <div class="msg-text">
-                ${marked.parse(message.content || '')}
+                    <div class="msg-text">
+                        ${message.content}
+                    </div>
+
+                </div>
+
+                <div class="msg-footer-outside">
+
+                    <span class="msg-time">
+                        ${message.time || formatTime()}
+                    </span>
+
+                    <span class="msg-time">-</span>
+
+                    <span class="msg-time">
+                        ${escapeHtml(confName)}
+                    </span>
+
+                </div>
+
             </div>
-
-        </div>
-
-        <div class="msg-footer-outside">
-
-            <span class="msg-time">
-                ${message.time || formatTime()}
-            </span>
-
-            <span class="msg-time">-</span>
-
-            <span class="msg-time">
-                ${escapeHtml(confName)}
-            </span>
-
-        </div>
-
-    </div>
-`;
+        `;
             });
 
             messagesArea.innerHTML = html;
@@ -1259,7 +1360,47 @@
         /* ================================================================
            SEND MESSAGE
         =============================================================== */
+        /*
+        async function registerAsk() {
+            const form = document.getElementById('askForm');
+            const formData = new FormData(form);
+            formData.set(
+                'action',
+                'register_ask'
+            );
+            try {
+                const response =
+                    await fetch(API_URL, {
 
+                        method: 'POST',
+
+                        body: formData
+
+                    });
+                const result =
+                    await response.json();
+                console.log(result);
+                if (result.success) {
+                    alert(
+                        'سوال با موفقیت ثبت شد. ID: '
+                        + result.data.ID
+                    );
+                    form.reset();
+                } else {
+
+                    alert(
+                        'خطا: '
+                        + result.error
+                    );
+                }
+            } catch (error) {
+                console.error(error);
+                alert(
+                    'خطا در ارتباط با سرور'
+                );
+            }
+        }
+        */
         /*
          conference:
          id, nameFa, nameEn, topicFa, topicEn, yearFa, typeFa, locationFa, website
@@ -1563,8 +1704,8 @@
 
                 const text = await response.text();
 
-                //console.log("HTTP STATUS:", response.status);
-                //console.log("SERVER RESPONSE:", text);
+                console.log("HTTP STATUS:", response.status);
+                console.log("SERVER RESPONSE:", text);
 
                 if (!text.trim().startsWith("{")) {
                     throw new Error(
@@ -1581,7 +1722,7 @@
                 // برگرداندن آبجکت با هر دو مقدار
                 return {
                     requestId: result.requestId,
-                    answer: result.answer//marked.parse(result.answer || '')
+                    answer: marked.parse(result.answer || '')
                 };
                 //return result.answer || '';
 
@@ -1656,47 +1797,69 @@
             if (!confirm('Are you sure you want to logout?')) {
                 return;
             }
+
+            localStorage.removeItem(SESSION_KEY);
+            /*
             const currentUser = getCurrentUser();
             if (!currentUser || !currentUser.email) {
               return;
             }
+            */
             // ✅ ذخیره تاریخچه قبل از خروج
             const historyList = localStorage.getItem(`historyList_${currentUser.email}`);
+
             if (!historyList) {
                 const currentList = window.historyList || [];
                 localStorage.setItem(`historyList_${currentUser.email}`, JSON.stringify(currentList));
             }
+
+            console.log('History saved for user:', currentUser.email);
+
+            // ✅ حذف selectedCongressList
+            //localStorage.removeItem(`selectedCongressList_${currentUser.email}`);
+
             // ✅ خالی کردن UI
             const historyListElement = document.getElementById('historyList');
             if (historyListElement) {
                 historyListElement.innerHTML = '';
             }
+
             // ✅ پاک کردن متغیرهای global
             if (typeof setCurrentUser === 'function') {
                 setCurrentUser(null);
             }
+
             window.allChats = [];
             window.currentChatId = null;
+
             // ✅ به‌روزرسانی UI
             if (chatTitle) {
-                chatTitle.textContent = 'Please select a conference first...';
+                chatTitle.textContent = 'New Conversation';
             }
+
+            if (typeof renderMessages === 'function') {
+                renderMessages(null);
+            }
+
             if (typeof renderSidebarUser === 'function') {
                 renderSidebarUser();
             }
+
             if (messageInput) {
                 messageInput.disabled = true;
                 messageInput.placeholder = 'Please login to ask questions...';
             }
+
             if (sendBtn) {
                 sendBtn.disabled = true;
             }
+
             // ✅ پاک کردن session
-            localStorage.removeItem(SESSION_KEY);
             sessionStorage.removeItem('login_verified');
             sessionStorage.removeItem('currentUser');
             localStorage.removeItem('userData');
             localStorage.removeItem('offline_username');
+
             // ✅ هدایت به صفحه ورود
             window.location.href = '/?action=login';
         }         
@@ -2302,15 +2465,15 @@
             );
         }
 
-        //console.log(
-        //    '✅ ConfSync loaded successfully!'
-        //);
-        //console.log(
-        //    '🔐 Authentication: Google Apps Script'
-        //);
-        //console.log(
-        //    '💾 Chat history: localStorage per user'
-        //);
+        console.log(
+            '✅ ConfSync loaded successfully!'
+        );
+        console.log(
+            '🔐 Authentication: Google Apps Script'
+        );
+        console.log(
+            '💾 Chat history: localStorage per user'
+        );
         //=====================================================
         function openCongressModal() {
             // نشانه‌گذاری برای تأیید لاگین
@@ -2341,12 +2504,6 @@
         }
 
         function openQuestionModal() {
-            
-            /*
-            const key = `conferenceMessages_ghfreza@gmail.com_1`;
-            localStorage.removeItem(key);
-            return
-            */
             const currentUser = getCurrentUser();
             if (!currentUser) {
                 showToastMessage("Please login first!");
@@ -2399,7 +2556,7 @@
 
                 if (statusfocuse === "renderCongressHistory") {
                     localStorage.setItem("statusfocuse", "");
-                    //console.log('focus');
+                    console.log('focus');
                     renderConferenceHistory();
                 }
                 else if (statusfocuse === "openQuestionModal") {
@@ -2479,7 +2636,7 @@
                 ) {
                     await navigator.clipboard.writeText(text);
 
-                    //console.log('Message copied:', dbId);
+                    console.log('Message copied:', dbId);
                     showCopySuccess(messageElement);
 
                     return;
@@ -2508,12 +2665,12 @@
                     throw new Error('execCommand copy failed');
                 }
 
-                //console.log('Message copied:', dbId);
+                console.log('Message copied:', dbId);
                 showCopySuccess(messageElement);
 
             } catch (error) {
 
-                //console.error('Copy failed:', error);
+                console.error('Copy failed:', error);
 
             }
         }
@@ -2615,214 +2772,9 @@
         }
         //==========================================================
 
-        // ============================================================
-        // FEATCH ALL CONFERENCE DATA BY ID
-        // ============================================================
-
-
-        // ================================================================
-        // تابع نمایش Modal بارگذاری
-        // ================================================================
-
-        function showLoadingModal(message = 'در حال دریافت اطلاعات...') {
-            // حذف modal قبلی اگر وجود دارد
-            const existingModal = document.getElementById('loadingModal');
-            if (existingModal) {
-                existingModal.remove();
-            }
-
-            // ایجاد modal
-            const modal = document.createElement('div');
-            modal.id = 'loadingModal';
-            modal.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.6);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 99999;
-        backdrop-filter: blur(4px);
-    `;
-
-            modal.innerHTML = `
-        <div style="
-            background: white;
-            padding: 40px 50px;
-            border-radius: 16px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            text-align: center;
-            max-width: 400px;
-            animation: fadeInModal 0.3s ease;
-        ">
-            <div style="
-                width: 60px;
-                height: 60px;
-                margin: 0 auto 20px;
-                border: 4px solid #e0e0e0;
-                border-top: 4px solid #1a73e8;
-                border-radius: 50%;
-                animation: spin 1s linear infinite;
-            "></div>
-            <h3 style="
-                color: #202123;
-                font-weight: 500;
-                margin-bottom: 8px;
-                font-size: 18px;
-            ">${message}</h3>
-            <p style="
-                color: #8e8ea0;
-                font-size: 14px;
-                margin: 0;
-            ">لطفاً چند لحظه صبر کنید...</p>
-        </div>
-    `;
-
-            // اضافه کردن انیمیشن‌ها
-            const style = document.createElement('style');
-            style.id = 'loadingModalStyles';
-            if (!document.getElementById('loadingModalStyles')) {
-                style.textContent = `
-            @keyframes spin {
-                0% { transform: rotate(0deg); }
-                100% { transform: rotate(360deg); }
-            }
-            @keyframes fadeInModal {
-                from {
-                    opacity: 0;
-                    transform: scale(0.9);
-                }
-                to {
-                    opacity: 1;
-                    transform: scale(1);
-                }
-            }
-        `;
-                document.head.appendChild(style);
-            }
-
-            document.body.appendChild(modal);
-        }
-
-        // ================================================================
-        // تابع مخفی کردن Modal بارگذاری
-        // ================================================================
-
-        function hideLoadingModal() {
-            const modal = document.getElementById('loadingModal');
-            if (modal) {
-                modal.style.opacity = '0';
-                modal.style.transition = 'opacity 0.3s ease';
-                setTimeout(() => {
-                    modal.remove();
-                }, 300);
-            }
-        }
-
-        // ================================================================
-        // تابع اصلی دریافت کنفرانس با Modal
-        // ================================================================
-
-        async function featchconferencebyId(email, conferenceId, conferencecap) {
-            const key = `conferenceMessages_${email}_${conferenceId}`;
-
-            // نمایش Modal بارگذاری
-            showLoadingModal(`در حال دریافت اطلاعات  ${conferencecap}...`);
-
-            try {
-                // 1. پاک کردن کش
-                localStorage.removeItem(key);
-                delete conferenceMessages[conferenceId];
-                //console.log('🗑️ کش پاک شد');
-
-                // 2. دریافت از سرور
-                //console.log('📡 دریافت از سرور...');
-                const success = await featchConferenceMessages(email, conferenceId);
-
-                if (!success) {
-                    //console.error('❌خطای دریافت از سرور');
-                    hideLoadingModal();
-                    showToastMessage('خطا در دریافت اطلاعات!');
-                    return;
-                }
-
-                // 3. بررسی conferenceMessages
-                //console.log('📦 conferenceMessages:', conferenceMessages[conferenceId]);
-
-                // 4. تنظیم currentConference
-                if (!currentConference) {
-                    const stored = localStorage.getItem(`selectedCongressList_${email}`);
-                    if (stored) {
-                        const congressList = JSON.parse(stored);
-                        if (congressList && congressList.length > 0) {
-                            currentConference = congressList[0];
-                            chatTitle.textContent = currentConference.nameFa || 'Conference';
-                        }
-                    }
-                }
-
-                // 5. رندر پیام‌ها
-                //console.log('🔄 رندر پیام‌ها...');
-                //renderConferenceMessages(conferenceId);
-
-                // فعال کردن input
-                messageInput.disabled = false;
-                sendBtn.disabled = false;
-                if (currentConference) {
-                    messageInput.placeholder = `Ask about ${currentConference.nameFa}...(250 characters)`;
-                }
-
-                // مخفی کردن Modal بعد از اتمام
-                hideLoadingModal();
-                showToastMessage('✅ اطلاعات با موفقیت دریافت شد!');
-
-                // 6. بررسی نتیجه
-                setTimeout(() => {
-                    const messages = document.querySelectorAll('.message');
-                    //console.log(`📊 تعداد پیام‌های رندر شده: ${messages.length}`);
-
-                    if (messages.length === 0) {
-                        //console.warn('⚠️ هیچ پیامی رندر نشد!');
-                        return;
-                    }
-
-                    messages.forEach((el, i) => {
-                        const isUser = el.classList.contains('user');
-                        const isAssistant = el.classList.contains('assistant');
-                        const alignSelf = getComputedStyle(el).alignSelf;
-
-                        /*
-                        console.log(`📝 پیام ${i}:`, {
-                            کلاس: el.className,
-                            isUser: isUser,
-                            isAssistant: isAssistant,
-                            'align-self': alignSelf
-                        });
-                        */
-                    });
-
-                    const userCount = document.querySelectorAll('.message.user').length;
-                    const assistantCount = document.querySelectorAll('.message.assistant').length;
-                    //console.log(`📊 نتیجه: user=${userCount}, assistant=${assistantCount}`);
-
-                    if (userCount > 0 && assistantCount > 0) {
-                        console.log('✅ هر دو نوع پیام وجود دارند');
-                    } else {
-                        console.warn('⚠️ فقط یک نوع پیام وجود دارد!');
-                    }
-                }, 500);
-
-            } catch (error) {
-                console.error('❌ خطا:', error);
-                hideLoadingModal();
-                showToastMessage('خطا در دریافت اطلاعات!');
-            }
-        }
-
-
+        //==========================================================
+        //==========================================================
+        //==========================================================
     </script>
 </body>
 </html>

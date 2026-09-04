@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Confsync - Email Verification</title>
+    <script src="js/config.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f4f7fb;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 48px 40px;
+            max-width: 480px;
+            width: 100%;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+            text-align: center;
+            border: 1px solid #e5e7eb;
+        }
+
+        .icon {
+            font-size: 56px;
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        .title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            font-size: 15px;
+            color: #6b7280;
+            line-height: 1.7;
+            margin-bottom: 20px;
+        }
+
+        .status-box {
+            padding: 16px 20px;
+            border-radius: 10px;
+            margin: 16px 0 24px;
+            font-size: 14px;
+            line-height: 1.6;
+            text-align: left;
+        }
+
+            .status-box.loading {
+                background: #e0f2fe;
+                border-left: 4px solid #0a7b83;
+                color: #0a4a5a;
+            }
+
+            .status-box.success {
+                background: #d1fae5;
+                border-left: 4px solid #10b981;
+                color: #065f46;
+            }
+
+            .status-box.error {
+                background: #fee2e2;
+                border-left: 4px solid #ef4444;
+                color: #991b1b;
+            }
+
+            .status-box .label {
+                font-weight: 600;
+                display: block;
+                margin-bottom: 4px;
+            }
+
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 15px;
+            text-decoration: none;
+            text-align: center;
+            border: none;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-primary {
+            background: #0a7b83;
+            color: #ffffff;
+        }
+
+            .btn-primary:hover {
+                background: #065f66;
+            }
+
+        .btn-secondary {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+            .btn-secondary:hover {
+                background: #d1d5db;
+            }
+
+        .btn-success {
+            background: #10b981;
+            color: #ffffff;
+        }
+
+            .btn-success:hover {
+                background: #059669;
+            }
+
+        .btn-danger {
+            background: #ef4444;
+            color: #ffffff;
+        }
+
+            .btn-danger:hover {
+                background: #dc2626;
+            }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .footer {
+            margin-top: 24px;
+            font-size: 12px;
+            color: #9ca3af;
+            border-top: 1px solid #f3f4f6;
+            padding-top: 16px;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #e5e7eb;
+            border-top: 3px solid #0a7b83;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .expiry-warning {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin: 12px 0;
+            font-size: 13px;
+            color: #92400e;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card" id="app">
+        <span class="icon" id="icon">⏳</span>
+        <div class="title" id="title">Processing Request...</div>
+        <div class="subtitle" id="subtitle">Please wait while we process your request.</div>
+
+        <!-- نمایش انقضا -->
+        <div class="expiry-warning hidden" id="expiryWarning">
+            ⏰ This verification link has expired. Please request a new one.
+        </div>
+
+        <div class="status-box loading" id="statusBox">
+            <span class="label" id="statusLabel">⏳ Processing...</span>
+            <span id="statusMessage">Your request is being processed. Please wait...</span>
+        </div>
+
+        <div class="btn-group" id="btnGroup">
+            <a href="/?action=login" class="btn btn-primary hidden" id="loginBtn">🔐 Login to System</a>
+            <a href="/" class="btn btn-secondary hidden" id="homeBtn">🏠 Go to Home</a>
+            <a href="#" class="btn btn-secondary hidden" id="resendBtn" >📧 Resend Verification</a>
+            <button class="btn btn-primary hidden" id="retryBtn" onclick="retry()">🔄 Try Again</button>
+        </div>
+
+        <div class="footer" id="footer">
+            © 2026 Confsync.ir — All Rights Reserved.
+        </div>
+    </div>
+
+    <script>
+        const REGISTER_API_URL = CONFIG.REGISTER_API_URL;
+        // ============================================================
+        //  دریافت پارامترها از URL
+        // ============================================================
+        const urlParams = new URLSearchParams(window.location.search);
+        const action = urlParams.get('action');
+        const email = urlParams.get('email');
+        const expiryDate = urlParams.get('expiry'); // تاریخ انقضا از URL
+
+        // ============================================================
+        //  المان‌های DOM
+        // ============================================================
+        const icon = document.getElementById('icon');
+        const title = document.getElementById('title');
+        const subtitle = document.getElementById('subtitle');
+        const statusBox = document.getElementById('statusBox');
+        const statusLabel = document.getElementById('statusLabel');
+        const statusMessage = document.getElementById('statusMessage');
+        const loginBtn = document.getElementById('loginBtn');
+        const homeBtn = document.getElementById('homeBtn');
+        const resendBtn = document.getElementById('resendBtn');
+        const retryBtn = document.getElementById('retryBtn');
+        const expiryWarning = document.getElementById('expiryWarning');
+        let retrytrycount = 0
+        // ============================================================
+        //  تابع اصلی: پردازش درخواست بر اساس action
+        // ============================================================
+        function processRequest() {
+            retrytrycount = 0;
+            if (!action) {
+                showError('Missing Action', 'No action specified in the request.');
+                homeBtn.classList.remove('hidden');
+                return;
+            }
+
+            if (!email) {
+                showError('Missing Parameters', 'email is missing from the request.');
+                homeBtn.classList.remove('hidden');
+                return;
+            }
+            // ✅ بررسی انقضای لینک
+            if (expiryDate) {
+                const now = new Date().getTime();
+                const expiry = new Date(expiryDate).getTime();
+
+                if (now > expiry) {
+                    expiryWarning.classList.remove('hidden');
+                    showError('Link Expired', 'This verification link has expired. Please request a new one.');
+                    resendBtn.href = '/linksresponse.html?action=resendverifyEmail&email=' + encodeURIComponent(email) 
+                    resendBtn.classList.remove('hidden');
+                    return;
+                }
+            }
+
+            // اجرای بر اساس action
+            switch (action) {
+
+                case 'verifyEmail':
+                    callVerifyEmail(email);
+                    break;
+
+                case 'changePassword':
+                    callChangePassword(email);
+                    break;
+
+                case 'resetPassword':
+                    callResetPassword(email);
+                    break;
+
+                case 'resendverifyEmail':
+                    callResendverifyEmail(email);
+                    break;
+
+                default:
+                    showError('Unknown Action', 'The action "' + action + '" is not recognized.');
+                    homeBtn.classList.remove('hidden');
+            }
+        }
+
+        // ============================================================
+        //  ✅ تابع callResendverifyEmail (بدون google.script.run)
+        // ============================================================
+        function callResendverifyEmail(email) {
+            showLoading(
+                'Resending Verification...',
+                'Please wait while we resend the verification email to your address.'
+            );
+
+            const params = new URLSearchParams({
+                action: 'resendverifyEmail',
+                email: email
+            });
+
+            fetch(REGISTER_API_URL, {
+                method: 'POST',
+                body: params
+            })
+            .then(function (response) {
+                if (!response.ok) {
+                    homeBtn.classList.remove('hidden');
+                    throw new Error('HTTP Error: ' + response.status);
+                }
+
+                return response.json();
+            })
+            .then(function (response) {
+
+                if (response.success) {
+
+                    showSuccess(
+                        '✅ Email Sent!',
+                        response.message ||
+                        'Verification email has been resent successfully.'
+                    );
+
+                    // بستن تب بعد از نمایش پیام موفقیت
+                    setTimeout(function () {
+                        window.close();
+                    }, 1500);
+
+                } else {
+
+                    showError(
+                        'Resend Failed',
+                        response.message ||
+                        'Could not resend verification email.'
+                    );
+
+                    if (retrytrycount == 0) {
+                        retryBtn.classList.remove('hidden');
+                        homeBtn.classList.add('hidden');
+                    }
+                    else {
+                        retryBtn.classList.add('hidden');
+                        homeBtn.classList.remove('hidden');
+                    }
+                }
+            })
+            .catch(function (error) {
+
+                console.error('Resend Verification Error:', error);
+
+                showError(
+                    'Error',
+                    'An error occurred: ' + error.message
+                );
+
+                if (retrytrycount == 0) {
+                    retryBtn.classList.remove('hidden');
+                    homeBtn.classList.add('hidden');
+                }
+                else {
+                    retryBtn.classList.add('hidden');
+                    homeBtn.classList.remove('hidden');
+                }
+            });
+        }
+        
+        // ============================================================
+        //  ✅ تابع callVerifyEmail (بدون google.script.run)
+        // ============================================================
+        function callVerifyEmail(email) {
+            showLoading(
+                'Verifying Email...',
+                'Please wait while we verify your email address.'
+            );
+
+            fetch(REGISTER_API_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'text/plain;charset=utf-8'
+                },
+                body: JSON.stringify({
+                    action: 'verifyEmail',
+                    email: email
+                })
+            })
+                .then(function (response) {
+                    if (!response.ok) {
+                        resendBtn.classList.add('hidden');
+                        throw new Error('HTTP Error: ' + response.status);
+                    }
+
+                    return response.json();
+                })
+                .then(function (response) {
+                    if (response.success) {
+
+                        showSuccess(
+                            '✅ Email Verified!',
+                            response.message
+                        );
+
+                        resendBtn.classList.add('hidden');
+                        loginBtn.classList.remove('hidden');
+                        
+                    } else {
+
+                        showError(
+                            'Verification Failed',
+                            response.message
+                        );
+
+                        resendBtn.href =
+                            '/linksresponse.html?action=resendverifyEmail&email=' +email;
+                        if (response.status && response.status == true) {
+                            resendBtn.classList.add('hidden')
+                            retryBtn.classList.add('hidden');
+                            homeBtn.classList.remove('hidden');
+                        }
+                        else {
+                            alert(2);
+                            resendBtn.classList.add('hidden');
+                            if (retrytrycount == 0) {
+                                retryBtn.classList.remove('hidden');
+                                homeBtn.classList.add('hidden');
+                            }
+                            else {
+                                retryBtn.classList.add('hidden');
+                                homeBtn.classList.remove('hidden');
+                            }
+                        }
+                    }
+                })
+                .catch(function (error) {
+
+                    console.error('Verify Email Error:', error);
+
+                    showError(
+                        'Error',
+                        'An error occurred: ' + error.message
+                    );
+                    if (retrytrycount == 0) {
+                        retryBtn.classList.remove('hidden');
+                        homeBtn.classList.add('hidden');
+                    }
+                    else {
+                        retryBtn.classList.add('hidden');
+                        homeBtn.classList.remove('hidden');
+                    }
+                });
+        }
+
+        // ============================================================
+        //  توابع دیگر (مثال)
+        // ============================================================
+        function callChangePassword(email) {
+            showLoading('Changing Password...', 'Please wait while we process your password change request.');
+
+            fetch(REGISTER_API_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    action: 'changePassword',
+                    email: email
+                })
+            })
+                .then(function (response) {
+                    return response.json();
+                })
+                .then(function (response) {
+                    if (response.success) {
+                        showSuccess('✅ Password Changed!', response.message);
+                        loginBtn.classList.remove('hidden');
+                    } else {
+                        showError('Change Failed', response.message);
+                        if (retrytrycount == 0) {
+                            retryBtn.classList.remove('hidden');
+                            homeBtn.classList.add('hidden');
+                        }
+                        else {
+                            retryBtn.classList.add('hidden');
+                            homeBtn.classList.remove('hidden');
+                        }
+                    }
+                })
+                .catch(function (error) {
+                    showError('Error', 'An error occurred: ' + error.message);
+                    if (retrytrycount == 0) {
+                        retryBtn.classList.remove('hidden');
+                        homeBtn.classList.add('hidden');
+                    }
+                    else {
+                        retryBtn.classList.add('hidden');
+                        homeBtn.classList.remove('hidden');
+                    }
+                });
+        }
+
+        function callResetPassword(email) {
+            showLoading('Resetting Password...', 'Please wait while we reset your password.');
+
+            fetch(REGISTER_API_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    action: 'resetPassword',
+                    email: email
+                })
+            })
+                .then(function (response) {
+                    return response.json();
+                })
+                .then(function (response) {
+                    if (response.success) {
+                        showSuccess('✅ Password Reset!', response.message);
+                        loginBtn.classList.remove('hidden');
+                    } else {
+                        showError('Reset Failed', response.message);
+                        if (retrytrycount == 0) {
+                            retryBtn.classList.remove('hidden');
+                            homeBtn.classList.add('hidden');
+                        }
+                        else {
+                            retryBtn.classList.add('hidden');
+                            homeBtn.classList.remove('hidden');
+                        }
+                    }
+                })
+                .catch(function (error) {
+                    showError('Error', 'An error occurred: ' + error.message);
+                    if (retrytrycount == 0) {
+                        retryBtn.classList.remove('hidden');
+                        homeBtn.classList.add('hidden');
+                    }
+                    else {
+                        retryBtn.classList.add('hidden');
+                        homeBtn.classList.remove('hidden');
+                    }
+                });
+        }
+
+        // ============================================================
+        //  توابع نمایش وضعیت
+        // ============================================================
+
+        function showLoading(titleText, msg) {
+            icon.textContent = '⏳';
+            title.textContent = titleText;
+            subtitle.textContent = 'Please wait while we process your request.';
+            statusBox.className = 'status-box loading';
+            statusLabel.textContent = '⏳ Processing...';
+            statusMessage.textContent = msg;
+            hideAllButtons();
+        }
+
+        function showSuccess(titleText, msg) {
+            icon.textContent = '✅';
+            title.textContent = titleText;
+            subtitle.textContent = 'Your request was completed successfully.';
+            statusBox.className = 'status-box success';
+            statusLabel.textContent = '✅ Success';
+            statusMessage.textContent = msg;
+            hideAllButtons();
+        }
+
+        function showError(titleText, msg) {
+            icon.textContent = '❌';
+            title.textContent = titleText;
+            subtitle.textContent = 'We encountered an issue processing your request.';
+            statusBox.className = 'status-box error';
+            statusLabel.textContent = '❌ Error';
+            statusMessage.textContent = msg;
+            hideAllButtons();
+        }
+
+        function hideAllButtons() {
+            loginBtn.classList.add('hidden');
+            homeBtn.classList.add('hidden');
+            resendBtn.classList.add('hidden');
+            retryBtn.classList.add('hidden');
+        }
+
+        // ============================================================
+        //  دکمه Try Again
+        // ============================================================
+        function retry() {
+            const newParams = new URLSearchParams(window.location.search);
+            const newAction = newParams.get('action');
+            const newEmail = newParams.get('email');
+            const newExpiry = newParams.get('expiry');
+            retrytrycount = retrytrycount + 1;
+            if (newAction && newEmail) {
+                // مخفی کردن هشدار انقضا
+                expiryWarning.classList.add('hidden');
+                // بررسی مجدد انقضا
+                if (newExpiry) {
+                    const now = new Date().getTime();
+                    const expiry = new Date(newExpiry).getTime();
+
+                    if (now > expiry) {
+                        expiryWarning.classList.remove('hidden');
+                        showError('Link Expired', 'This verification link has expired. Please request a new one.');
+                        resendBtn.href = '/linksresponse.html?action=resendverifyEmail&email=' + newEmail;
+                        resendBtn.classList.remove('hidden');
+                        homeBtn.classList.remove('hidden');  // ✅ نمایش homeBtn
+                        return;
+                    }
+                }
+
+                switch (newAction) {
+                    case 'verifyEmail':
+                        callVerifyEmail(newEmail);
+                        break;
+                    case 'changePassword':
+                        callChangePassword(newEmail);
+                        break;
+                    case 'resetPassword':
+                        callResetPassword(newEmail);
+                        break;
+                    case 'resendverifyEmail':
+                        callResendverifyEmail(newEmail);
+                        break;
+                    default:
+                        showError('Unknown Action', 'The action "' + newAction + '" is not recognized.');
+                        homeBtn.classList.remove('hidden');  // ✅ نمایش homeBtn
+                }
+            } else {
+                showError('Invalid Request', 'Missing required parameters.');
+                homeBtn.classList.remove('hidden');  // ✅ نمایش homeBtn
+            }
+        }
+
+        // ============================================================
+        //  اجرای اصلی
+        // ============================================================
+        document.addEventListener('DOMContentLoaded', function () {
+            processRequest();
+        });
+    </script>
+
+</body>
+</html>

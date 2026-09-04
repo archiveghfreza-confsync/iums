@@ -6,7 +6,96 @@
     <title>ConfSync - AI Conference Assistant</title>
     <link rel="stylesheet" href="assets/index.css">
     <script src="js/marked.min.js"></script>
-    <script src="js/config.js"></script>
+    <style>
+        /* ===== TOAST ===== */
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            padding: 14px 24px;
+            border-radius: var(--radius-sm);
+            border-radius: 8px;
+            background-color: #3d3d40; /* رنگ زمینه */
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 14px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+            display: none;
+            align-items: center;
+            gap: 12px;
+            animation: slideDown 0.4s ease-out;
+            max-width: 90%;
+        }
+
+            .toast.show {
+                display: flex;
+            }
+
+            .toast.success {
+                background: var(--success);
+            }
+
+            .toast.error {
+                background: var(--error);
+            }
+
+            .toast.warning {
+                background: var(--warning);
+            }
+
+            .toast.info {
+                background: var(--info);
+            }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+        .message-toolbar {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 6px;
+            margin-bottom: 6px;
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.04);
+            direction: ltr;
+        }
+
+        .message-tool {
+            border: none;
+            background: transparent;
+            width: 32px;
+            height: 30px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.15s;
+        }
+
+            .message-tool:hover {
+                background: rgba(0, 0, 0, 0.10);
+            }
+
+            .message-tool.delete-btn:hover {
+                background: rgba(220, 50, 50, 0.15);
+            }
+            .message-tool.copied {
+                color: #10a37f;
+            }
+    </style>
 </head>
 <body>
     <!-- ================================================================
@@ -49,6 +138,51 @@
                 <button class="menu-toggle" id="menuToggle">☰</button>
                 <span class="title" id="chatTitle">Please select a conference first...</span>
             </div>
+
+            <!-- بخش انتخاب زبان -->
+            <div class="language-selector" style="display:flex;align-items:center;gap:8px;margin:0 12px;">
+                <span style="font-size:13px;color:#666;margin-left:4px;">🌐</span>
+                <button class="lang-btn active" data-lang="fa" style="
+    padding:4px 12px;
+    border:1px solid #ddd;
+    border-radius:16px;
+    background:#f0f4ff;
+    color:#1a73e8;
+    font-size:13px;
+    cursor:pointer;
+    font-weight:500;
+    transition:all 0.2s;
+">
+                    فارسی
+                </button>
+
+                <button class="lang-btn" data-lang="ar" style="
+    padding:4px 12px;
+    border:1px solid #ddd;
+    border-radius:16px;
+    background:transparent;
+    color:#333;
+    font-size:13px;
+    cursor:pointer;
+    transition:all 0.2s;
+">
+                    العربية
+                </button>
+
+                <button class="lang-btn" data-lang="en" style="
+    padding:4px 12px;
+    border:1px solid #ddd;
+    border-radius:16px;
+    background:transparent;
+    color:#333;
+    font-size:13px;
+    cursor:pointer;
+    transition:all 0.2s;
+">
+                    English
+                </button>
+            </div>
+
             <!-- دکمه‌های قبلی -->
             <div class="input-actions">
                 <div class="action-group">
@@ -253,9 +387,11 @@
         /* ================================================================
            CONFIGURATION
         ================================================================ */
-        const REGISTER_API_URL = CONFIG.REGISTER_API_URL;
-        const ASK_CONGRESS_API_URL = CONFIG.ASK_CONGRESS_API_URL;
-       /* ================================================================
+        const AUTH_API_URL =
+            'https://script.google.com/macros/s/AKfycbycCl4EkZZbEGvBh8tGq90wwNiScyOnr_PM4un35-VWLKusx5kTz-pmxb1ilV70Ddkv/exec';
+        const ASK_CONGRESS_API_URL =
+            'https://script.google.com/macros/s/AKfycbzDqRi95AIRVORJiOsiIT0RMOHWulmBDujyvKaRt-cKWEFn9Q5WXrb1-f3j2C3F_kL3/exec';
+        /* ================================================================
            STORAGE
         ================================================================ */
         const SESSION_KEY =
@@ -393,8 +529,8 @@
             payload
         ) {
             if (
-                !REGISTER_API_URL ||
-                REGISTER_API_URL ===
+                !AUTH_API_URL ||
+                AUTH_API_URL ===
                 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL'
             ) {
                 throw new Error(
@@ -405,7 +541,7 @@
             try {
                 response =
                     await fetch(
-                        REGISTER_API_URL,
+                        AUTH_API_URL,
                         {
                             method: 'POST',
                             headers: {
@@ -1082,42 +1218,38 @@
             if (messages.length === 0) {
 
                 messagesArea.innerHTML = `
-            <div style="
-                display:flex;
-                flex-direction:column;
-                align-items:center;
-                justify-content:center;
-                height:100%;
-                color:#8e8ea0;
-                text-align:center;
-                padding:40px;
-            ">
-                <div style="font-size:48px; margin-bottom:16px;">
-                    <img src="assets/centericon.png"
-                         alt="Confsync Logo"
-                         style="width:280px;height:280px;display:block;margin:0 auto 10px;border-radius:50%;" />
-                </div>
+    <div style="
+        display:flex;
+        flex-direction:column;
+        align-items:center;
+        justify-content:center;
+        height:100%;
+        color:#8e8ea0;
+        text-align:center;
+        padding:40px;
+    ">
+        <div style="font-size:48px; margin-bottom:16px;">💬</div>
 
-                <h3 style="
-                    color:#202123;
-                    font-weight:500;
-                    margin-bottom:8px;
-                ">
-                    ${escapeHtml(
+        <h3 style="
+            color:#202123;
+            font-weight:500;
+            margin-bottom:8px;
+        ">
+            ${escapeHtml(
                     currentConference
                         ? currentConference.nameFa
                         : 'Select a Conference'
                 )}
-                </h3>
+        </h3>
 
-                <p style="font-size:14px; max-width:400px;">
-                    ${currentConference
+        <p style="font-size:14px; max-width:400px;">
+            ${currentConference
                         ? 'Ask your first question about this conference.'
                         : 'Select a conference from the sidebar to start.'
                     }
-                </p>
-            </div>
-        `;
+        </p>
+    </div>
+`;
 
                 return;
             }
@@ -1656,47 +1788,65 @@
             if (!confirm('Are you sure you want to logout?')) {
                 return;
             }
+
+            localStorage.removeItem(SESSION_KEY);
+            
             const currentUser = getCurrentUser();
             if (!currentUser || !currentUser.email) {
               return;
             }
+            
             // ✅ ذخیره تاریخچه قبل از خروج
             const historyList = localStorage.getItem(`historyList_${currentUser.email}`);
+
             if (!historyList) {
                 const currentList = window.historyList || [];
                 localStorage.setItem(`historyList_${currentUser.email}`, JSON.stringify(currentList));
             }
+
+            //console.log('History saved for user:', currentUser.email);
+
+            // ✅ حذف selectedCongressList
+            //localStorage.removeItem(`selectedCongressList_${currentUser.email}`);
+
             // ✅ خالی کردن UI
             const historyListElement = document.getElementById('historyList');
             if (historyListElement) {
                 historyListElement.innerHTML = '';
             }
+
             // ✅ پاک کردن متغیرهای global
             if (typeof setCurrentUser === 'function') {
                 setCurrentUser(null);
             }
+
             window.allChats = [];
             window.currentChatId = null;
+
             // ✅ به‌روزرسانی UI
             if (chatTitle) {
                 chatTitle.textContent = 'Please select a conference first...';
             }
+
             if (typeof renderSidebarUser === 'function') {
                 renderSidebarUser();
             }
+
             if (messageInput) {
                 messageInput.disabled = true;
                 messageInput.placeholder = 'Please login to ask questions...';
             }
+
             if (sendBtn) {
                 sendBtn.disabled = true;
             }
+
             // ✅ پاک کردن session
-            localStorage.removeItem(SESSION_KEY);
             sessionStorage.removeItem('login_verified');
             sessionStorage.removeItem('currentUser');
             localStorage.removeItem('userData');
             localStorage.removeItem('offline_username');
+
             // ✅ هدایت به صفحه ورود
             window.location.href = '/?action=login';
         }         
@@ -2614,6 +2764,48 @@
             }, 1500);
         }
         //==========================================================
+
+        //==========================================================
+        //==========================================================
+        //==========================================================
+        const translations = {
+            fa: {
+                chatTitle: "لطفاً ابتدا یک کنفرانس انتخاب کنید...",
+                conferenceAssistant: "دستیار هوش مصنوعی کنفرانس",
+                questions: "سؤالات",
+                menu: "منو"
+            },
+
+            ar: {
+                chatTitle: "يرجى اختيار مؤتمر أولاً...",
+                conferenceAssistant: "مساعد الذكاء الاصطناعي للمؤتمر",
+                questions: "الأسئلة",
+                menu: "القائمة"
+            },
+
+            en: {
+                chatTitle: "Please select a conference first...",
+                conferenceAssistant: "AI Conference Assistant",
+                questions: "Questions",
+                menu: "Menu"
+            }
+        };
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.addEventListener('click', function () {
+                // حذف کلاس active از همه
+                document.querySelectorAll('.lang-btn').forEach(b => {
+                    b.style.background = 'transparent';
+                    b.style.color = '#333';
+                });
+                // فعال کردن دکمه کلیک شده
+                this.style.background = '#f0f4ff';
+                this.style.color = '#1a73e8';
+
+                const lang = this.dataset.lang;
+                console.log('زبان انتخاب شد:', lang);
+                // اینجا می‌توانید منطق تغییر زبان را پیاده‌سازی کنید
+            });
+        });
 
         // ============================================================
         // FEATCH ALL CONFERENCE DATA BY ID
