@@ -381,76 +381,96 @@
                 'Please wait while we verify your email address.'
             );
 
+            const params = new URLSearchParams({
+                action: 'verifyEmail',
+                email: email
+            });
+
+            console.log('VERIFY API URL:', REGISTER_API_URL);
+            console.log('VERIFY EMAIL:', email);
+
             fetch(REGISTER_API_URL, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'text/plain;charset=utf-8'
+                    'Content-Type':
+                        'application/x-www-form-urlencoded;charset=UTF-8'
                 },
-                body: JSON.stringify({
-                    action: 'verifyEmail',
-                    email: email
-                })
+                body: params.toString()
             })
                 .then(function (response) {
+
+                    console.log(
+                        'VERIFY HTTP STATUS:',
+                        response.status
+                    );
+
                     if (!response.ok) {
-                        resendBtn.classList.add('hidden');
-                        throw new Error('HTTP Error: ' + response.status);
+                        throw new Error(
+                            'HTTP Error: ' + response.status
+                        );
                     }
 
                     return response.json();
                 })
                 .then(function (response) {
+
+                    console.log(
+                        'VERIFY RESPONSE:',
+                        response
+                    );
+
                     if (response.success) {
 
                         showSuccess(
                             '✅ Email Verified!',
-                            response.message
+                            response.message ||
+                            'Your email has been verified successfully.'
                         );
 
                         resendBtn.classList.add('hidden');
                         loginBtn.classList.remove('hidden');
-                        
+
                     } else {
 
                         showError(
                             'Verification Failed',
-                            response.message
+                            response.message ||
+                            'Email verification failed.'
                         );
 
-                        resendBtn.href =
-                            '/linksresponse.html?action=resendverifyEmail&urllocation=window.location.origin&email=' +email;
-                        if (response.status && response.status == true) {
-                            resendBtn.classList.add('hidden')
+                        resendBtn.classList.add('hidden');
+
+                        if (retrytrycount == 0) {
+                            retryBtn.classList.remove('hidden');
+                            homeBtn.classList.add('hidden');
+                        } else {
                             retryBtn.classList.add('hidden');
                             homeBtn.classList.remove('hidden');
-                        }
-                        else {
-                            alert(2);
-                            resendBtn.classList.add('hidden');
-                            if (retrytrycount == 0) {
-                                retryBtn.classList.remove('hidden');
-                                homeBtn.classList.add('hidden');
-                            }
-                            else {
-                                retryBtn.classList.add('hidden');
-                                homeBtn.classList.remove('hidden');
-                            }
                         }
                     }
                 })
                 .catch(function (error) {
 
-                    console.error('Verify Email Error:', error);
+                    console.error(
+                        'Verify Email Error:',
+                        error
+                    );
+
+                    console.error(
+                        'VERIFY API URL:',
+                        REGISTER_API_URL
+                    );
 
                     showError(
                         'Error',
-                        'An error occurred: ' + error.message
+                        'An error occurred: ' +
+                        error.message
                     );
+
                     if (retrytrycount == 0) {
                         retryBtn.classList.remove('hidden');
                         homeBtn.classList.add('hidden');
-                    }
-                    else {
+                    } else {
                         retryBtn.classList.add('hidden');
                         homeBtn.classList.remove('hidden');
                     }
