@@ -389,71 +389,168 @@
         /* ================================================================
            API REQUEST
         ================================================================ */
-        async function authRequest(
-            payload
-        ) {
+        
+        async function authRequest(payload) {
+
             if (
                 !REGISTER_API_URL ||
                 REGISTER_API_URL ===
                 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL'
             ) {
                 throw new Error(
-                    'Google Apps Script API URL is not configured.'
+                    'Authentication API URL is not configured.'
                 );
             }
+
+            console.log('========== AUTH REQUEST ==========');
+            console.log('API URL:', REGISTER_API_URL);
+            console.log('Origin:', window.location.origin);
+            console.log('Payload:', payload);
+            console.log('==================================');
+
             let response;
+
             try {
-                response =
-                    await fetch(
-                        REGISTER_API_URL,
-                        {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type':
-                                    'text/plain;charset=utf-8'
-                            },
-                            body:
-                                JSON.stringify(payload)
-                        }
+
+                const params = new URLSearchParams();
+
+                Object.keys(payload).forEach(function (key) {
+                    params.append(
+                        key,
+                        payload[key] ?? ''
                     );
+                });
+
+                response = await fetch(
+                    REGISTER_API_URL,
+                    {
+                        method: 'POST',
+
+                        headers: {
+                            'Content-Type':
+                                'application/x-www-form-urlencoded;charset=UTF-8'
+                        },
+
+                        body: params.toString()
+                    }
+                );
+
             } catch (error) {
+
                 console.error(
-                    'Network error:',
-                    error
+                    '========== AUTH FETCH ERROR =========='
                 );
-                
+
+                console.error(
+                    'Name:',
+                    error?.name
+                );
+
+                console.error(
+                    'Message:',
+                    error?.message
+                );
+
+                console.error(
+                    'API URL:',
+                    REGISTER_API_URL
+                );
+
+                console.error(
+                    'Origin:',
+                    window.location.origin
+                );
+
+                console.error(
+                    '======================================'
+                );
+                /*
                 alert(
-                    'AUTH ERROR\n\n' +
-                    'Name: ' + (error?.name || '') +
-                    '\nMessage: ' + (error?.message || '') +
-                    '\nURL: ' + REGISTER_API_URL
+                    'AUTH FETCH ERROR\n\n' +
+                    'Name: ' +
+                    (error?.name || '') +
+                    '\n\nMessage: ' +
+                    (error?.message || '') +
+                    '\n\nAPI URL:\n' +
+                    REGISTER_API_URL +
+                    '\n\nOrigin:\n' +
+                    window.location.origin
                 );
-                
+                */
                 throw new Error(
                     'Unable to connect to the authentication server.'
                 );
             }
+
+            console.log(
+                'AUTH HTTP STATUS:',
+                response.status
+            );
+
             if (!response.ok) {
+
+                const errorText =
+                    await response.text().catch(
+                        function () {
+                            return '';
+                        }
+                    );
+
+                console.error(
+                    'AUTH HTTP ERROR:',
+                    response.status,
+                    errorText
+                );
+
                 throw new Error(
-                    'Authentication server returned an error.'
+                    'Authentication server returned HTTP ' +
+                    response.status +
+                    (errorText
+                        ? ': ' + errorText
+                        : '')
                 );
             }
+
             let result;
+
             try {
-                result =
-                    await response.json();
+
+                result = await response.json();
+
             } catch (error) {
+
+                const responseText =
+                    await response.text().catch(
+                        function () {
+                            return '';
+                        }
+                    );
+
+                console.error(
+                    'Invalid JSON response:',
+                    responseText
+                );
+
                 throw new Error(
                     'Invalid response from authentication server.'
                 );
             }
+
+            console.log(
+                'AUTH RESPONSE:',
+                result
+            );
+
             if (!result) {
+
                 throw new Error(
                     'Empty response from authentication server.'
                 );
             }
+
             return result;
         }
+
         /* ================================================================
            REGISTER
         ================================================================ */
