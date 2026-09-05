@@ -47,7 +47,9 @@
         <div class="chat-header">
             <div style="display:flex;align-items:center;gap:12px;">
                 <button class="menu-toggle" id="menuToggle">☰</button>
-                <span class="title" id="chatTitle">Please select a conference first...</span>
+                <span class="title" id="chatTitle" onclick="opensidebarpage()" style="cursor: pointer;">
+                    Please select a conference first...
+                </span>
             </div>
             <!-- دکمه‌های قبلی -->
             <div class="input-actions">
@@ -136,7 +138,28 @@
     ================================================================ -->
     <div class="modal-overlay" id="authModal">
         <div class="modal-box">
-            <button type="button" class="close-modal" id="closeModal">✕</button>
+            <div style="display: flex; justify-content: flex-end; width: 100%; padding: 8px 12px;">
+                <button type="button" class="close-modal" id="closeModal"
+                        style="
+                background: #f0f0f0;
+                border: none;
+                width: 36px;
+                height: 36px;
+                border-radius: 50%;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.3s ease;
+                font-size: 18px;
+                color: #555;
+                padding: 0;
+            "
+                        onmouseenter="this.style.background='#e0e0e0'; this.style.transform='scale(1.1)'"
+                        onmouseleave="this.style.background='#f0f0f0'; this.style.transform='scale(1)'">
+                    ✕
+                </button>
+            </div>
 
             <h2 id="modalTitle">Login</h2>
             <p class="modal-sub" id="modalSub">Enter your phone number and password</p>
@@ -592,6 +615,31 @@
         /* ================================================================
            LOGIN
         ================================================================ */
+        function opensidebarpage() {
+            // بررسی اینکه آیا کاربر لاگین است
+            const currentUser = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null');
+
+            if (!currentUser) {
+                openModal('login');
+                return;
+            }
+            openMobileSidebar()
+        }
+        // اضافه کردن استایل‌های hover با CSS
+        document.addEventListener('DOMContentLoaded', function () {
+            const chatTitle = document.getElementById('chatTitle');
+            if (chatTitle) {
+                chatTitle.addEventListener('mouseenter', function () {
+                    this.style.textDecoration = 'underline';
+                    this.style.color = '#0056b3';
+                });
+                chatTitle.addEventListener('mouseleave', function () {
+                    this.style.textDecoration = 'none';
+                    this.style.color = '';
+                });
+            }
+        });
+
         async function loginUser(
             emailAddress,
             passwordValue
@@ -2307,6 +2355,12 @@
                 'active'
             );
         }
+        function openMobileSidebar() {
+            sidebar.classList.add('open');
+            sidebarOverlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
         menuToggle.addEventListener(
             'click',
             function () {
