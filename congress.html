@@ -1,262 +1,1316 @@
 <!DOCTYPE html>
-<html lang="fa" dir="rtl">
+<html lang="en" dir="ltr">
 
 <head>
-
     <meta charset="UTF-8">
-
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
-
-    <title>انتخاب کنگره‌ها | ConfSync</title>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Congresses | ConfSync</title>
     <link rel="stylesheet" href="assets/congress.css">
     <script src="js/config.js"></script>
+    <style>
+        /* ================================================================
+           ROOT VARIABLES
+        ================================================================ */
+        :root {
+            --primary-dark: #1a237e;
+            --primary-medium: #283593;
+            --primary-light: #3f51b5;
+            --gold: #ffd54f;
+            --gold-dark: #ffb300;
+            --gold-light: #ffe082;
+            --white: #ffffff;
+            --gray-light: #f5f5f5;
+            --gray-medium: #e0e0e0;
+            --gray-dark: #757575;
+            --shadow-light: rgba(26, 35, 126, 0.15);
+            --shadow-medium: rgba(26, 35, 126, 0.4);
+            --shadow-strong: rgba(255, 213, 79, 0.4);
+            --radius: 12px;
+            --radius-sm: 8px;
+            --transition: all 0.3s ease;
+        }
 
+        /* ================================================================
+           RESET & BASE
+        ================================================================ */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: var(--gray-light);
+            color: #333;
+            padding: 12px;
+            min-height: 100vh;
+            direction: ltr;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: var(--white);
+            border-radius: var(--radius);
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+            padding: 16px 20px;
+            overflow: hidden;
+        }
+
+        /* ================================================================
+           HEADER - Reduced Height
+        ================================================================ */
+        .page-header {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 6px 12px;
+            padding: 6px 12px !important;
+            min-height: 44px !important;
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary-medium));
+            border-radius: var(--radius-sm);
+            margin-bottom: 12px;
+        }
+
+        .title-group {
+            display: flex;
+            align-items: center;
+            gap: 6px !important;
+            flex-wrap: wrap;
+        }
+
+            .title-group .icon {
+                font-size: 18px !important;
+            }
+
+            .title-group h1 {
+                font-size: 16px !important;
+                margin: 0 !important;
+                line-height: 1.2 !important;
+                color: var(--white);
+                font-weight: 600;
+                letter-spacing: 0.3px;
+            }
+
+            .title-group .subtitle {
+                font-size: 10px !important;
+                color: rgba(255, 255, 255, 0.7);
+                display: block;
+                font-weight: 400;
+            }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .selected-badge {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(4px);
+            padding: 2px 10px !important;
+            border-radius: 20px !important;
+            font-size: 11px !important;
+            color: var(--white);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+            .selected-badge .count {
+                font-size: 13px !important;
+                font-weight: 700;
+                color: var(--gold);
+                background: rgba(0, 0, 0, 0.2);
+                padding: 0 6px;
+                border-radius: 10px;
+                min-width: 18px;
+                text-align: center;
+            }
+
+        .btn-back {
+            background: rgba(255, 255, 255, 0.12) !important;
+            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+            color: var(--white) !important;
+            padding: 3px 12px !important;
+            font-size: 11px !important;
+            border-radius: 20px !important;
+            cursor: pointer;
+            transition: var(--transition);
+            backdrop-filter: blur(4px);
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+            .btn-back:hover {
+                background: rgba(255, 255, 255, 0.25) !important;
+                transform: scale(1.04);
+            }
+
+        /* ================================================================
+           FILTERS - Highlighted Year Select
+        ================================================================ */
+        .filter-card {
+            padding: 8px 14px !important;
+            margin-bottom: 12px !important;
+            border-radius: var(--radius) !important;
+            background: var(--white);
+            border: 1px solid var(--gray-medium);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        }
+
+        .filter-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 6px 10px;
+        }
+
+        .filter-row-first {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary-medium)) !important;
+            padding: 6px 14px !important;
+            border-radius: var(--radius-sm) !important;
+            box-shadow: 0 3px 15px var(--shadow-medium) !important;
+            margin-bottom: 4px !important;
+            flex-wrap: wrap;
+        }
+
+            .filter-row-first label {
+                color: var(--white) !important;
+                font-weight: 600 !important;
+                font-size: 13px !important;
+                text-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+                display: flex;
+                align-items: center;
+                gap: 4px;
+                white-space: nowrap;
+            }
+
+            .filter-row-first select {
+                background: var(--white) !important;
+                border: 2px solid var(--gold) !important;
+                border-radius: var(--radius-sm) !important;
+                padding: 5px 12px !important;
+                font-size: 13px !important;
+                font-weight: 600 !important;
+                color: var(--primary-dark) !important;
+                box-shadow: 0 2px 10px var(--shadow-strong) !important;
+                min-width: 100px;
+                cursor: pointer;
+                transition: var(--transition);
+                outline: none;
+                appearance: auto;
+                height: 32px;
+            }
+
+                .filter-row-first select:hover,
+                .filter-row-first select:focus {
+                    border-color: var(--gold-dark) !important;
+                    box-shadow: 0 2px 20px rgba(255, 213, 79, 0.6) !important;
+                    transform: scale(1.03);
+                }
+
+                .filter-row-first select option {
+                    color: var(--primary-dark) !important;
+                    background: var(--white) !important;
+                    font-weight: 500 !important;
+                }
+
+            .filter-row-first .btn-update {
+                background: rgba(255, 255, 255, 0.15) !important;
+                border: 1px solid rgba(255, 255, 255, 0.25) !important;
+                color: var(--white) !important;
+                padding: 3px 12px !important;
+                font-size: 11px !important;
+                border-radius: 20px !important;
+                cursor: pointer;
+                backdrop-filter: blur(4px);
+                transition: var(--transition);
+                display: flex;
+                align-items: center;
+                gap: 4px;
+                white-space: nowrap;
+                height: 30px;
+            }
+
+                .filter-row-first .btn-update:hover {
+                    background: rgba(255, 255, 255, 0.28) !important;
+                    transform: scale(1.05);
+                }
+
+            .filter-row-first .btn-save {
+                background: var(--gold) !important;
+                color: var(--primary-dark) !important;
+                font-weight: 700 !important;
+                padding: 3px 14px !important;
+                font-size: 11px !important;
+                border-radius: 20px !important;
+                border: none !important;
+                box-shadow: 0 2px 12px var(--shadow-strong) !important;
+                cursor: pointer;
+                transition: var(--transition);
+                white-space: nowrap;
+                height: 30px;
+                display: flex;
+                align-items: center;
+                gap: 4px;
+            }
+
+                .filter-row-first .btn-save:hover {
+                    transform: scale(1.05);
+                    box-shadow: 0 4px 20px rgba(255, 213, 79, 0.6) !important;
+                }
+
+        #lastUpdateTime {
+            color: rgba(255, 255, 255, 0.7) !important;
+            font-size: 9px !important;
+        }
+
+        .filter-row-second {
+            padding-top: 4px !important;
+        }
+
+        .search-box {
+            position: relative;
+            width: 100%;
+            max-width: 280px;
+        }
+
+            .search-box .search-icon {
+                position: absolute;
+                left: 10px;
+                top: 50%;
+                transform: translateY(-50%);
+                font-size: 13px !important;
+                opacity: 0.5;
+                pointer-events: none;
+            }
+
+            .search-box input {
+                width: 100%;
+                padding: 5px 32px 5px 12px !important;
+                font-size: 12px !important;
+                border-radius: 20px !important;
+                border: 2px solid var(--gray-medium) !important;
+                transition: var(--transition);
+                outline: none;
+                background: var(--white);
+                height: 32px;
+            }
+
+                .search-box input:focus {
+                    border-color: var(--primary-light) !important;
+                    box-shadow: 0 0 0 3px var(--shadow-light) !important;
+                }
+
+                .search-box input::placeholder {
+                    color: var(--gray-dark);
+                    opacity: 0.7;
+                }
+
+        /* ================================================================
+           TABLE
+        ================================================================ */
+        .table-card {
+            border-radius: var(--radius);
+            border: 1px solid var(--gray-medium);
+            overflow: hidden;
+            background: var(--white);
+        }
+
+        .table-header {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 16px;
+            background: var(--gray-light);
+            border-bottom: 1px solid var(--gray-medium);
+            gap: 8px;
+        }
+
+        .title-section {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+            .title-section strong {
+                font-size: 14px;
+                color: var(--primary-dark);
+            }
+
+        .count-badge {
+            background: var(--primary-dark);
+            color: var(--white);
+            padding: 1px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .select-all-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--gray-dark);
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+            .select-all-wrapper input[type="checkbox"] {
+                width: 16px;
+                height: 16px;
+                cursor: pointer;
+                accent-color: var(--primary-dark);
+            }
+
+        .table-wrapper {
+            overflow-x: auto;
+            padding: 0;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            min-width: 600px;
+        }
+
+        thead {
+            background: var(--gray-light);
+        }
+
+            thead th {
+                padding: 10px 12px;
+                text-align: left;
+                font-weight: 600;
+                color: var(--primary-dark);
+                border-bottom: 2px solid var(--gray-medium);
+                white-space: nowrap;
+                font-size: 12px;
+                text-transform: uppercase;
+                letter-spacing: 0.3px;
+            }
+
+                thead th.checkbox-cell {
+                    width: 50px;
+                    text-align: center;
+                }
+
+        tbody td {
+            padding: 8px 12px;
+            border-bottom: 1px solid var(--gray-medium);
+            vertical-align: middle;
+        }
+
+        tbody tr:hover {
+            background: rgba(63, 81, 181, 0.04);
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .checkbox-cell {
+            text-align: center;
+        }
+
+            .checkbox-cell input[type="checkbox"] {
+                width: 16px;
+                height: 16px;
+                cursor: pointer;
+                accent-color: var(--primary-dark);
+            }
+
+        .congress-name {
+            font-weight: 500;
+            color: var(--primary-dark);
+        }
+
+        .congress-type {
+            display: inline-block;
+            padding: 1px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+            background: rgba(26, 35, 126, 0.08);
+            color: var(--primary-dark);
+        }
+
+        .congress-website a {
+            color: var(--primary-medium);
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+            .congress-website a:hover {
+                text-decoration: underline;
+                color: var(--primary-dark);
+            }
+
+        /* ================================================================
+           STATE CONTAINERS - Smaller Loading
+        ================================================================ */
+        .state-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px 24px;
+            text-align: center;
+            min-height: 80px;
+        }
+
+            .state-container .state-icon {
+                font-size: 28px;
+            }
+
+            .state-container .state-title {
+                font-size: 14px;
+                font-weight: 500;
+                color: #333;
+                margin: 4px 0;
+            }
+
+            .state-container .state-desc {
+                font-size: 12px;
+                color: var(--gray-dark);
+            }
+
+            /* Loading - Smaller */
+            .state-container.loading {
+                padding: 10px 20px !important;
+                min-height: 48px !important;
+                flex-direction: row;
+                gap: 12px;
+            }
+
+                .state-container.loading .state-icon {
+                    font-size: 20px !important;
+                    animation: pulse 0.7s ease-in-out infinite alternate;
+                }
+
+                .state-container.loading .state-title {
+                    font-size: 12px !important;
+                    font-weight: 500 !important;
+                    margin: 0 !important;
+                }
+
+                .state-container.loading .state-desc {
+                    font-size: 10px !important;
+                    opacity: 0.5;
+                    margin: 0 !important;
+                }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(0.85);
+                opacity: 0.5;
+            }
+
+            100% {
+                transform: scale(1.1);
+                opacity: 1;
+            }
+        }
+
+        .state-container.error .state-icon {
+            color: #d32f2f;
+        }
+
+        .state-container.error .state-title {
+            color: #d32f2f;
+        }
+
+        /* ================================================================
+           ACTION BAR
+        ================================================================ */
+        .action-bar {
+            margin-top: 14px;
+            padding-top: 12px;
+            border-top: 1px solid var(--gray-medium);
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 6px 20px;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-cancel {
+            background: var(--gray-light);
+            color: var(--gray-dark);
+            border: 1px solid var(--gray-medium);
+        }
+
+            .btn-cancel:hover {
+                background: #e8e8e8;
+                transform: scale(1.02);
+            }
+
+        .btn-save {
+            background: var(--primary-dark);
+            color: var(--white);
+        }
+
+            .btn-save:hover {
+                background: var(--primary-medium);
+                transform: scale(1.02);
+                box-shadow: 0 2px 12px var(--shadow-light);
+            }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        /* ================================================================
+           SAVE MESSAGE
+        ================================================================ */
+        .save-message {
+            padding: 8px 16px;
+            margin: 8px 0;
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            font-weight: 500;
+            display: none;
+            text-align: center;
+        }
+
+            .save-message.success {
+                display: block;
+                background: #e8f5e9;
+                color: #2e7d32;
+                border: 1px solid #a5d6a7;
+            }
+
+            .save-message.error {
+                display: block;
+                background: #ffebee;
+                color: #c62828;
+                border: 1px solid #ef9a9a;
+            }
+
+        /* ================================================================
+           RESPONSIVE BREAKPOINTS
+        ================================================================ */
+
+        /* Tablet and below */
+        @media (max-width: 992px) {
+            .container {
+                padding: 12px 14px;
+            }
+
+            .page-header {
+                padding: 5px 10px !important;
+                min-height: 40px !important;
+            }
+
+            .title-group h1 {
+                font-size: 15px !important;
+            }
+
+            .filter-row-first {
+                padding: 5px 10px !important;
+            }
+
+                .filter-row-first select {
+                    min-width: 80px;
+                    font-size: 12px !important;
+                    padding: 4px 10px !important;
+                    height: 28px;
+                }
+
+                .filter-row-first label {
+                    font-size: 12px !important;
+                }
+
+                .filter-row-first .btn-update,
+                .filter-row-first .btn-save {
+                    font-size: 10px !important;
+                    padding: 2px 10px !important;
+                    height: 26px;
+                }
+
+            .search-box {
+                max-width: 220px;
+            }
+
+                .search-box input {
+                    font-size: 11px !important;
+                    height: 28px;
+                    padding: 4px 28px 4px 10px !important;
+                }
+
+            table {
+                font-size: 12px;
+                min-width: 500px;
+            }
+
+            thead th {
+                padding: 8px 10px;
+                font-size: 11px;
+            }
+
+            tbody td {
+                padding: 6px 10px;
+            }
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            body {
+                padding: 6px;
+            }
+
+            .container {
+                padding: 8px 10px;
+                border-radius: var(--radius-sm);
+            }
+
+            .page-header {
+                padding: 4px 8px !important;
+                min-height: 36px !important;
+                gap: 4px 8px;
+            }
+
+            .title-group .icon {
+                font-size: 15px !important;
+            }
+
+            .title-group h1 {
+                font-size: 13px !important;
+            }
+
+            .title-group .subtitle {
+                font-size: 9px !important;
+            }
+
+            .header-right {
+                gap: 4px;
+            }
+
+            .selected-badge {
+                font-size: 10px !important;
+                padding: 1px 8px !important;
+            }
+
+                .selected-badge .count {
+                    font-size: 11px !important;
+                    min-width: 14px;
+                }
+
+            .btn-back {
+                font-size: 9px !important;
+                padding: 2px 8px !important;
+            }
+
+            .filter-card {
+                padding: 6px 10px !important;
+                margin-bottom: 8px !important;
+            }
+
+            .filter-row {
+                gap: 4px 8px;
+            }
+
+            .filter-row-first {
+                padding: 4px 8px !important;
+                border-radius: 6px !important;
+                flex-wrap: wrap;
+            }
+
+                .filter-row-first label {
+                    font-size: 11px !important;
+                }
+
+                .filter-row-first select {
+                    min-width: 70px;
+                    font-size: 11px !important;
+                    padding: 3px 8px !important;
+                    height: 26px;
+                    border-width: 1.5px !important;
+                }
+
+                .filter-row-first .btn-update,
+                .filter-row-first .btn-save {
+                    font-size: 9px !important;
+                    padding: 2px 8px !important;
+                    height: 24px;
+                    border-radius: 14px !important;
+                }
+
+                    .filter-row-first .btn-update .update-icon {
+                        font-size: 10px !important;
+                    }
+
+            #lastUpdateTime {
+                font-size: 8px !important;
+            }
+
+            .search-box {
+                max-width: 100%;
+            }
+
+                .search-box input {
+                    font-size: 11px !important;
+                    height: 26px;
+                    padding: 3px 26px 3px 10px !important;
+                    border-radius: 16px !important;
+                }
+
+                .search-box .search-icon {
+                    font-size: 11px !important;
+                    left: 8px;
+                }
+
+            .table-header {
+                padding: 6px 10px;
+                flex-direction: column;
+                align-items: stretch;
+                gap: 4px;
+            }
+
+            .title-section strong {
+                font-size: 12px;
+            }
+
+            .count-badge {
+                font-size: 10px;
+                padding: 1px 8px;
+            }
+
+            .select-all-wrapper {
+                font-size: 11px;
+            }
+
+                .select-all-wrapper input[type="checkbox"] {
+                    width: 14px;
+                    height: 14px;
+                }
+
+            .table-wrapper {
+                margin: 0 -10px;
+                padding: 0 10px;
+            }
+
+            table {
+                font-size: 11px;
+                min-width: 400px;
+            }
+
+            thead th {
+                padding: 6px 8px;
+                font-size: 10px;
+            }
+
+                thead th.checkbox-cell {
+                    width: 36px;
+                }
+
+            tbody td {
+                padding: 5px 8px;
+                font-size: 11px;
+            }
+
+            .checkbox-cell input[type="checkbox"] {
+                width: 14px;
+                height: 14px;
+            }
+
+            .congress-type {
+                font-size: 9px;
+                padding: 1px 8px;
+            }
+
+            .congress-website a {
+                font-size: 10px;
+            }
+
+            .state-container {
+                padding: 12px 16px;
+                min-height: 60px;
+            }
+
+                .state-container .state-icon {
+                    font-size: 22px;
+                }
+
+                .state-container .state-title {
+                    font-size: 12px;
+                }
+
+                .state-container .state-desc {
+                    font-size: 10px;
+                }
+
+                .state-container.loading {
+                    padding: 6px 12px !important;
+                    min-height: 36px !important;
+                    gap: 8px;
+                }
+
+                    .state-container.loading .state-icon {
+                        font-size: 16px !important;
+                    }
+
+                    .state-container.loading .state-title {
+                        font-size: 10px !important;
+                    }
+
+                    .state-container.loading .state-desc {
+                        font-size: 9px !important;
+                    }
+
+            .action-bar {
+                margin-top: 10px;
+                padding-top: 8px;
+                justify-content: center;
+            }
+
+            .action-buttons {
+                gap: 6px;
+                width: 100%;
+                justify-content: center;
+            }
+
+            .btn {
+                padding: 5px 14px;
+                font-size: 11px;
+                border-radius: 6px;
+            }
+
+            .save-message {
+                font-size: 11px;
+                padding: 6px 12px;
+            }
+        }
+
+        /* Small phones */
+        @media (max-width: 480px) {
+            body {
+                padding: 4px;
+            }
+
+            .container {
+                padding: 4px 6px;
+            }
+
+            .page-header {
+                padding: 3px 6px !important;
+                min-height: 32px !important;
+                border-radius: 6px !important;
+            }
+
+            .title-group .icon {
+                font-size: 13px !important;
+            }
+
+            .title-group h1 {
+                font-size: 11px !important;
+            }
+
+            .title-group .subtitle {
+                display: none;
+            }
+
+            .selected-badge {
+                font-size: 8px !important;
+                padding: 1px 6px !important;
+            }
+
+                .selected-badge .count {
+                    font-size: 9px !important;
+                    min-width: 12px;
+                }
+
+            .btn-back {
+                font-size: 8px !important;
+                padding: 1px 6px !important;
+            }
+
+            .filter-card {
+                padding: 4px 6px !important;
+                margin-bottom: 6px !important;
+            }
+
+            .filter-row-first {
+                padding: 3px 6px !important;
+                gap: 3px 6px;
+            }
+
+                .filter-row-first label {
+                    font-size: 9px !important;
+                }
+
+                .filter-row-first select {
+                    min-width: 60px;
+                    font-size: 9px !important;
+                    padding: 2px 6px !important;
+                    height: 22px;
+                }
+
+                .filter-row-first .btn-update,
+                .filter-row-first .btn-save {
+                    font-size: 8px !important;
+                    padding: 1px 6px !important;
+                    height: 20px;
+                    border-radius: 10px !important;
+                }
+
+                    .filter-row-first .btn-update .update-icon {
+                        font-size: 8px !important;
+                    }
+
+            #lastUpdateTime {
+                font-size: 7px !important;
+            }
+
+            .search-box input {
+                font-size: 10px !important;
+                height: 22px;
+                padding: 2px 22px 2px 8px !important;
+            }
+
+            .search-box .search-icon {
+                font-size: 9px !important;
+                left: 6px;
+            }
+
+            .table-header {
+                padding: 4px 6px;
+            }
+
+            .title-section strong {
+                font-size: 10px;
+            }
+
+            .count-badge {
+                font-size: 8px;
+                padding: 1px 6px;
+            }
+
+            .select-all-wrapper {
+                font-size: 9px;
+            }
+
+                .select-all-wrapper input[type="checkbox"] {
+                    width: 12px;
+                    height: 12px;
+                }
+
+            .table-wrapper {
+                margin: 0 -6px;
+                padding: 0 6px;
+            }
+
+            table {
+                font-size: 9px;
+                min-width: 320px;
+            }
+
+            thead th {
+                padding: 4px 6px;
+                font-size: 8px;
+            }
+
+                thead th.checkbox-cell {
+                    width: 28px;
+                }
+
+            tbody td {
+                padding: 3px 6px;
+                font-size: 9px;
+            }
+
+            .checkbox-cell input[type="checkbox"] {
+                width: 12px;
+                height: 12px;
+            }
+
+            .congress-name {
+                font-weight: 600;
+            }
+
+            .congress-type {
+                font-size: 7px;
+                padding: 0 6px;
+                border-radius: 8px;
+            }
+
+            .congress-website a {
+                font-size: 8px;
+            }
+
+            .state-container {
+                padding: 8px 12px;
+                min-height: 40px;
+            }
+
+                .state-container .state-icon {
+                    font-size: 18px;
+                }
+
+                .state-container .state-title {
+                    font-size: 10px;
+                }
+
+                .state-container .state-desc {
+                    font-size: 9px;
+                }
+
+                .state-container.loading {
+                    padding: 4px 8px !important;
+                    min-height: 28px !important;
+                    gap: 6px;
+                }
+
+                    .state-container.loading .state-icon {
+                        font-size: 13px !important;
+                    }
+
+                    .state-container.loading .state-title {
+                        font-size: 9px !important;
+                    }
+
+                    .state-container.loading .state-desc {
+                        display: none;
+                    }
+
+            .action-bar {
+                margin-top: 6px;
+                padding-top: 6px;
+            }
+
+            .btn {
+                padding: 3px 10px;
+                font-size: 9px;
+                border-radius: 4px;
+                gap: 4px;
+            }
+
+            .save-message {
+                font-size: 9px;
+                padding: 4px 8px;
+            }
+        }
+
+        /* Landscape phones */
+        @media (max-height: 500px) and (orientation: landscape) {
+            .page-header {
+                min-height: 30px !important;
+                padding: 2px 8px !important;
+            }
+
+            .title-group h1 {
+                font-size: 12px !important;
+            }
+
+            .title-group .subtitle {
+                display: none;
+            }
+
+            .filter-card {
+                padding: 4px 10px !important;
+            }
+
+            .filter-row-first {
+                padding: 3px 10px !important;
+            }
+
+                .filter-row-first select {
+                    height: 22px;
+                    font-size: 10px !important;
+                    padding: 2px 8px !important;
+                    min-width: 70px;
+                }
+
+                .filter-row-first .btn-update,
+                .filter-row-first .btn-save {
+                    height: 20px;
+                    font-size: 8px !important;
+                    padding: 1px 8px !important;
+                }
+
+            .state-container.loading {
+                min-height: 24px !important;
+                padding: 2px 12px !important;
+            }
+
+                .state-container.loading .state-icon {
+                    font-size: 14px !important;
+                }
+
+                .state-container.loading .state-title {
+                    font-size: 9px !important;
+                }
+
+                .state-container.loading .state-desc {
+                    display: none;
+                }
+
+            table {
+                font-size: 10px;
+                min-width: 350px;
+            }
+
+            thead th {
+                padding: 4px 6px;
+                font-size: 9px;
+            }
+
+            tbody td {
+                padding: 3px 6px;
+                font-size: 9px;
+            }
+
+            .action-bar {
+                margin-top: 4px;
+                padding-top: 4px;
+            }
+
+            .btn {
+                padding: 2px 10px;
+                font-size: 9px;
+            }
+        }
+    </style>
 </head>
-
 
 <body>
 
-
     <div class="container">
 
-
         <!-- ============================================================
-             HEADER
+             HEADER - Reduced Height
         ============================================================= -->
-
         <div class="page-header">
-
             <div class="title-group">
-
                 <span class="icon">📋</span>
-
                 <div>
-
-                    <h1>
-                        انتخاب کنگره‌ها
-                    </h1>
-
-                    <span class="subtitle">
-                        کنگره‌های مورد نظر خود را انتخاب کنید
-                    </span>
-
+                    <h1>Select Congresses</h1>
+                    <span class="subtitle">Choose your preferred congresses</span>
                 </div>
-
             </div>
 
-
-            <div class="selected-badge">
-
-                🎯 انتخاب‌شده
-
-                <span class="count"
-                      id="selectedCount">
-                    ۰
-                </span>
-
+            <div class="header-right">
+                <div class="selected-badge">
+                    🎯 Selected
+                    <span class="count" id="selectedCount">0</span>
+                </div>
+                <button type="button" id="backToHomeButton" class="btn-back" onclick="backToHome()">
+                    🏠 Home
+                </button>
             </div>
-
-            <button type="button"
-                    id="backToHomeButton"
-                    class="btn btn-back"
-                    onclick="backToHome()">
-                🏠 بازگشت به صفحه اصلی
-            </button>>
-
         </div>
 
 
         <!-- ============================================================
-             FILTERS
+             FILTERS - Highlighted Year Select
         ============================================================= -->
-
         <div class="filter-card">
-            <!-- ============================================================ -->
-            <!-- بلوک اول: سال کنگره + دکمه به‌روزرسانی -->
-            <!-- ============================================================ -->
+            <!-- Row 1: Year + Update + Save -->
             <div class="filter-row filter-row-first">
-                <label for="yearSelect">
-                    📅 سال کنگره
-                </label>
+                <label for="yearSelect">📅 Congress Year</label>
                 <select id="yearSelect">
-                    <option value="">
-                        در حال دریافت اطلاعات...
-                    </option>
+                    <option value="">Loading...</option>
                 </select>
-                <button type="button" id="lastUpdatedBtn" class="btn btn-update" onclick="UpdatedCongress()">
-                    <span class="update-icon">update🔄</span>
+                <button type="button" id="lastUpdatedBtn" class="btn-update" onclick="UpdatedCongress()">
+                    <span class="update-icon">🔄</span>
                     <span id="lastUpdateTime"></span>
                 </button>
-                <button type="button"
-                        id="saveButtonTop"
-                        class="btn btn-save">
-                    save & back
-                </button>
+                <button type="button" id="saveButtonTop" class="btn btn-save">💾 Save & Return</button>
             </div>
 
-            <!-- ============================================================ -->
-            <!-- بلوک دوم: جستجو -->
-            <!-- ============================================================ -->
+            <!-- Row 2: Search -->
             <div class="filter-row filter-row-second">
                 <div class="search-box">
-                    <span class="search-icon">
-                        🔍
-                    </span>
-                    <input type="text"
-                           id="searchInput"
-                           placeholder="جستجو در کنگره‌ها..."
-                           autocomplete="off">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="searchInput" placeholder="Search congresses..." autocomplete="off">
                 </div>
             </div>
-        </div>      
+        </div>
 
 
         <!-- ============================================================
              TABLE
         ============================================================= -->
-
         <div class="table-card">
 
-
             <div class="table-header">
-
                 <div class="title-section">
-
-                    <strong>
-                        📚 فهرست کنگره‌ها
-                    </strong>
-
-                    <span class="count-badge"
-                          id="resultCount">
-                        ۰ نتیجه
-                    </span>
-
+                    <strong>📚 Congress List</strong>
+                    <span class="count-badge" id="resultCount">0 results</span>
                 </div>
-
-
-                <label class="select-all-wrapper"
-                       id="selectAllContainer"
-                       style="display:none;">
-
-                    <input type="checkbox"
-                           id="selectAll">
-
-                    انتخاب همه
-
+                <label class="select-all-wrapper" id="selectAllContainer" style="display:none;">
+                    <input type="checkbox" id="selectAll">
+                    Select All
                 </label>
-
             </div>
-
 
             <div class="table-wrapper">
 
-
-                <!-- Loading -->
-
-                <div class="state-container loading"
-                     id="loadingState"
-                     style="display:none;">
-
-                    <span class="state-icon">
-                        ⏳
-                    </span>
-
-                    <div class="state-title">
-                        در حال دریافت اطلاعات...
-                    </div>
-
-                    <div class="state-desc">
-                        لطفاً چند لحظه صبر کنید
-                    </div>
-
+                <!-- Loading - Smaller -->
+                <div class="state-container loading" id="loadingState" style="display:none;">
+                    <span class="state-icon">⏳</span>
+                    <div class="state-title">Loading...</div>
+                    <div class="state-desc">Please wait</div>
                 </div>
-
 
                 <!-- Empty -->
-
-                <div class="state-container"
-                     id="emptyState">
-
-                    <span class="state-icon">
-                        📭
-                    </span>
-
-                    <div class="state-title"
-                         id="emptyTitle">
-                        هیچ کنگره‌ای یافت نشد
-                    </div>
-
-                    <div class="state-desc"
-                         id="emptyMessage">
-                        لطفاً یک سال را انتخاب کنید
-                    </div>
-
+                <div class="state-container" id="emptyState">
+                    <span class="state-icon">📭</span>
+                    <div class="state-title" id="emptyTitle">No congresses found</div>
+                    <div class="state-desc" id="emptyMessage">Please select a year</div>
                 </div>
-
 
                 <!-- Error -->
-
-                <div class="state-container error"
-                     id="errorState"
-                     style="display:none;">
-
-                    <span class="state-icon">
-                        ⚠️
-                    </span>
-
-                    <div class="state-title">
-                        خطا
-                    </div>
-
-                    <div class="state-desc"
-                         id="errorMessage">
-                        لطفاً دوباره تلاش کنید
-                    </div>
-
+                <div class="state-container error" id="errorState" style="display:none;">
+                    <span class="state-icon">⚠️</span>
+                    <div class="state-title">Error</div>
+                    <div class="state-desc" id="errorMessage">Please try again</div>
                 </div>
 
-
                 <!-- Table -->
-
-                <table id="congressTable"
-                       style="display:none;">
-
+                <table id="congressTable" style="display:none;">
                     <thead>
-
                         <tr>
-
-                            <th class="checkbox-cell">
-                                انتخاب
-                            </th>
-
-                            <th>
-                                نام کنگره
-                            </th>
-
-                            <th>
-                                موضوع
-                            </th>
-
-                            <th>
-                                نوع
-                            </th>
-
-                            <th>
-                                محل
-                            </th>
-
-                            <th>
-                                سایت
-                            </th>
-
+                            <th class="checkbox-cell">Select</th>
+                            <th>Congress Name</th>
+                            <th>Topic</th>
+                            <th>Type</th>
+                            <th>Location</th>
+                            <th>Website</th>
                         </tr>
-
                     </thead>
-
                     <tbody id="congressTableBody"></tbody>
-
                 </table>
 
             </div>
@@ -265,240 +1319,104 @@
 
 
         <!-- ============================================================
-         ACTION BAR
+             ACTION BAR
          ============================================================= -->
-
-        <div id="saveMessage"
-             class="save-message"></div>
+        <div id="saveMessage" class="save-message"></div>
         <div class="action-bar">
             <div class="action-buttons">
-                <button type="button"
-                        id="cancelButton"
-                        class="btn btn-cancel">
-                    cancel
-                </button>
-                <button type="button"
-                        id="saveButton"
-                        class="btn btn-save">
-                    save & back
-                </button>
-
+                <button type="button" id="cancelButton" class="btn btn-cancel">✖ Cancel</button>
+                <button type="button" id="saveButton" class="btn btn-save">💾 Save & Return</button>
             </div>
         </div>
-
 
     </div>
 
 
     <script>
-
-
         /* ================================================================
            CONFIG
         ================================================================ */
         const CONGRESS_API_URL = CONFIG.CONGRESS_API_URL;
         let ischangeed_congresses = false;
 
-        /*
-         * شناسه کاربر
-         *
-         * این مقدار را در سیستم اصلی خودت
-         * از Session / Login / URL / Cookie
-         * مقداردهی کن.
-         */
         const USER_ID = 'TEST_USER_1';
+        const SESSION_KEY = 'confsync_session';
+        const CHATS_KEY = 'confsync_chats_';
 
-        const SESSION_KEY =
-            'confsync_session';
-        const CHATS_KEY =
-            'confsync_chats_';
         /* ================================================================
            STATE
         ================================================================ */
-
-
-        /*
-         * تمام کنگره‌ها
-         *
-         * فقط یک بار از سرور دریافت می‌شود.
-         */
         let congresses = [];
-
-
-        /*
-         * کنگره‌های نمایش داده‌شده
-         */
         let filteredCongresses = [];
-
-
-        /*
-         * انتخاب فعلی کاربر
-         */
         let selectedCongressIds = new Set();
-
-
-        /*
-         * آخرین وضعیت ذخیره‌شده
-         *
-         * Cancel به این وضعیت برمی‌گردد.
-         */
         let savedCongressIds = new Set();
-
-
-        /*
-         * آیا در حال ذخیره هستیم؟
-         */
         let isSaving = false;
-
 
         /* ================================================================
            DOM
         ================================================================ */
-
-        const yearSelect =
-            document.getElementById('yearSelect');
-
-        const searchInput =
-            document.getElementById('searchInput');
-
-        const table =
-            document.getElementById('congressTable');
-
-        const tableBody =
-            document.getElementById('congressTableBody');
-
-        const selectAll =
-            document.getElementById('selectAll');
-
-        const selectAllContainer =
-            document.getElementById('selectAllContainer');
-
-        const selectedCount =
-            document.getElementById('selectedCount');
-
-        const resultCount =
-            document.getElementById('resultCount');
-
-        const loadingState =
-            document.getElementById('loadingState');
-
-        const emptyState =
-            document.getElementById('emptyState');
-
-        const emptyTitle =
-            document.getElementById('emptyTitle');
-
-        const emptyMessage =
-            document.getElementById('emptyMessage');
-
-        const errorState =
-            document.getElementById('errorState');
-
-        const errorMessage =
-            document.getElementById('errorMessage');
-
-        const saveButton =
-            document.getElementById('saveButton');
-
-        const saveButtonTop =
-            document.getElementById('saveButtonTop');
-
-        const cancelButton =
-            document.getElementById('cancelButton');
-
-        const saveMessage =
-            document.getElementById('saveMessage');
-
+        const yearSelect = document.getElementById('yearSelect');
+        const searchInput = document.getElementById('searchInput');
+        const table = document.getElementById('congressTable');
+        const tableBody = document.getElementById('congressTableBody');
+        const selectAll = document.getElementById('selectAll');
+        const selectAllContainer = document.getElementById('selectAllContainer');
+        const selectedCount = document.getElementById('selectedCount');
+        const resultCount = document.getElementById('resultCount');
+        const loadingState = document.getElementById('loadingState');
+        const emptyState = document.getElementById('emptyState');
+        const emptyTitle = document.getElementById('emptyTitle');
+        const emptyMessage = document.getElementById('emptyMessage');
+        const errorState = document.getElementById('errorState');
+        const errorMessage = document.getElementById('errorMessage');
+        const saveButton = document.getElementById('saveButton');
+        const saveButtonTop = document.getElementById('saveButtonTop');
+        const cancelButton = document.getElementById('cancelButton');
+        const saveMessage = document.getElementById('saveMessage');
 
         /* ================================================================
            API
         ================================================================ */
-
         async function apiRequest(action, data = {}) {
-
-            const response =
-                await fetch(
-                    CONGRESS_API_URL,
-                    {
-                        method: 'POST',
-
-                        headers: {
-                            'Content-Type':
-                                'text/plain;charset=utf-8'
-                        },
-
-                        body: JSON.stringify({
-
-                            action: action,
-
-                            ...data
-
-                        })
-                    }
-                );
-
-
+            const response = await fetch(CONGRESS_API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify({ action, ...data })
+            });
             if (!response.ok) {
-
-                throw new Error(
-                    'خطا در ارتباط با سرور'
-                );
-
+                throw new Error('Server connection error');
             }
-
-
-            const result =
-                await response.json();
-
-
+            const result = await response.json();
             if (!result.success) {
-
-                throw new Error(
-                    result.error ||
-                    'خطای نامشخص در سرور'
-                );
-
+                throw new Error(result.error || 'Unknown server error');
             }
-
-
             return result.data;
-
         }
-
 
         /* ================================================================
            LOAD ALL CONGRESSES
         ================================================================ */
-        
         function UpdatedCongress() {
-            localStorage.removeItem(`allCongresses`);
-            loadAllCongresses()
+            localStorage.removeItem('allCongresses');
+            loadAllCongresses();
             ischangeed_congresses = true;
         }
+
         async function loadAllCongresses() {
             showLoading();
-
             try {
-                // ============================================================
-                // STEP 1: ابتدا از localStorage بخوان (همه کنگره‌ها - بدون ایمیل)
-                // ============================================================
-                // ✅ استفاده از کلید ثابت برای همه کاربران
                 const storedData = localStorage.getItem('allCongresses');
-
                 if (storedData) {
                     try {
                         const localCongresses = JSON.parse(storedData);
                         if (Array.isArray(localCongresses) && localCongresses.length > 0) {
                             congresses = localCongresses;
                             buildYearList();
-
                             const currentUser = getCurrentUser();
                             if (currentUser && currentUser.email) {
                                 await loadUserCongressesFromLocalStorage(currentUser);
                             }
-
                             hideLoading();
-
                             if (congresses.length > 0) {
                                 const years = [...new Set(congresses.map(c => String(c.yearFa || '').trim()).filter(y => y !== ''))];
                                 if (years.length > 0) {
@@ -515,114 +1433,55 @@
                     }
                 }
 
-                // ============================================================
-                // STEP 2: اگر در localStorage نبود، از API بخوان
-                // ============================================================
                 congresses = await apiRequest('listAllCongresses');
-
                 if (!Array.isArray(congresses)) {
                     congresses = [];
                 }
-
-                // ✅ ذخیره همه کنگره‌ها در localStorage (بدون ایمیل)
                 if (congresses.length > 0) {
                     localStorage.setItem('allCongresses', JSON.stringify(congresses));
                     console.log('✅ All congresses saved to localStorage');
                 }
-
                 buildYearList();
-
-                // بارگذاری انتخاب‌های کاربر از سرور
                 const currentUser = getCurrentUser();
                 if (currentUser && currentUser.email) {
                     await loadUserCongresses();
                 }
-
                 hideLoading();
-
                 if (congresses.length === 0) {
-                    showEmpty('هیچ کنگره‌ای در سیستم ثبت نشده است');
+                    showEmpty('No congresses registered in the system');
                     return;
                 }
-
-                showEmpty('لطفاً یک سال را انتخاب کنید');
+                showEmpty('Please select a year');
                 updateSelectedCount();
-
             } catch (error) {
                 showError(error.message);
             }
         }
+
         /* ================================================================
            LOAD USER CONGRESSES
         ================================================================ */
-
         async function loadUserCongresses() {
-
             try {
-
-                const result =
-                    await apiRequest(
-                        'listUserCongresses',
-                        {
-                            userid: USER_ID
-                        }
-                    );
-
-
-                if (!Array.isArray(result)) {
-
-                    return;
-
-                }
-
-
-                savedCongressIds =
-                    new Set(
-                        result.map(
-                            item =>
-                                String(
-                                    item.congressid
-                                )
-                        )
-                    );
-
-
-                selectedCongressIds =
-                    new Set(
-                        savedCongressIds
-                    );
-
-
+                const result = await apiRequest('listUserCongresses', { userid: USER_ID });
+                if (!Array.isArray(result)) return;
+                savedCongressIds = new Set(result.map(item => String(item.congressid)));
+                selectedCongressIds = new Set(savedCongressIds);
                 updateSelectedCount();
-
+            } catch (error) {
+                console.warn('Could not load user congresses:', error);
             }
-            catch (error) {
-
-                console.warn(
-                    'Could not load user congresses:',
-                    error
-                );
-
-            }
-
         }
 
-        /* ================================================================
-           LOAD CONGRESSES FROM LOCAL STORAGE
-        ================================================================ */
         function loadAllCongresses_FromLocalStorage() {
             const currentUser = getCurrentUser();
-
             if (!currentUser || !currentUser.email) {
                 console.log('User not logged in');
-                showEmpty('لطفاً ابتدا وارد حساب کاربری خود شوید');
+                showEmpty('Please login first');
                 return false;
             }
-
-            const storedData = localStorage.getItem(`allCongresses`);
-
+            const storedData = localStorage.getItem('allCongresses');
             let congressList = [];
-
             try {
                 congressList = storedData ? JSON.parse(storedData) : [];
                 console.log('Loaded congresses from localStorage:', congressList);
@@ -630,19 +1489,15 @@
                 console.error('Error parsing congress data from localStorage:', error);
                 congressList = [];
             }
-
             if (!Array.isArray(congressList) || congressList.length === 0) {
-                showEmpty('هیچ کنگره‌ای در localStorage یافت نشد');
+                showEmpty('No congresses found in localStorage');
                 return false;
             }
-
             congresses = congressList;
             buildYearList();
             loadUserCongressesFromLocalStorage(currentUser);
             hideLoading();
-
             console.log(`✅ ${congresses.length} congress(es) loaded from localStorage`);
-
             if (congresses.length > 0) {
                 const years = [...new Set(congresses.map(c => String(c.yearFa || '').trim()).filter(y => y !== ''))];
                 if (years.length > 0) {
@@ -650,15 +1505,12 @@
                     filterByYear();
                 }
             }
-
-            return true; // نشان می‌دهد که داده از localStorage بارگذاری شده
+            return true;
         }
 
         function loadUserCongressesFromLocalStorage(user) {
             try {
-                // خواندن IDهای انتخاب شده از localStorage
                 const storedIds = localStorage.getItem(`selectedCongressIds_${user.email}`);
-
                 if (storedIds) {
                     const ids = JSON.parse(storedIds);
                     savedCongressIds = new Set(ids.map(id => String(id)));
@@ -674,1239 +1526,319 @@
         /* ================================================================
            BUILD YEARS
         ================================================================ */
-
         function buildYearList() {
-
-            const years = [
-
-                ...new Set(
-
-                    congresses
-
-                        .map(
-                            congress =>
-                                String(
-                                    congress.yearFa || ''
-                                ).trim()
-                        )
-
-                        .filter(
-                            year =>
-                                year !== ''
-                        )
-
-                )
-
-            ];
-
-
-            years.sort(
-                (a, b) =>
-                    Number(b) - Number(a)
-            );
-
-
+            const years = [...new Set(
+                congresses
+                    .map(congress => String(congress.yearFa || '').trim())
+                    .filter(year => year !== '')
+            )];
+            years.sort((a, b) => Number(b) - Number(a));
             yearSelect.innerHTML = '';
-
-
-            const defaultOption =
-                document.createElement(
-                    'option'
-                );
-
+            const defaultOption = document.createElement('option');
             defaultOption.value = '';
-
-            defaultOption.textContent =
-                'انتخاب سال';
-
-            yearSelect.appendChild(
-                defaultOption
-            );
-
-
-            years.forEach(
-                function (year) {
-
-                    const option =
-                        document.createElement(
-                            'option'
-                        );
-
-                    option.value =
-                        year;
-
-                    option.textContent =
-                        year;
-
-                    yearSelect.appendChild(
-                        option
-                    );
-
-                }
-            );
-
+            defaultOption.textContent = 'Select Year';
+            yearSelect.appendChild(defaultOption);
+            years.forEach(function (year) {
+                const option = document.createElement('option');
+                option.value = year;
+                option.textContent = year;
+                yearSelect.appendChild(option);
+            });
         }
-
 
         /* ================================================================
            FILTER BY YEAR
         ================================================================ */
-
         function filterByYear() {
-
-            const year =
-                yearSelect.value;
-
-
+            const year = yearSelect.value;
             searchInput.value = '';
-
-
             if (!year) {
-
                 filteredCongresses = [];
-
-                showEmpty(
-                    'لطفاً یک سال را انتخاب کنید'
-                );
-
+                showEmpty('Please select a year');
                 return;
-
             }
-
-
-            filteredCongresses =
-                congresses.filter(
-                    function (congress) {
-
-                        return String(
-                            congress.yearFa || ''
-                        ).trim()
-                            ===
-                            String(year).trim();
-
-                    }
-                );
-
-
-            renderCongresses(
-                filteredCongresses
-            );
-
+            filteredCongresses = congresses.filter(function (congress) {
+                return String(congress.yearFa || '').trim() === String(year).trim();
+            });
+            renderCongresses(filteredCongresses);
         }
-
 
         /* ================================================================
            SEARCH
         ================================================================ */
-
         function filterCongresses() {
-
-            const year =
-                yearSelect.value;
-
-
+            const year = yearSelect.value;
             if (!year) {
-
-                showEmpty(
-                    'ابتدا یک سال را انتخاب کنید'
-                );
-
+                showEmpty('Please select a year first');
                 return;
-
             }
-
-
-            const query =
-                searchInput.value
-                    .trim()
-                    .toLowerCase();
-
-
-            const yearCongresses =
-                congresses.filter(
-                    function (congress) {
-
-                        return String(
-                            congress.yearFa || ''
-                        ).trim()
-                            ===
-                            String(year).trim();
-
-                    }
-                );
-
-
+            const query = searchInput.value.trim().toLowerCase();
+            const yearCongresses = congresses.filter(function (congress) {
+                return String(congress.yearFa || '').trim() === String(year).trim();
+            });
             if (!query) {
-
-                filteredCongresses =
-                    [...yearCongresses];
-
-            }
-            else {
-
-                filteredCongresses =
-                    yearCongresses.filter(
-                        function (congress) {
-
-                            return (
-
-                                String(
-                                    congress.groupname || ''
-                                )
-                                    .toLowerCase()
-                                    .includes(query)
-
-                                ||
-
-                                String(
-                                    congress.nameFa || ''
-                                )
-                                    .toLowerCase()
-                                    .includes(query)
-
-                                ||
-
-                                String(
-                                    congress.nameEn || ''
-                                )
-                                    .toLowerCase()
-                                    .includes(query)
-
-                                ||
-
-                                String(
-                                    congress.topicFa || ''
-                                )
-                                    .toLowerCase()
-                                    .includes(query)
-
-                                ||
-
-                                String(
-                                    congress.topicEn || ''
-                                )
-                                    .toLowerCase()
-                                    .includes(query)
-
-                                ||
-
-                                String(
-                                    congress.typeFa || ''
-                                )
-                                    .toLowerCase()
-                                    .includes(query)
-
-                                ||
-
-                                String(
-                                    congress.locationFa || ''
-                                )
-                                    .toLowerCase()
-                                    .includes(query)
-
-                            );
-
-                        }
+                filteredCongresses = [...yearCongresses];
+            } else {
+                filteredCongresses = yearCongresses.filter(function (congress) {
+                    return (
+                        String(congress.groupname || '').toLowerCase().includes(query) ||
+                        String(congress.nameFa || '').toLowerCase().includes(query) ||
+                        String(congress.nameEn || '').toLowerCase().includes(query) ||
+                        String(congress.topicFa || '').toLowerCase().includes(query) ||
+                        String(congress.topicEn || '').toLowerCase().includes(query) ||
+                        String(congress.typeFa || '').toLowerCase().includes(query) ||
+                        String(congress.locationFa || '').toLowerCase().includes(query)
                     );
-
+                });
             }
-
-
-            renderCongresses(
-                filteredCongresses
-            );
-
+            renderCongresses(filteredCongresses);
         }
-
 
         /* ================================================================
            RENDER
         ================================================================ */
-
         function renderCongresses(data) {
-
-            const list =
-                Array.isArray(data)
-                    ? data
-                    : [];
-
-
+            const list = Array.isArray(data) ? data : [];
             tableBody.innerHTML = '';
-
-
-            updateResultCount(
-                list.length
-            );
-
-
+            updateResultCount(list.length);
             if (list.length === 0) {
-
-                showEmpty(
-                    'نتیجه‌ای با این مشخصات پیدا نشد'
-                );
-
+                showEmpty('No results found');
                 return;
-
             }
-
-
-            loadingState.style.display =
-                'none';
-
-            emptyState.style.display =
-                'none';
-
-            errorState.style.display =
-                'none';
-
-            table.style.display =
-                'table';
-
-            selectAllContainer.style.display =
-                'flex';
-
-
-            list.forEach(
-                function (congress) {
-
-                    const row =
-                        document.createElement(
-                            'tr'
-                        );
-
-
-                    /*
-                     * Checkbox
-                     */
-
-                    const checkboxCell =
-                        document.createElement(
-                            'td'
-                        );
-
-                    checkboxCell.className =
-                        'checkbox-cell';
-
-
-                    const checkbox =
-                        document.createElement(
-                            'input'
-                        );
-
-                    checkbox.type =
-                        'checkbox';
-
-                    checkbox.className =
-                        'congress-checkbox';
-
-                    checkbox.value =
-                        congress.id;
-
-
-                    checkbox.checked =
-                        selectedCongressIds.has(
-                            String(congress.id)
-                        );
-
-
-                    checkbox.addEventListener(
-                        'change',
-                        function () {
-
-                            handleSelection(
-                                congress.id,
-                                this.checked
-                            );
-
-                        }
-                    );
-
-
-                    checkboxCell.appendChild(
-                        checkbox
-                    );
-
-
-                    /*
-                     * Name
-                     */
-
-                    const nameCell =
-                        document.createElement(
-                            'td'
-                        );
-
-                    nameCell.className =
-                        'congress-name';
-
-                    nameCell.textContent =
-                        congress.nameFa || '-';
-
-
-                    /*
-                     * Topic
-                     */
-
-                    const topicCell =
-                        document.createElement(
-                            'td'
-                        );
-
-                    topicCell.className =
-                        'congress-topic';
-
-                    topicCell.textContent =
-                        congress.topicFa || '-';
-
-
-                    /*
-                     * Type
-                     */
-
-                    const typeCell =
-                        document.createElement(
-                            'td'
-                        );
-
-                    const typeSpan =
-                        document.createElement(
-                            'span'
-                        );
-
-                    typeSpan.className =
-                        'congress-type';
-
-                    typeSpan.textContent =
-                        congress.typeFa || '-';
-
-                    typeCell.appendChild(
-                        typeSpan
-                    );
-
-
-                    /*
-                     * Location
-                     */
-
-                    const locationCell =
-                        document.createElement(
-                            'td'
-                        );
-
-                    locationCell.className =
-                        'congress-location';
-
-                    locationCell.textContent =
-                        congress.locationFa || '-';
-
-
-                    /*
-                     * Website
-                     */
-
-                    const websiteCell =
-                        document.createElement(
-                            'td'
-                        );
-
-                    websiteCell.className =
-                        'congress-website';
-
-
-                    if (congress.website) {
-
-                        const link =
-                            document.createElement(
-                                'a'
-                            );
-
-                        link.href =
-                            congress.website;
-
-                        link.target =
-                            '_blank';
-
-                        link.rel =
-                            'noopener noreferrer';
-
-                        link.textContent =
-                            'مشاهده سایت';
-
-                        websiteCell.appendChild(
-                            link
-                        );
-
-                    }
-                    else {
-
-                        websiteCell.textContent =
-                            '-';
-
-                    }
-
-
-                    row.appendChild(
-                        checkboxCell
-                    );
-
-                    row.appendChild(
-                        nameCell
-                    );
-
-                    row.appendChild(
-                        topicCell
-                    );
-
-                    row.appendChild(
-                        typeCell
-                    );
-
-                    row.appendChild(
-                        locationCell
-                    );
-
-                    row.appendChild(
-                        websiteCell
-                    );
-
-
-                    tableBody.appendChild(
-                        row
-                    );
-
+            loadingState.style.display = 'none';
+            emptyState.style.display = 'none';
+            errorState.style.display = 'none';
+            table.style.display = 'table';
+            selectAllContainer.style.display = 'flex';
+
+            list.forEach(function (congress) {
+                const row = document.createElement('tr');
+                const checkboxCell = document.createElement('td');
+                checkboxCell.className = 'checkbox-cell';
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.className = 'congress-checkbox';
+                checkbox.value = congress.id;
+                checkbox.checked = selectedCongressIds.has(String(congress.id));
+                checkbox.addEventListener('change', function () {
+                    handleSelection(congress.id, this.checked);
+                });
+                checkboxCell.appendChild(checkbox);
+
+                const nameCell = document.createElement('td');
+                nameCell.className = 'congress-name';
+                nameCell.textContent = congress.nameFa || '-';
+
+                const topicCell = document.createElement('td');
+                topicCell.className = 'congress-topic';
+                topicCell.textContent = congress.topicFa || '-';
+
+                const typeCell = document.createElement('td');
+                const typeSpan = document.createElement('span');
+                typeSpan.className = 'congress-type';
+                typeSpan.textContent = congress.typeFa || '-';
+                typeCell.appendChild(typeSpan);
+
+                const locationCell = document.createElement('td');
+                locationCell.className = 'congress-location';
+                locationCell.textContent = congress.locationFa || '-';
+
+                const websiteCell = document.createElement('td');
+                websiteCell.className = 'congress-website';
+                if (congress.website) {
+                    const link = document.createElement('a');
+                    link.href = congress.website;
+                    link.target = '_blank';
+                    link.rel = 'noopener noreferrer';
+                    link.textContent = 'Visit Site';
+                    websiteCell.appendChild(link);
+                } else {
+                    websiteCell.textContent = '-';
                 }
-            );
 
-
+                row.appendChild(checkboxCell);
+                row.appendChild(nameCell);
+                row.appendChild(topicCell);
+                row.appendChild(typeCell);
+                row.appendChild(locationCell);
+                row.appendChild(websiteCell);
+                tableBody.appendChild(row);
+            });
             updateSelectedCount();
-
             updateSelectAllState();
-
         }
-
 
         /* ================================================================
            SELECTION
         ================================================================ */
-
-        function handleSelection(
-            congressId,
-            selected
-        ) {
-            ischangeed_congresses = true
-
-            const id =
-                String(congressId);
-
-
+        function handleSelection(congressId, selected) {
+            ischangeed_congresses = true;
+            const id = String(congressId);
             if (selected) {
-
-                selectedCongressIds.add(
-                    id
-                );
-
+                selectedCongressIds.add(id);
+            } else {
+                selectedCongressIds.delete(id);
             }
-            else {
-
-                selectedCongressIds.delete(
-                    id
-                );
-
-            }
-
-
             updateSelectedCount();
-
             updateSelectAllState();
-
         }
-
 
         /* ================================================================
            SELECT ALL
         ================================================================ */
-
         function toggleSelectAll() {
-
-            const checkboxes =
-                document.querySelectorAll(
-                    '.congress-checkbox'
-                );
-
-
-            checkboxes.forEach(
-                function (checkbox) {
-
-                    const id =
-                        String(
-                            checkbox.value
-                        );
-
-
-                    checkbox.checked =
-                        selectAll.checked;
-
-
-                    if (selectAll.checked) {
-
-                        selectedCongressIds.add(
-                            id
-                        );
-
-                    }
-                    else {
-
-                        selectedCongressIds.delete(
-                            id
-                        );
-
-                    }
-
+            const checkboxes = document.querySelectorAll('.congress-checkbox');
+            checkboxes.forEach(function (checkbox) {
+                const id = String(checkbox.value);
+                checkbox.checked = selectAll.checked;
+                if (selectAll.checked) {
+                    selectedCongressIds.add(id);
+                } else {
+                    selectedCongressIds.delete(id);
                 }
-            );
-
-
+            });
             updateSelectedCount();
-
             updateSelectAllState();
-
         }
-
 
         /* ================================================================
            SELECT ALL STATE
         ================================================================ */
-
         function updateSelectAllState() {
-
-            const checkboxes =
-                document.querySelectorAll(
-                    '.congress-checkbox'
-                );
-
-
+            const checkboxes = document.querySelectorAll('.congress-checkbox');
             if (checkboxes.length === 0) {
-
                 selectAll.checked = false;
-
                 selectAll.indeterminate = false;
-
                 return;
-
             }
-
-
-            const checked =
-                document.querySelectorAll(
-                    '.congress-checkbox:checked'
-                ).length;
-
-
-            if (
-                checked === checkboxes.length
-            ) {
-
+            const checked = document.querySelectorAll('.congress-checkbox:checked').length;
+            if (checked === checkboxes.length) {
                 selectAll.checked = true;
-
                 selectAll.indeterminate = false;
-
-            }
-            else if (
-                checked > 0
-            ) {
-
+            } else if (checked > 0) {
                 selectAll.checked = false;
-
                 selectAll.indeterminate = true;
-
-            }
-            else {
-
+            } else {
                 selectAll.checked = false;
-
                 selectAll.indeterminate = false;
-
             }
-
         }
-
 
         /* ================================================================
            SAVE
         ================================================================ */
         function getCurrentUser() {
             try {
-                const _curtuser = JSON.parse(
-                    localStorage.getItem(
-                        SESSION_KEY
-                    )
-                ) || null;
-                return _curtuser
+                const _curtuser = JSON.parse(localStorage.getItem(SESSION_KEY)) || null;
+                return _curtuser;
             } catch (error) {
                 return null;
             }
         }
+
         async function saveSelection() {
-
             const currentUser = getCurrentUser();
-
-            // ============================================================
-            // 1. بررسی ورود کاربر
-            // ============================================================
-
             if (!currentUser) {
-
-                historyList.innerHTML = `
-            <div class="history-empty">
-                <p>
-                    🔒 Please login to see
-                    your conversation history.
-                </p>
-            </div>
-        `;
-
+                showSaveMessageTiming('Please login first', 'error');
                 return;
             }
-
-
-            // ============================================================
-            // 2. جلوگیری از ذخیره همزمان
-            // ============================================================
-
-            if (isSaving) {
-                return;
-            }
-
+            if (isSaving) return;
             isSaving = true;
-
-
-            // ============================================================
-            // 3. غیرفعال کردن دکمه‌ها
-            // ============================================================
-
             saveButton.disabled = true;
             saveButtonTop.disabled = true;
             cancelButton.disabled = true;
-
-
-            showSaveMessage(
-                'در حال ذخیره اطلاعات...',
-                ''
-            );
-
+            showSaveMessage('Saving...', '');
 
             try {
-
-                // ========================================================
-                // 4. دریافت ID های انتخاب شده
-                // ========================================================
-
-                const congressIds =
-                    Array.from(selectedCongressIds)
-                        .map(id => String(id));
-
-
-                let result = null;
-
-
-                // ========================================================
-                // 5. اگر کنگره‌ها تغییر کرده‌اند → آپدیت سرور
-                // ========================================================
+                const congressIds = Array.from(selectedCongressIds).map(id => String(id));
 
                 if (ischangeed_congresses === true) {
-
-                    console.log(
-                        'Congress selection changed. Updating server...'
-                    );
-
-
-                    result = await apiRequest(
-                        'saveUserCongresses',
-                        {
-                            userid: USER_ID,
-                            congressIds: congressIds
-                        }
-                    );
-
-
-                    console.log(
-                        'Server update result:',
-                        result
-                    );
-
-
-                    // ====================================================
-                    // 6. بعد از موفقیت سرور، State را به‌روز کن
-                    // ====================================================
-
-                    savedCongressIds =
-                        new Set(congressIds);
-
-                    selectedCongressIds =
-                        new Set(savedCongressIds);
-
-
+                    console.log('Congress selection changed. Updating server...');
+                    const result = await apiRequest('saveUserCongresses', {
+                        userid: USER_ID,
+                        congressIds: congressIds
+                    });
+                    console.log('Server update result:', result);
+                    savedCongressIds = new Set(congressIds);
+                    selectedCongressIds = new Set(savedCongressIds);
                     updateSelectedCount();
-
-
-                    // تغییر با موفقیت ذخیره شد
                     ischangeed_congresses = false;
                 }
 
+                const selectedCongressList = congresses
+                    .filter(congress => selectedCongressIds.has(String(congress.id)))
+                    .map(congress => ({
+                        id: String(congress.id),
+                        groupname: congress.groupname || '',
+                        nameFa: congress.nameFa || '',
+                        nameEn: congress.nameEn || '',
+                        topicFa: congress.topicFa || '',
+                        topicEn: congress.topicEn || '',
+                        yearFa: congress.yearFa || '',
+                        typeFa: congress.typeFa || '',
+                        locationFa: congress.locationFa || '',
+                        website: congress.website || ''
+                    }));
 
-                // ========================================================
-                // 7. استخراج اطلاعات کامل کنگره‌های انتخاب شده
-                // ========================================================
+                localStorage.setItem(`selectedCongressIds_${currentUser.email}`, JSON.stringify(congressIds));
+                localStorage.setItem(`selectedCongressList_${currentUser.email}`, JSON.stringify(selectedCongressList));
+                localStorage.setItem('statusfocuse', 'renderCongressHistory');
 
-                const selectedCongressList =
-                    congresses
-                        .filter(congress =>
-                            selectedCongressIds.has(
-                                String(congress.id)
-                            )
-                        )
-                        .map(congress => ({
-
-                            id:
-                                String(congress.id),
-
-                            groupname:
-                                congress.groupname || '',
-
-                            nameFa:
-                                congress.nameFa || '',
-
-                            nameEn:
-                                congress.nameEn || '',
-
-                            topicFa:
-                                congress.topicFa || '',
-
-                            topicEn:
-                                congress.topicEn || '',
-
-                            yearFa:
-                                congress.yearFa || '',
-
-                            typeFa:
-                                congress.typeFa || '',
-
-                            locationFa:
-                                congress.locationFa || '',
-
-                            website:
-                                congress.website || ''
-
-                        }));
-
-
-                // ========================================================
-                // 8. ذخیره ID ها در LocalStorage
-                // ========================================================
-
-                localStorage.setItem(
-                    `selectedCongressIds_${currentUser.email}`,
-                    JSON.stringify(congressIds)
-                );
-
-
-                // ========================================================
-                // 9. ذخیره اطلاعات کامل کنگره‌ها
-                // ========================================================
-
-                localStorage.setItem(
-                    `selectedCongressList_${currentUser.email}`,
-                    JSON.stringify(selectedCongressList)
-                );
-
-
-                // ========================================================
-                // 10. اعلام تغییر وضعیت
-                // ========================================================
-
-                localStorage.setItem(
-                    'statusfocuse',
-                    'renderCongressHistory'
-                );
-
-
-                // ========================================================
-                // 11. پیام موفقیت
-                // ========================================================
-
-                showSaveMessageTiming(
-                    'انتخاب کنگره‌ها با موفقیت ذخیره شد.',
-                    'success'
-                );
-
-
-                // ========================================================
-                // 12. لاگ برای Debug
-                // ========================================================
-
-                console.log(
-                    'Saved Congress IDs:',
-                    congressIds
-                );
-
-                console.log(
-                    'Saved Congress List:',
-                    selectedCongressList
-                );
-
-                console.log(
-                    'Save result:',
-                    result
-                );
-
-
-                // ========================================================
-                // 13. برگشت به صفحه اصلی
-                // ========================================================
-
+                showSaveMessageTiming('Congresses saved successfully.', 'success');
+                console.log('Saved Congress IDs:', congressIds);
+                console.log('Saved Congress List:', selectedCongressList);
                 backToHome();
-
-
-            }
-            catch (error) {
-
-                console.error(
-                    'Save congress error:',
-                    error
-                );
-
-
-                showSaveMessageTiming(
-                    error.message ||
-                    'خطا در ذخیره اطلاعات',
-                    'error'
-                );
-
-            }
-            finally {
-
-                // ========================================================
-                // 14. فعال کردن دوباره دکمه‌ها
-                // ========================================================
-
+            } catch (error) {
+                console.error('Save congress error:', error);
+                showSaveMessageTiming(error.message || 'Error saving data', 'error');
+            } finally {
                 isSaving = false;
-
                 saveButton.disabled = false;
                 saveButtonTop.disabled = false;
                 cancelButton.disabled = false;
             }
         }
 
-        async function saveSelection_old() {
-
-            const currentUser = getCurrentUser();
-            if (!currentUser) {
-                historyList.innerHTML = `
-                            <div class="history-empty">
-                                <p>
-                                    🔒 Please login to see
-                                    your conversation history.
-                                </p>
-                            </div>
-                        `;
-                return;
-            }            
-
-            if (isSaving) {
-                return;
-            }
-
-            isSaving = true;
-
-            saveButton.disabled = true;
-            saveButtonTop.disabled = true;
-            cancelButton.disabled = true;
-
-            showSaveMessage(
-                'در حال ذخیره اطلاعات...',
-                ''
-            );
-
-            try {
-
-                // ============================================================
-                // 1. دریافت ID های انتخاب شده
-                // ============================================================
-
-                const congressIds =
-                    Array.from(selectedCongressIds)
-                        .map(id => String(id));
-
-
-                // ============================================================
-                // 2. ذخیره در سرور
-                // ============================================================
-                const result =
-                    await apiRequest(
-                        'saveUserCongresses',
-                        {
-                            userid: USER_ID,
-                            congressIds: congressIds
-                        }
-                    );
-
-
-                // ============================================================
-                // 3. به‌روزرسانی State
-                // ============================================================
-
-                savedCongressIds =
-                    new Set(congressIds);
-
-                selectedCongressIds =
-                    new Set(savedCongressIds);
-
-                updateSelectedCount();
-
-
-                // ============================================================
-                // 4. استخراج اطلاعات کامل کنگره‌های انتخاب شده
-                // ============================================================
-
-                const selectedCongressList =
-                    congresses
-                        .filter(congress =>
-                            selectedCongressIds.has(
-                                String(congress.id)
-                            )
-                        )
-                        .map(congress => ({
-
-                            id:
-                                String(congress.id),
-
-                            groupname:
-                                congress.groupname || '',
-                                
-                            nameFa:
-                                congress.nameFa || '',
-
-                            nameEn:
-                                congress.nameEn || '',
-
-                            topicFa:
-                                congress.topicFa || '',
-
-                            topicEn:
-                                congress.topicEn || '',
-
-                            yearFa:
-                                congress.yearFa || '',
-
-                            typeFa:
-                                congress.typeFa || '',
-
-                            locationFa:
-                                congress.locationFa || '',
-
-                            website:
-                                congress.website || ''
-
-                        }));
-
-
-                // ============================================================
-                // 5. ذخیره ID ها
-                // ============================================================
-
-                localStorage.setItem(
-                    `selectedCongressIds_${currentUser.email}`,
-                    JSON.stringify(congressIds)
-                );
-
-
-                // ============================================================
-                // 6. ذخیره اطلاعات کامل کنگره ها
-                // ============================================================
-                localStorage.setItem(
-                    `selectedCongressList_${currentUser.email}`,
-                    JSON.stringify(selectedCongressList)
-                );
-
-
-                // ============================================================
-                // 7. اعلام اینکه اطلاعات تغییر کرده است
-                // ============================================================
-                localStorage.setItem(`statusfocuse`,  "renderCongressHistory");
-                // ============================================================
-                // 8. پیام موفقیت
-                // ============================================================
-
-                showSaveMessageTiming(
-                    'انتخاب کنگره‌ها با موفقیت ذخیره شد.',
-                    'success'
-                );
-
-
-                console.log(
-                    'Saved Congress IDs:',
-                    congressIds
-                );
-
-                console.log(
-                    'Saved Congress List:',
-                    selectedCongressList
-                );
-
-                console.log(
-                    'Save result:',
-                    result
-                );
-
-                backToHome();
-
-            }
-            catch (error) {
-
-                console.error(
-                    'Save congress error:',
-                    error
-                );
-
-                showSaveMessageTiming(
-                    error.message ||
-                    'خطا در ذخیره اطلاعات',
-                    'error'
-                );
-
-            }
-            finally {
-
-                isSaving = false;
-
-                saveButton.disabled = false;
-                saveButtonTop.disabled = false;
-                
-                cancelButton.disabled = false;
-
-            }
-        }
         /* ================================================================
            CANCEL
         ================================================================ */
-
         function cancelSelection() {
-
-            /*
-             * بازگشت به آخرین وضعیت ذخیره‌شده
-             */
-
-            selectedCongressIds =
-                new Set(
-                    savedCongressIds
-                );
-
-
+            selectedCongressIds = new Set(savedCongressIds);
             updateSelectedCount();
-
-
-            /*
-             * اگر سال انتخاب شده،
-             * جدول دوباره Render می‌شود
-             */
-
             if (yearSelect.value) {
-
                 filterCongresses();
-
+            } else {
+                showEmpty('Please select a year');
             }
-            else {
-
-                showEmpty(
-                    'لطفاً یک سال را انتخاب کنید'
-                );
-
-            }
-
-
-            showSaveMessageTiming(
-                'تغییرات لغو شد.',
-                ''
-            );
-
+            showSaveMessageTiming('Changes cancelled.', '');
         }
-
 
         /* ================================================================
-           UI
+           UI HELPERS
         ================================================================ */
-
         function updateSelectedCount() {
-
-            selectedCount.textContent =
-                convertToPersianNumber(
-                    selectedCongressIds.size
-                );
-
+            selectedCount.textContent = selectedCongressIds.size;
         }
-
 
         function updateResultCount(count) {
-
-            resultCount.textContent =
-                convertToPersianNumber(count)
-                +
-                ' نتیجه';
-
+            resultCount.textContent = count + ' results';
         }
 
-
-        function convertToPersianNumber(value) {
-
-            return String(value)
-                .replace(
-                    /\d/g,
-                    function (digit) {
-
-                        return '۰۱۲۳۴۵۶۷۸۹'[
-                            digit
-                        ];
-
-                    }
-                );
-
-        }
-
-
-        function showSaveMessage(
-            message,
-            type
-        ) {
-
-            saveMessage.textContent =
-                message;
-
-            saveMessage.className =
-                'save-message';
-
-
-            if (type) {
-
-                saveMessage.classList.add(
-                    type
-                );
-
-            }
-
-        }
-
-        function showSaveMessageTiming(message, type) {
-
+        function showSaveMessage(message, type) {
             saveMessage.textContent = message;
-
             saveMessage.className = 'save-message';
-
             if (type) {
                 saveMessage.classList.add(type);
             }
+        }
 
+        function showSaveMessageTiming(message, type) {
+            saveMessage.textContent = message;
+            saveMessage.className = 'save-message';
+            if (type) {
+                saveMessage.classList.add(type);
+            }
             saveMessage.style.display = 'block';
-
             setTimeout(function () {
                 saveMessage.style.display = 'none';
             }, 3000);
@@ -1915,154 +1847,62 @@
         /* ================================================================
            UI STATES
         ================================================================ */
-
         function showLoading() {
-
-            loadingState.style.display =
-                'block';
-
-            emptyState.style.display =
-                'none';
-
-            errorState.style.display =
-                'none';
-
-            table.style.display =
-                'none';
-
-            selectAllContainer.style.display =
-                'none';
-
+            loadingState.style.display = 'flex';
+            emptyState.style.display = 'none';
+            errorState.style.display = 'none';
+            table.style.display = 'none';
+            selectAllContainer.style.display = 'none';
         }
-
 
         function hideLoading() {
-
-            loadingState.style.display =
-                'none';
-
+            loadingState.style.display = 'none';
         }
-
 
         function showEmpty(message) {
-
-            loadingState.style.display =
-                'none';
-
-            errorState.style.display =
-                'none';
-
-            table.style.display =
-                'none';
-
-            selectAllContainer.style.display =
-                'none';
-
-            emptyState.style.display =
-                'block';
-
-
-            emptyTitle.textContent =
-                'نتیجه‌ای یافت نشد';
-
-
-            emptyMessage.textContent =
-                message ||
-                'هیچ کنگره‌ای یافت نشد';
-
-
+            loadingState.style.display = 'none';
+            errorState.style.display = 'none';
+            table.style.display = 'none';
+            selectAllContainer.style.display = 'none';
+            emptyState.style.display = 'flex';
+            emptyTitle.textContent = 'No results found';
+            emptyMessage.textContent = message || 'No congresses found';
             updateResultCount(0);
-
-
             selectAll.checked = false;
-
             selectAll.indeterminate = false;
-
         }
-
 
         function showError(message) {
-
-            loadingState.style.display =
-                'none';
-
-            emptyState.style.display =
-                'none';
-
-            table.style.display =
-                'none';
-
-            selectAllContainer.style.display =
-                'none';
-
-            errorState.style.display =
-                'block';
-
-
-            errorMessage.textContent =
-                message ||
-                'خطا در دریافت اطلاعات';
-
-
+            loadingState.style.display = 'none';
+            emptyState.style.display = 'none';
+            table.style.display = 'none';
+            selectAllContainer.style.display = 'none';
+            errorState.style.display = 'flex';
+            errorMessage.textContent = message || 'Error loading data';
             updateResultCount(0);
-
         }
-
 
         /* ================================================================
            EVENTS
         ================================================================ */
-
-        yearSelect.addEventListener(
-            'change',
-            filterByYear
-        );
-
-
-        searchInput.addEventListener(
-            'input',
-            filterCongresses
-        );
-
-
-        selectAll.addEventListener(
-            'change',
-            toggleSelectAll
-        );
-
-
-        saveButton.addEventListener(
-            'click',
-            saveSelection
-        );
-
-        saveButtonTop.addEventListener(
-            'click',
-            saveSelection
-        );
-
-
-        cancelButton.addEventListener(
-            'click',
-            cancelSelection
-        );
-
+        yearSelect.addEventListener('change', filterByYear);
+        searchInput.addEventListener('input', filterCongresses);
+        selectAll.addEventListener('change', toggleSelectAll);
+        saveButton.addEventListener('click', saveSelection);
+        saveButtonTop.addEventListener('click', saveSelection);
+        cancelButton.addEventListener('click', cancelSelection);
 
         /* ================================================================
            INITIALIZE
         ================================================================ */
         function initializeCongressPage() {
-            // بررسی اینکه آیا داده در localStorage وجود دارد
             const currentUser = getCurrentUser();
-
             if (currentUser && currentUser.email) {
                 const storedData = localStorage.getItem(`selectedCongressList_${currentUser.email}`);
-
                 if (storedData) {
                     try {
                         const congressList = JSON.parse(storedData);
                         if (Array.isArray(congressList) && congressList.length > 0) {
-                            // داده در localStorage وجود دارد
                             loadAllCongresses_FromLocalStorage();
                             return;
                         }
@@ -2071,70 +1911,35 @@
                     }
                 }
             }
-
-            // اگر داده در localStorage نبود، از API دریافت کن
             loadAllCongresses();
         }
 
-        document.addEventListener(
-            'DOMContentLoaded',
-            function () {
-                initializeCongressPage();
-            }
-        );
-
+        document.addEventListener('DOMContentLoaded', function () {
+            initializeCongressPage();
+        });
 
         /* ================================================================
            PUBLIC API
         ================================================================ */
+        window.getSelectedCongressIds = function () {
+            return Array.from(selectedCongressIds);
+        };
+        window.loadAllCongresses = loadAllCongresses;
+        window.filterByYear = filterByYear;
+        window.saveSelection = saveSelection;
+        window.cancelSelection = cancelSelection;
 
-        window.getSelectedCongressIds =
-            function () {
-
-                return Array.from(
-                    selectedCongressIds
-                );
-
-            };
-
-
-        window.loadAllCongresses =
-            loadAllCongresses;
-
-
-        window.filterByYear =
-            filterByYear;
-
-
-        window.saveSelection =
-            saveSelection;
-
-
-        window.cancelSelection =
-            cancelSelection;
-
-
-        console.log(
-            '✅ ConfSync Congress Selector loaded.'
-        );
+        console.log('✅ ConfSync Congress Selector loaded.');
 
         function backToHome() {
-            // اگر congress.html توسط window.open باز شده
             if (window.opener && !window.opener.closed) {
-
                 window.opener.focus();
                 window.close();
-
-            }
-            else {
-
-                // اگر congress.html مستقیماً باز شده
+            } else {
                 window.location.href = 'Index.html';
-
             }
         }
     </script>
 
 </body>
 </html>
-
