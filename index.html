@@ -1,1 +1,3006 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>ConfSync - AI Conference Assistant</title><link rel="stylesheet" href="assets/index.css"><script src="js/marked.min.js"></script><script src="js/config.js"></script></head></head><body><div class="sidebar-overlay" id="sidebarOverlay"></div><div class="sidebar" id="sidebar"><div class="sidebar-header"><div class="logo-small"><span class="conf"> Conf </span><span class="sync"> Sync </span></div><button class="new-chat-btn" id="newChatBtn" onclick="openCongressModal()" ><span>➕/➖</span> update Congress List </button></div><div class="history-list" id="historyList"></div><div class="sidebar-footer"><div id="sidebarUserInfo"></div></div></div><div class="main-content"><div class="chat-header"><div style="display:flex;align-items:center;gap:12px;"><button class="menu-toggle" id="menuToggle" style=" font-size: 28px; font-weight: 900; background: none; border: none; cursor: pointer; color: #333; padding: 8px 12px; transition: all 0.3s ease; line-height: 1; " onmouseenter="this.style.color='#1a237e'; this.style.transform='scale(1.15)'" onmouseleave="this.style.color='#333'; this.style.transform='scale(1)'"> ☰ </button><span class="title" id="chatTitle" onclick="opensidebarpage()" style="cursor: pointer;"> Please select a conference first... </span></div><div class="input-actions"><div class="action-group"><span class="conf-badge">🎯 AI Conference Assistant</span><button class="modal-trigger-btn" id="modalTriggerBtn" onclick="openQuestionModal()"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zM7 10h2v7H7zm4-3h2v10h-2zm4-3h2v13h-2z" /></svg><span class="btn-text">Questions</span></button></div></div></div><div class="messages-area" id="messagesArea"><div style=" display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; color:#8e8ea0; text-align:center; padding:40px; "><div style=" font-size:48px; margin-bottom:16px; "><img src="assets/centericon.png" alt="Confsync Logo" style="width:280px;height:280px;display:block;margin:0 auto 10px;border-radius:50%;" /></div><h3 style=" color:#202123; font-weight:500; margin-bottom:8px; "> Welcome to ConfSync </h3><p style=" font-size:14px; max-width:400px; "> Ask questions about academic conferences and get accurate answers. </p><p style=" font-size:13px; margin-top:8px; color:#b0b0b0; "> Type your question below to get started. </p></div></div><div class="chat-input-area"><div class="input-wrapper" id="inputWrapper"><textarea id="messageInput" rows="1" maxlength="250" placeholder="Please select a conference first..." disabled></textarea><div class="input-actions"><div class="loading-spinner" id="loadingSpinner" style="display:none;"><div class="spinner-dots"><span></span><span></span><span></span></div></div><button class="send-btn" id="sendBtn" disabled>Send</button></div></div></div></div><div class="modal-overlay" id="authModal"><div class="modal-box"><div style="display: flex; justify-content: flex-end; width: 100%; padding: 8px 12px;"><button type="button" class="close-modal" id="closeModal" style=" background: #f0f0f0; border: none; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; font-size: 18px; color: #555; padding: 0; " onmouseenter="this.style.background='#e0e0e0'; this.style.transform='scale(1.1)'" onmouseleave="this.style.background='#f0f0f0'; this.style.transform='scale(1)'"> ✕ </button></div><h2 id="modalTitle">Login</h2><p class="modal-sub" id="modalSub">Enter your phone number and password</p><form id="authForm" autocomplete="off"><div id="registerFields" style="display:none;"><div class="form-group"><label for="fullName">Full Name<span style="color:red;">*</span></label><input type="text" id="fullName" placeholder="Enter First and last name"></div><div class="form-row"><div class="form-group"><label for="university">University<span style="color:red;">*</span></label><input type="text" id="university" placeholder="University of ....."></div><div class="form-group"><label for="degree">Degree<span style="color:red;">*</span></label><select id="degree"><option value="">Select...</option><option value="Bachelor">Bachelor</option><option value="Master">Master</option><option value="PhD">PhD</option><option value="Postdoc">Postdoc</option><option value="Professor">Professor</option><option value="Other">Other / Not Listed</option></select></div></div><div class="form-group"><label for="fieldstudy">Field of Study<span style="color:red;">*</span></label><input type="text" id="fieldstudy" placeholder="your Field of Study"></div><div class="form-group"><label for="researchInterest">Research Interest<span style="color:red;">*</span></label><input type="text" id="researchInterest" placeholder="Favorite topics"></div><div class="form-group" id="phoneGroup" style="display: none"><label for="phone">Phone Number<span style="color:red;">*</span></label><input type="tel" id="phone" placeholder="Enter mobile number"></div></div><div id="emailGroup" class="form-group" style="display:none;"><label for="email">Email Address<span style="color:red;">*</span></label><input type="email" id="email" placeholder="Enter your email address"></div><div id="changePasswordFields" style="display:none;"><div class="form-group"><label for="currentPassword">Current Password<span style="color:red;">*</span></label><input type="password" id="currentPassword" placeholder="Enter your current password"></div><div class="form-group"><label for="newPassword">New Password<span style="color:red;">*</span></label><input type="password" id="newPassword" placeholder="Minimum 6 characters" minlength="6"></div><div class="form-group"><label for="confirmNewPassword">Confirm New Password<span style="color:red;">*</span></label><input type="password" id="confirmNewPassword" placeholder="Re-enter new password"></div></div><div class="form-group" id="passwordGroup"><label for="password">Password<span style="color:red;">*</span></label><input type="password" id="password" placeholder="Minimum 6 characters" minlength="6"></div><div id="registerPasswordConfirm" style="display:none;"><div class="form-group"><label for="passwordConfirm">Confirm Password<span style="color:red;">*</span></label><input type="password" id="passwordConfirm" placeholder="Re-enter password"></div></div><div class="form-error" id="formError"></div><div class="form-success" id="formSuccess"></div><div class="form-actions"><button type="submit" class="btn-primary" id="submitBtn">Login</button><button type="button" class="btn-secondary" id="cancelBtn">Cancel</button></div><div class="switch-auth" id="authSwitch"><span id="switchText">Don't have an account?</span><a href="javascript:void(0)" id="switchLink">Sign up</a></div><div class="switch-auth" id="forgotPasswordWrapper"><span>Forgot your password?</span><a href="javascript:void(0)" id="forgotpasswordLink">Reset Password</a></div></form></div></div><div class="toast" id="toast"><i class="fas fa-check-circle" id="toastIcon"></i><span id="toastMessage">پیام</span></div><script> /*================================================================CONFIGURATION================================================================*/ const REGISTER_API_URL=CONFIG.REGISTER_API_URL; const ASK_CONGRESS_API_URL=CONFIG.ASK_CONGRESS_API_URL; /*================================================================STORAGE================================================================*/ const SESSION_KEY='confsync_session'; const CHATS_KEY='confsync_chats_'; function escapeHtml(value) { return String(value || '') .replace(/&/g, '&amp;') .replace(/</g, '&lt;') .replace(/>/g, '&gt;') .replace(/"/g, '&quot;') .replace(/'/g, '&#039;'); } // تابع نمایش پیام موقت function showToastMessage(message) { // می‌توانید از toast موجود خود استفاده کنید const toast=document.getElementById('toast'); if (toast) { toast.textContent=message; toast.classList.add('show'); setTimeout(()=> toast.classList.remove('show'), 2000); } else { alert(message); } } /*================================================================SESSION FUNCTIONS================================================================*/ function getCurrentUser() { try { const _curtuser=JSON.parse( localStorage.getItem( SESSION_KEY ) ) || null; return _curtuser } catch (error) { return null; } } function setCurrentUser(user) { if (user) { //alert(JSON.stringify(user, null, 2)); localStorage.setItem( SESSION_KEY, JSON.stringify(user) ); } else { localStorage.removeItem( SESSION_KEY ); } } /*================================================================CHAT STORAGE================================================================*/ function getChatStorageKey(userId) { return CHATS_KEY + userId; } function getUserChats(userId) { try { return JSON.parse( localStorage.getItem( getChatStorageKey(userId) ) ) || []; } catch (error) { return []; } } function saveUserChats( userId, chats ) { localStorage.setItem( getChatStorageKey(userId), JSON.stringify(chats) ); } function getCurrentChats() { const user=getCurrentUser(); if (!user) return []; return getUserChats( user.email ); } function saveCurrentChats(chats) { const user=getCurrentUser(); if (!user) return; saveUserChats( user.email, chats ); } /*================================================================PHONE NORMALIZATION================================================================*/ function normalizePhone(value) { return value /* let phoneNumber=String(value || '') .trim() .replace(/\s+/g, '') .replace(/-/g, ''); // Persian digits → English phoneNumber=phoneNumber.replace(/[۰-۹]/g, function (digit) { return '۰۱۲۳۴۵۶۷۸۹'.indexOf(digit); }); // Arabic digits → English phoneNumber=phoneNumber.replace(/[٠-٩]/g, function (digit) { return '٠١٢٣٤٥٦٧٨٩'.indexOf(digit); }); return phoneNumber; */ } function isValidPhone(phoneNumber) { // دقیقاً 11 رقم و شروع با 0 //return /^0\d{10}$/.test(phoneNumber); return phoneNumber } function isValidEmail(email) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email); } /*================================================================API REQUEST================================================================*/ async function authRequest(payload) { if ( !REGISTER_API_URL || REGISTER_API_URL==='YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL' ) { throw new Error( 'Authentication API URL is not configured.' ); } console.log('==========AUTH REQUEST=========='); console.log('API URL:', REGISTER_API_URL); console.log('Origin:', window.location.origin); console.log('Payload:', payload); console.log('=================================='); let response; try { const params=new URLSearchParams(); Object.keys(payload).forEach(function (key) { params.append( key, payload[key] ?? '' ); }); response=await fetch( REGISTER_API_URL, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' }, body: params.toString() } ); } catch (error) { console.error( '==========AUTH FETCH ERROR==========' ); console.error( 'Name:', error?.name ); console.error( 'Message:', error?.message ); console.error( 'API URL:', REGISTER_API_URL ); console.error( 'Origin:', window.location.origin ); console.error( '======================================' ); /* alert( 'AUTH FETCH ERROR\n\n' + 'Name: ' + (error?.name || '') + '\n\nMessage: ' + (error?.message || '') + '\n\nAPI URL:\n' + REGISTER_API_URL + '\n\nOrigin:\n' + window.location.origin ); */ throw new Error( 'Unable to connect to the authentication server.' ); } console.log( 'AUTH HTTP STATUS:', response.status ); if (!response.ok) { const errorText=await response.text().catch( function () { return ''; } ); console.error( 'AUTH HTTP ERROR:', response.status, errorText ); throw new Error( 'Authentication server returned HTTP ' + response.status + (errorText ? ': ' + errorText : '') ); } let result; try { result=await response.json(); } catch (error) { const responseText=await response.text().catch( function () { return ''; } ); console.error( 'Invalid JSON response:', responseText ); throw new Error( 'Invalid response from authentication server.' ); } console.log( 'AUTH RESPONSE:', result ); if (!result) { throw new Error( 'Empty response from authentication server.' ); } return result; } /*================================================================REGISTER================================================================*/ async function registerUser( phoneNumber, emailaddress, passwordValue, userData ) { const result=await authRequest({ action: 'register', phone: phoneNumber, email: emailaddress, password: passwordValue, fullName: userData.fullName, university: userData.university, major: userData.fieldstudy, degree: userData.degree, researchInterest: userData.researchInterest, urllocation: window.location.origin }); if (!result.success) { throw new Error( result.message || 'Registration failed.' ); } return result.user; } /*================================================================LOGIN================================================================*/ function opensidebarpage() { // بررسی اینکه آیا کاربر لاگین است const currentUser=JSON.parse(localStorage.getItem(SESSION_KEY) || 'null'); if (!currentUser) { openModal('login'); return; } openMobileSidebar() } // اضافه کردن استایل‌های hover با CSS document.addEventListener('DOMContentLoaded', function () { const chatTitle=document.getElementById('chatTitle'); if (chatTitle) { chatTitle.addEventListener('mouseenter', function () { this.style.textDecoration='underline'; this.style.color='#0056b3'; }); chatTitle.addEventListener('mouseleave', function () { this.style.textDecoration='none'; this.style.color=''; }); } }); async function loginUser( emailAddress, passwordValue ) { const result=await authRequest({ action: 'login', email: emailAddress, password: passwordValue }); if (!result.success) { throw new Error( result.message || 'Login failed.' ); } return result.user; } /*================================================================DOM ELEMENTS================================================================*/ const messageInput=document.getElementById('messageInput'); const sendBtn=document.getElementById('sendBtn'); const loadingSpinner=document.getElementById('loadingSpinner'); const messagesArea=document.getElementById('messagesArea'); const historyList=document.getElementById('historyList'); const chatTitle=document.getElementById('chatTitle'); const newChatBtn=document.getElementById('newChatBtn'); const sidebarUserInfo=document.getElementById('sidebarUserInfo'); const menuToggle=document.getElementById('menuToggle'); const sidebar=document.getElementById('sidebar'); const sidebarOverlay=document.getElementById('sidebarOverlay'); /* Auth */ const authModal=document.getElementById('authModal'); const closeModal=document.getElementById('closeModal'); const cancelBtn=document.getElementById('cancelBtn'); const modalTitle=document.getElementById('modalTitle'); const modalSub=document.getElementById('modalSub'); const submitBtn=document.getElementById('submitBtn'); const switchLink=document.getElementById('switchLink'); const switchText=document.getElementById('switchText'); const forgotPasswordWrapper=document.getElementById('forgotPasswordWrapper'); const emailGroup=document.getElementById('emailGroup'); const email=document.getElementById('email'); const passwordGroup=document.getElementById('passwordGroup'); const forgotpasswordLink=document.getElementById('forgotpasswordLink'); const formError=document.getElementById('formError'); const formSuccess=document.getElementById('formSuccess'); const authForm=document.getElementById('authForm'); const password=document.getElementById('password'); const changePasswordFields=document.getElementById('changePasswordFields'); const currentPasswordInput=document.getElementById('currentPassword'); const newPasswordInput=document.getElementById('newPassword'); const confirmNewPasswordInput=document.getElementById('confirmNewPassword'); const fullName=document.getElementById('fullName'); const university=document.getElementById('university'); const fieldstudy=document.getElementById('fieldstudy'); const degree=document.getElementById('degree'); const researchInterest=document.getElementById('researchInterest'); const passwordConfirm=document.getElementById('passwordConfirm'); const registerFields=document.getElementById('registerFields'); const registerPasswordConfirm=document.getElementById('registerPasswordConfirm') const authSwitch=document.getElementById('authSwitch'); const phoneGroup=document.getElementById('phoneGroup'); /* Conference */ /* const confSelectorBtn=document.getElementById( '`' ); const confDropdown=document.getElementById( 'confDropdown' ); const applyConfBtn=document.getElementById( 'applyConfBtn' ); */ /*================================================================GLOBAL STATE================================================================*/ let isRegisterMode=false; let isForgotPasswordMode=false; let isChangePasswordMode=false; let isProcessing=false; let currentChatId=null; let currentConference=null; // کنفرانس فعلی انتخاب شده let conferenceMessages={}; // { conferenceId: [messages] } let allChats=[]; /*================================================================CORE FUNCTIONS================================================================*/ function generateId() { return Date.now().toString(36) + Math.random() .toString(36) .substring(2, 7); } function getChatTitle(messages) { if ( !messages || messages.length===0 ) { return 'Please select a conference first...'; } const firstMsg=messages.find( message=> message.role==='user' ); if (firstMsg) { const text=firstMsg.content; return text.length > 30 ? text.substring(0, 30) + '...' : text; } return 'Please select a conference first...'; } function formatTime() { return new Date() .toLocaleTimeString( 'en-US', { hour: '2-digit', minute: '2-digit' } ); } /*================================================================WELCOME SCREEN================================================================*/ function renderWelcome() { messagesArea.innerHTML=` <div style=" display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; color:#8e8ea0; text-align:center; padding:40px; " ><div style=" font-size:48px; margin-bottom:16px; " ><img src="assets/centericon.png" alt="Confsync Logo" style="width:280px;height:280px;display:block;margin:0 auto 10px;border-radius:50%;" /></div><h3 style=" color:#202123; font-weight:500; margin-bottom:8px; " > Welcome to ConfSync </h3><p style=" font-size:14px; max-width:400px; " > Ask questions about academic conferences and get accurate answers. </p><p style=" font-size:13px; margin-top:8px; color:#b0b0b0; " > Type your question below to get started. </p></div> `; } /*================================================================SIDEBAR USER================================================================*/ function renderSidebarUser() { const user=getCurrentUser(); if (user) { const initial=( user.fullName || 'U' ) .charAt(0) .toUpperCase(); sidebarUserInfo.innerHTML=` <div class="user-info"><div class="avatar"> ${escapeHtml(initial)} </div><div class="details"><div class="name"> ${escapeHtml( user.fullName || 'User' ) } </div><div class="phone"> ${escapeHtml( user.phone || '' ) } </div></div><div class="user-actions"><button type="button" class="change-password-btn" id="changePasswordBtn" title="Change Password">🔑 Change Password</button><button class="logout-icon" id="logoutBtn" title="Logout">🚪</button></div></div> `; document .getElementById( 'logoutBtn' ) ?.addEventListener( 'click', logout ); } else { sidebarUserInfo.innerHTML=` <div class="login-prompt"><button class="login-side-btn" id="loginSideBtn" > 🔐 Login / Sign Up </button></div> `; document .getElementById( 'loginSideBtn' ) ?.addEventListener( 'click', function () { openModal('login'); } ); } } /*================================================================RENDER CONFERENCE HISTORY (SIDEBAR)================================================================*/ function renderConferenceHistory() { const currentUser=getCurrentUser(); if (!currentUser || !currentUser.email) { historyList.innerHTML=` <div class="history-empty"><p>🔒 Please login to see your conferences.</p></div> `; return; } const stored=localStorage.getItem(`selectedCongressList_${currentUser.email}`); let congressList=[]; try { congressList=stored ? JSON.parse(stored) : []; } catch (error) { console.error('Invalid congress data:', error); congressList=[]; } historyList.innerHTML=''; if (!Array.isArray(congressList) || congressList.length===0) { historyList.innerHTML=` <div class="history-empty"><p>📭 No conferences selected.</p><p style="font-size:13px; margin-top:8px;">Click "Select Conferences" to add.</p></div> `; return; } congressList.forEach(function (congress) { const item=document.createElement('div'); item.className='history-item'; if (currentConference && currentConference.id===congress.id) { item.classList.add('active'); } item.dataset.congressId=congress.id; const messageCount=conferenceMessages[congress.id] ? conferenceMessages[congress.id].length : 0; item.innerHTML=` <div class="history-icon">📚</div><div class="history-content"><div class="history-title">${escapeHtml(congress.nameFa)}</div><div class="history-meta"><span>${escapeHtml(congress.yearFa)}</span><span>${escapeHtml(congress.locationFa)}</span><span style="color:#8e8ea0; font-size:11px;">💬 ${messageCount}</span></div></div> `; item.addEventListener('click', function () { selectConference(currentUser.email, congress); }); historyList.appendChild(item); }); } /*================================================================CACHE FOR ConferenceMessages================================================================*/ function saveConferenceMessages(email, conferenceId) { const key=`conferenceMessages_${email}_${conferenceId}`; const ONE_MONTH=15 * 24 * 60 * 60 * 1000; // اطلاعات فعلی کنفرانس const conferenceData=conferenceMessages[conferenceId] || { requestId: null, messages: [] }; // بررسی اطلاعات قبلی برای حفظ زمان انقضا const existing=localStorage.getItem(key); let expiresAt=Date.now() + ONE_MONTH; if (existing) { try { const oldData=JSON.parse(existing); if (oldData.expiresAt) { expiresAt=oldData.expiresAt; } } catch (error) { console.error( "Error reading existing conference messages:", error ); } } // اطلاعاتی که باید ذخیره شود const data={ requestId: conferenceData.requestId || null, messages: conferenceData.messages || [], expiresAt: expiresAt }; // ذخیره در localStorage localStorage.setItem(key, JSON.stringify(data)); //console.log("Conference messages saved:", data); } function loadConferenceMessages(email, conferenceId) { const key=`conferenceMessages_${email}_${conferenceId}`; const saved=localStorage.getItem(key); // اگر چیزی ذخیره نشده باشد if (!saved) { conferenceMessages[conferenceId]={ requestId: null, messages: [] }; return; } try { const data=JSON.parse(saved); // بررسی تاریخ انقضا if ( !data.expiresAt || Date.now() >=data.expiresAt ) { localStorage.removeItem(key); conferenceMessages[conferenceId]={ requestId: null, messages: [] }; return; } // بازیابی اطلاعات conferenceMessages[conferenceId]={ requestId: data.requestId || null, messages: Array.isArray(data.messages) ? data.messages : [] }; /* console.log( "Conference messages loaded:", conferenceMessages[conferenceId] ); */ } catch (error) { console.error( "Error loading conference messages:", error ); // اگر داده خراب باشد localStorage.removeItem(key); conferenceMessages[conferenceId]={ requestId: null, messages: [] }; } } /*================================================================SELECT CONFERENCE================================================================*/ async function selectConference(email, congress) { const user=getCurrentUser(); if (!user) { openModal('login'); return; } currentConference=congress; chatTitle.textContent=congress.nameFa || 'Conference'; // فعال کردن input messageInput.disabled=false; sendBtn.disabled=false; messageInput.placeholder=`Ask about ${congress.nameFa}...(250 characters)`; messageInput.focus(); // به‌روزرسانی سایدبار //==================const key=`conferenceMessages_${email}_${congress.id}`; const saved=localStorage.getItem(key); // اگر چیزی ذخیره نشده باشد if (!saved) { await featchconferencebyId(email, congress.id, congress.nameFa) } else { loadConferenceMessages(email, congress.id) } //==================renderConferenceMessages(congress.id); closeMobileSidebar(); } /*================================================================RENDER CONFERENCE MESSAGES================================================================*/ //================================================================// تابع دریافت پیام‌ها از سرور //================================================================async function featchConferenceMessages(email, conferenceId) { try { //console.log("==========FETCH CONFERENCE MESSAGES=========="); //console.log("Email:", email); //console.log("Conference ID:", conferenceId); const response=await fetch(ASK_CONGRESS_API_URL, { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: new URLSearchParams({ action: "loadchats", email: email, congressId: conferenceId }) }); if (!response.ok) { throw new Error("HTTP error: " + response.status); } const result=await response.json(); //console.log("📦 LOAD CHATS RESPONSE:", result); if (result.success !==true) { throw new Error(result.error || "خطا در دریافت تاریخچه گفتگو"); } // دریافت پیام‌ها از سرور const rawMessages=Array.isArray(result.messages) ? result.messages : []; //console.log(`📊 RAW MESSAGES: ${rawMessages.length} messages`); // 🔥 ساخت پیام‌ها با role صحیح const messages=rawMessages.map(function (msg, index) { // استخراج role let role=String(msg.role || "").toLowerCase().trim(); // اگر role خالی بود، از روی محتوا تشخیص بده if (!role) { const content=String(msg.content || "").toLowerCase(); if (content.includes("?") || content.includes("please") || content.includes("tell me")) { role="user"; } else if (content.length > 0) { role="assistant"; } else { role="user"; } } // اگر role معتبر نبود، تصحیح کن if (role !=='user' && role !=='assistant') { const content=String(msg.content || "").toLowerCase(); if (content.includes("?") || content.includes("please")) { role="user"; } else { role="assistant"; } } //console.log(`📝 Message ${index}: role=${role}`); return { id: generateId(), dbId: msg.requestId || msg.id || null, requestId: msg.requestId || msg.id || null, role: role, content: String(msg.content || ""), time: msg.time || formatTime() }; }); //console.log(`📊 NORMALIZED MESSAGES: ${messages.length}`); //console.log("📊 ROLES:", messages.map(m=> m.role)); // 🔥 مهم: ذخیره در conferenceMessages conferenceMessages[conferenceId]={ requestId: result.requestId || null, messages: messages }; //console.log("✅ conferenceMessages updated:", conferenceMessages[conferenceId]); // ذخیره در localStorage const key=`conferenceMessages_${email}_${conferenceId}`; const data={ requestId: result.requestId || null, messages: messages, expiresAt: Date.now() + (15 * 24 * 60 * 60 * 1000) }; localStorage.setItem(key, JSON.stringify(data)); //console.log("💾 Saved to localStorage:", key); //console.log("✅ Conference messages fetched and saved successfully!"); return true; } catch (error) { console.error("❌ Error:", error); return false; } } //================================================================// تابع رندر پیام‌ها - اصلاح شده برای نمایش در دو سمت //================================================================function renderConferenceMessages(conferenceId) { const conferenceData=conferenceMessages[conferenceId] || { messages: [] }; const messages=conferenceData.messages || []; if (messages.length===0) { messagesArea.innerHTML=` <div style=" display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; color:#8e8ea0; text-align:center; padding:40px; "><div style="font-size:48px; margin-bottom:16px;"><img src="assets/centericon.png" alt="Confsync Logo" style="width:280px;height:280px;display:block;margin:0 auto 10px;border-radius:50%;" /></div><h3 style=" color:#202123; font-weight:500; margin-bottom:8px; "> ${escapeHtml( currentConference ? currentConference.nameFa : 'Select a Conference' )} </h3><p style="font-size:14px; max-width:400px;"> ${currentConference ? 'Ask your first question about this conference.' : 'Select a conference from the sidebar to start.' } </p></div> `; return; } const confName=currentConference ? currentConference.nameFa || 'selected conference' : 'selected conference'; let html=''; messages.forEach(function (message) { const roleClass=message.role==='user' ? 'user' : 'assistant'; // -------------------------------------------------------- // ID داخلی DOM // -------------------------------------------------------- let attributes=`id="${message.id}"`; // -------------------------------------------------------- // data-db-id // -------------------------------------------------------- let dbId=''; if (message.dbId) { dbId=`${message.role}_${message.dbId}`; attributes +=` data-db-id="${dbId}"`; } // -------------------------------------------------------- // Toolbar // -------------------------------------------------------- let toolbar=''; if (message.dbId) { toolbar=` <div class="message-toolbar" data-db-id="${dbId}"><button type="button" class="message-tool copy-btn" data-action="copy" data-db-id="${dbId}" title="Copy"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ><rect x="9" y="9" width="13" height="13" rx="2" ry="2" ></rect><path d="M5 15H4a2 2 0 0 1-2-2V4 a2 2 0 0 1 2-2h9 a2 2 0 0 1 2 2v1" ></path></svg></button><button type="button" class="message-tool align-btn" data-action="align" data-db-id="${dbId}" title="Toggle alignment"> ⇤⇥ </button></div> `; } // -------------------------------------------------------- // پیام // -------------------------------------------------------- html +=` <div class="message ${roleClass}" ${attributes} > ${toolbar} <div class="msg-content"><div class="msg-text"> ${marked.parse(message.content || '')} </div></div><div class="msg-footer-outside"><span class="msg-time"> ${message.time || formatTime()} </span><span class="msg-time">-</span><span class="msg-time"> ${escapeHtml(confName)} </span></div></div> `; }); messagesArea.innerHTML=html; messagesArea.scrollTop=messagesArea.scrollHeight; } /*================================================================SEND MESSAGE===============================================================*/ /* conference: id, nameFa, nameEn, topicFa, topicEn, yearFa, typeFa, locationFa, website user: phoneNumber, emailAddress, pass, userData userData: fullName, university, fieldstudy, degree, researchInterest */ async function sendMessage() { const user=getCurrentUser(); if (!user) { openModal('login'); return; } if (!currentConference) { alert('Please select a conference first.'); return; } const text=messageInput.value.trim(); if (!text || isProcessing) { return; } if (text.length > 250) { alert('Your question cannot be longer than 250 characters.'); return; } const conferenceId=currentConference.id; //============================================================// 1. ساخت ID موقت برای پیام کاربر //============================================================const userMessageId=generateId(); //============================================================// 2. ساخت پیام کاربر // // dbId فعلاً null است چون هنوز پاسخ سرور نیامده //============================================================const userMessage={ id: userMessageId, dbId: null, role: 'user', content: text, time: formatTime() }; //============================================================// 3. اطمینان از وجود اطلاعات کنفرانس //============================================================if (!conferenceMessages[conferenceId]) { conferenceMessages[conferenceId]={ messages: [] }; } //============================================================// 4. ذخیره پیام کاربر //============================================================conferenceMessages[conferenceId].messages.push(userMessage); //============================================================// 5. پاک کردن Input //============================================================messageInput.value=''; messageInput.style.height='auto'; //============================================================// 6. نمایش Loading //============================================================isProcessing=true; sendBtn.disabled=true; loadingSpinner.style.display="block"; loadingSpinner.classList.add('active'); sendBtn.textContent='...'; //============================================================// 7. نمایش فوری سؤال کاربر //============================================================renderConferenceMessages(conferenceId); renderConferenceHistory(); try { //========================================================// 8. دریافت پاسخ واقعی از مدل / API //========================================================const botResponse=await getAIResponse( text, user, currentConference ); //========================================================// TEST RESPONSE // این قسمت را بعداً با API واقعی جایگزین کنید //========================================================/* const botResponse={ requestId: "b136d79e-2101-456f-a549-52f6be1e428e", answer: "<p><strong>Glioma-related session at the 14th Neuro-Science Congress 2025</strong></p>" + "<ul>" + "<li><p><strong>Panel:</strong><em>Personalized Treatment of Brain Tumors</em></p>" + "<ul>" + "<li><strong>Time:</strong> 09:45 – 11:15</li>" + "<li><strong>Location:</strong> Hall 2</li>" + "</ul>" + "</li>" + "<li><p><strong>Talk:</strong><em>Surgical resection of Glioma in speech area</em></p>" + "<ul>" + "<li><strong>Speaker:</strong><strong>Amir Hossein Javadi</strong></li>" + "<li><strong>Focus:</strong> The presentation will discuss surgical strategies for removing gliomas that involve the speech-related cortex.</li>" + "</ul>" + "</li>" + "</ul>" + "<p>These sessions provide insights into current advances in glioma surgery, personalized neuro-oncology diagnostics, and post-operative cognitive rehabilitation.</p>" + "<hr>" + "<p><strong>KEYWORDS:</strong><br>" + "glioma surgery, speech area resection, personalized brain tumor treatment, neuro-oncology</p>" }; */ //========================================================// 9. پیدا کردن همان پیام کاربر //========================================================const messages=conferenceMessages[conferenceId].messages; const userMessageIndex=messages.findIndex( message=> message.id===userMessageId ); if (userMessageIndex===-1) { throw new Error( `User message not found: ${userMessageId}` ); } //========================================================// 10. ثبت ID واقعی دیتابیس روی پیام کاربر // // مهم: // ID DOM تغییر نمی‌کند // فقط data-db-id تغییر می‌کند //========================================================messages[userMessageIndex].dbId=botResponse.requestId; //========================================================// 11. به‌روزرسانی DOM پیام کاربر //========================================================const userElement=document.getElementById(userMessageId); if (userElement) { userElement.dataset.dbId=botResponse.requestId; } else { console.warn( 'User DOM element not found:', userMessageId ); } //========================================================// 12. ساخت پیام Bot //========================================================const botMessage={ // ID داخلی DOM id: generateId(), // ID واقعی دیتابیس dbId: botResponse.requestId, role: 'assistant', content: botResponse.answer, time: formatTime() }; //========================================================// 13. ذخیره پاسخ Bot //========================================================messages.push(botMessage); //========================================================// 14. Render مجدد //========================================================renderConferenceMessages(conferenceId); renderConferenceHistory(); } catch (error) { console.error('Error:', error); const errorMessage={ id: generateId(), dbId: null, role: 'assistant', content: '⚠️ Sorry, I encountered an error. Please try again.', time: formatTime() }; conferenceMessages[conferenceId].messages.push( errorMessage ); renderConferenceMessages(conferenceId); renderConferenceHistory(); } finally { //------------------------- saveConferenceMessages(user.email, currentConference.id); //------------------------- //========================================================// 15. پایان Loading //========================================================isProcessing=false; sendBtn.disabled=false; sendBtn.textContent='Send'; loadingSpinner.style.display="none"; loadingSpinner.classList.remove('active'); messageInput.focus(); } } /*================================================================AI RESPONSE===============================================================*/ /* conference: id, groupname, nameFa, nameEn, topicFa, topicEn, yearFa, typeFa, locationFa, website user: phoneNumber, emailAddress, pass, userData userData: fullName, university, fieldstudy, degree, researchInterest */ async function getAIResponse(question, user, conference) { try { const response=await fetch(ASK_CONGRESS_API_URL, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams({ action: 'requestrag', question: question, user: JSON.stringify(user || {}), curconference: JSON.stringify(conference || {}) }) }); if (!response.ok) { throw new Error(`HTTP error: ${response.status}`); } const text=await response.text(); //console.log("HTTP STATUS:", response.status); //console.log("SERVER RESPONSE:", text); if (!text.trim().startsWith("{")) { throw new Error( "سرور JSON برنگرداند. Response: " + text.substring(0, 300) ); } const result=JSON.parse(text); if (result.success===false) { throw new Error(result.error || 'RAG API error'); } // برگرداندن آبجکت با هر دو مقدار return { requestId: result.requestId, answer: result.answer//marked.parse(result.answer || '') }; //return result.answer || ''; } catch (error) { console.error('RAG API Error:', error); return 'خطا در دریافت پاسخ از سیستم هوش مصنوعی: ' + error.message; } } /*================================================================SIDEBAR USER================================================================*/ function renderSidebarUser() { const user=getCurrentUser(); if (user) { const initial=(user.fullName || 'U').charAt(0).toUpperCase(); sidebarUserInfo.innerHTML=` <div class="user-info"><div class="avatar">${escapeHtml(initial)}</div><div class="details"><div class="name">${escapeHtml(user.fullName || 'User')}</div><div class="phone">${escapeHtml(user.email || '')}</div></div><div class="user-actions"><button type="button" class="change-password-btn" id="changePasswordBtn">🔑 Change Password</button><button class="logout-icon" id="logoutBtn">🚪</button></div></div> `; document.getElementById('logoutBtn')?.addEventListener('click', logout); document.getElementById('changePasswordBtn')?.addEventListener('click', function () { openModal('changepassword'); }); } else { sidebarUserInfo.innerHTML=` <div class="login-prompt"><button class="login-side-btn" id="loginSideBtn">🔐 Login / Sign Up</button></div> `; document.getElementById('loginSideBtn')?.addEventListener('click', function () { openModal('login'); }); } } /*================================================================LOGIN================================================================*/ /*================================================================LOGIN================================================================*/ function login(user) { setCurrentUser(user); currentConference=null; conferenceMessages={}; chatTitle.textContent='Select a Conference'; renderSidebarUser(); renderConferenceHistory(); renderConferenceMessages(null); messageInput.disabled=true; sendBtn.disabled=true; messageInput.placeholder='Please select a conference first...'; closeModalFunc(); loadConferenceHistoryAfterLogin(user); } /*================================================================LOGOUT================================================================*/ function logout() { if (!confirm('Are you sure you want to logout?')) { return; } const currentUser=getCurrentUser(); if (!currentUser || !currentUser.email) { return; } // ✅ ذخیره تاریخچه قبل از خروج const historyList=localStorage.getItem(`historyList_${currentUser.email}`); if (!historyList) { const currentList=window.historyList || []; localStorage.setItem(`historyList_${currentUser.email}`, JSON.stringify(currentList)); } // ✅ خالی کردن UI const historyListElement=document.getElementById('historyList'); if (historyListElement) { historyListElement.innerHTML=''; } // ✅ پاک کردن متغیرهای global if (typeof setCurrentUser==='function') { setCurrentUser(null); } window.allChats=[]; window.currentChatId=null; // ✅ به‌روزرسانی UI if (chatTitle) { chatTitle.textContent='Please select a conference first...'; } if (typeof renderSidebarUser==='function') { renderSidebarUser(); } if (messageInput) { messageInput.disabled=true; messageInput.placeholder='Please login to ask questions...'; } if (sendBtn) { sendBtn.disabled=true; } // ✅ پاک کردن session localStorage.removeItem(SESSION_KEY); sessionStorage.removeItem('login_verified'); sessionStorage.removeItem('currentUser'); localStorage.removeItem('userData'); localStorage.removeItem('offline_username'); // ✅ هدایت به صفحه ورود window.location.href='/?action=login'; } /*================================================================LOAD CONFERENCE HISTORY AFTER LOGIN================================================================*/ function loadConferenceHistoryAfterLogin(user) { if (!user || !user.email) return; renderConferenceHistory(); } /*================================================================AUTH MODAL / LOGIN / REGISTER / FORGOT PASSWORD================================================================*/ function clearAuthMessages() { formError.textContent=''; formError.classList.remove('show'); formSuccess.textContent=''; formSuccess.classList.remove('show'); } function setRequired(element, required) { if (element) element.required=required; } function resetAuthVisibility() { registerFields.style.display='none'; registerPasswordConfirm.style.display='none'; phoneGroup.style.display='none'; emailGroup.style.display='block'; passwordGroup.style.display='block'; authSwitch.style.display='block'; forgotPasswordWrapper.style.display='block'; setRequired(fullName, false); setRequired(university, false); setRequired(fieldstudy, false); setRequired(degree, false); setRequired(researchInterest, false); setRequired(email, false); setRequired(phone, false); setRequired(password, false); setRequired(passwordConfirm, false); setRequired(currentPasswordInput, false); setRequired(newPasswordInput, false); setRequired(confirmNewPasswordInput, false); } function openModal(mode='login') { isRegisterMode=mode==='register'; isForgotPasswordMode=mode==='forgotpassword'; isChangePasswordMode=mode==='changepassword'; authModal.classList.add('active'); document.body.style.overflow='hidden'; clearAuthMessages(); authForm.reset(); resetAuthVisibility(); if (isRegisterMode) { modalTitle.textContent='Sign Up'; modalSub.textContent='Create your account to get started'; submitBtn.textContent='Sign Up'; switchText.textContent='Already have an account?'; switchLink.textContent='Login'; registerFields.style.display='block'; registerPasswordConfirm.style.display='block'; emailGroup.style.display='block'; setRequired(fullName, true); setRequired(university, true); setRequired(fieldstudy, true); setRequired(degree, true); setRequired(researchInterest, true); setRequired(email, true); setRequired(phone, false); setRequired(password, true); setRequired(passwordConfirm, true); forgotPasswordWrapper.style.display='none'; return; } if (isForgotPasswordMode) { modalTitle.textContent='Forgot Password'; submitBtn.textContent='Reset Password'; switchText.textContent='Remember your password?'; switchLink.textContent='Login'; emailGroup.style.display='block'; phoneGroup.style.display='none'; passwordGroup.style.display='none'; registerFields.style.display='none'; registerPasswordConfirm.style.display='none'; forgotPasswordWrapper.style.display='none'; setRequired(email, true); setRequired(phone, false); setRequired(password, false); return; } if (isChangePasswordMode) { const currentUser=getCurrentUser(); //console.log("currentUser=",JSON.stringify(currentUser, null, 2)); if (!currentUser || !currentUser.email) { closeModalFunc(); openModal('login'); showAuthError('Please login first to change your password.'); return; } modalTitle.textContent='Change Password'; modalSub.textContent='Enter your current password and choose a new password'; submitBtn.textContent='Change Password'; switchText.textContent='Want to return?'; switchLink.textContent='Login'; changePasswordFields.style.display='block'; passwordGroup.style.display='none'; registerFields.style.display='none'; registerPasswordConfirm.style.display='none'; emailGroup.style.display='none'; phoneGroup.style.display='none'; forgotPasswordWrapper.style.display='none'; setRequired(currentPasswordInput, true); setRequired(newPasswordInput, true); setRequired(confirmNewPasswordInput, true); return; } modalTitle.textContent='Login'; modalSub.textContent='Enter your phone number and password'; submitBtn.textContent='Login'; switchText.textContent="Don't have an account?"; switchLink.textContent='Sign up'; emailGroup.style.display='block'; passwordGroup.style.display='block'; setRequired(phone, false); setRequired(password, true); } function closeModalFunc() { authModal.classList.remove('active'); document.body.style.overflow=''; clearAuthMessages(); } function showAuthError(message) { formSuccess.classList.remove('show'); formError.textContent=message; formError.classList.add('show'); } function showAuthSuccess(message) { formError.classList.remove('show'); formSuccess.textContent=message; formSuccess.classList.add('show'); } function showAuthSuccess_callback(message, callback) { formError.classList.remove('show'); formSuccess.textContent=message; formSuccess.classList.add('show'); setTimeout(function () { formSuccess.classList.remove('show'); if (callback) callback(); }, 3000); } async function forgotPasswordUser(phoneNumber, emailAddress) { const result=await authRequest({ action: 'forgotPassword', urllocation: window.location.origin, email: emailAddress }); if (!result.success) { throw new Error(result.message || 'Password reset request failed.'); } return result; } authForm.addEventListener('submit', async function (event) { event.preventDefault(); clearAuthMessages(); const phoneNumber=normalizePhone(phone.value); const emailAddress=email.value.trim(); try { /*=========================================================FORGOT PASSWORD=========================================================*/ if (isForgotPasswordMode) { /* if (!isValidPhone(phoneNumber)) { showAuthError('Please enter a valid Iranian phone number. Example: 09123456789'); phone.focus(); return; } */ if (!isValidEmail(emailAddress)) { showAuthError('Please enter a valid email address.'); email.focus(); return; } const originalText=submitBtn.textContent; submitBtn.disabled=true; submitBtn.textContent='Processing...'; try { const result=await forgotPasswordUser( phoneNumber, emailAddress ); showAuthSuccess_callback(result.message || 'Your password reset request was submitted successfully.', function () { openModal('login'); }); } finally { submitBtn.disabled=false; submitBtn.textContent=originalText; } return; } /*=========================================================CHANGE PASSWORD=========================================================*/ if (isChangePasswordMode) { const currentUser=getCurrentUser(); if (!currentUser || !currentUser.email) { throw new Error('Please login first to change your password.'); } const currentPassword=currentPasswordInput.value; const newPassword=newPasswordInput.value; const confirmNewPassword=confirmNewPasswordInput.value; if (!currentPassword) { showAuthError('Please enter your current password.'); currentPasswordInput.focus(); return; } if (!newPassword || newPassword.length < 6) { showAuthError('New password must be at least 6 characters.'); newPasswordInput.focus(); return; } if (newPassword===currentPassword) { showAuthError('New password must be different from your current password.'); newPasswordInput.focus(); return; } if (newPassword !==confirmNewPassword) { showAuthError('New passwords do not match.'); confirmNewPasswordInput.focus(); return; } const originalText=submitBtn.textContent; submitBtn.disabled=true; submitBtn.textContent='Changing Password...'; //console.log("currentUser.email=" + currentUser.email) try { const result=await authRequest({ action: 'changePassword', email: currentUser.email, currentPassword: currentPassword, newPassword: newPassword }); if (!result.success) { throw new Error(result.message || 'Password change failed.'); } showAuthSuccess_callback(result.message || 'Password changed successfully.', function () { authForm.reset(); closeModalFunc(); }); } finally { submitBtn.disabled=false; submitBtn.textContent=originalText; } return; } /*=========================================================COMMON LOGIN / REGISTER VALIDATION=========================================================*/ /* if (!isValidPhone(phoneNumber)) { showAuthError('Please enter a valid Iranian phone number. Example: 09123456789'); phone.focus(); return; } */ if (!isValidEmail(emailAddress) && isRegisterMode) { showAuthError('Please enter a valid email address.'); email.focus(); return; } const pass=password.value; if (!pass || pass.length < 6) { showAuthError('Password must be at least 6 characters.'); password.focus(); return; } const originalText=submitBtn.textContent; submitBtn.disabled=true; submitBtn.textContent=isRegisterMode ? 'Creating account...' : 'Logging in...'; if (isRegisterMode) { if (passwordConfirm.value !==pass) { throw new Error('Passwords do not match.'); } const fullNameValue=fullName.value.trim(); if (!fullNameValue) { throw new Error('Please enter your full name.'); } const userData={ fullName: fullNameValue, university: university.value.trim(), fieldstudy: fieldstudy.value.trim(), degree: degree.value, researchInterest: researchInterest.value.trim() }; const user=await registerUser( phoneNumber, emailAddress, pass, userData ); /* showAuthSuccess ('✅ Registration successful! Verification email has been sent.'); setTimeout(function () { login(user); }, 700); */ showAuthSuccess_callback('✅ Registration successful! Verification email has been sent.', function () { openModal('login'); }); } else { const user=await loginUser(emailAddress, pass); showAuthSuccess('✅ Login successful!'); setTimeout(function () { login(user); loadCongressHistoryAfterLogin(user); }, 1000); } submitBtn.disabled=false; submitBtn.textContent=originalText; } catch (error) { console.error('Authentication error:', error); showAuthError( error.message || 'Something went wrong. Please try again.' ); submitBtn.disabled=false; submitBtn.textContent=isRegisterMode ? 'Sign Up' : (isForgotPasswordMode ? 'Reset Password' : 'Login'); } }); /*================================================================AUTH EVENTS================================================================*/ document.getElementById('loginBtn')?.addEventListener('click', function () { openModal('login'); }); closeModal.addEventListener('click', closeModalFunc); cancelBtn.addEventListener('click', closeModalFunc); authModal.addEventListener('click', function (event) { if (event.target===authModal) { //closeModalFunc(); } }); switchLink.addEventListener('click', function (event) { event.preventDefault(); if (isRegisterMode || isForgotPasswordMode || isChangePasswordMode) { openModal('login'); } else { openModal('register'); } }); /* IMPORTANT: Forgot Password has its own event. */ forgotpasswordLink.addEventListener('click', function (event) { event.preventDefault(); openModal('forgotpassword'); }); document.addEventListener('click', function (event) { if (event.target.closest('#changePasswordBtn')) { event.preventDefault(); openModal('changepassword'); } }); /*================================================================SEND MESSAGE================================================================*/ sendBtn.addEventListener( 'click', sendMessage ); /*================================================================TEXTAREA AUTO RESIZE================================================================*/ messageInput.addEventListener( 'input', function () { this.style.height='auto'; this.style.height=Math.min( this.scrollHeight, 150 ) + 'px'; } ); /*================================================================CONFERENCE DROPDOWN================================================================*/ /* confSelectorBtn.addEventListener( 'click', function (event) { event.stopPropagation(); confDropdown.classList.toggle( 'active' ); } ); document.addEventListener( 'click', function () { confDropdown.classList.remove( 'active' ); } ); confDropdown.addEventListener( 'click', function (event) { event.stopPropagation(); } ); applyConfBtn.addEventListener( 'click', function () { const checked=document.querySelectorAll( '.conf-item input:checked' ); const names=Array.from( checked ).map( checkbox=> checkbox .nextElementSibling .textContent .trim() ); alert( names.length ? `✅ Selected conferences:\n${names.join(', ')}` : '⚠️ No conference selected.' ); confDropdown.classList.remove( 'active' ); } ); */ /*================================================================MOBILE SIDEBAR================================================================*/ function closeMobileSidebar() { sidebar.classList.remove( 'open' ); sidebarOverlay.classList.remove( 'active' ); } function openMobileSidebar() { sidebar.classList.add('open'); sidebarOverlay.classList.add('active'); document.body.style.overflow='hidden'; } menuToggle.addEventListener( 'click', function () { sidebar.classList.toggle( 'open' ); sidebarOverlay.classList.toggle( 'active' ); } ); sidebarOverlay.addEventListener( 'click', closeMobileSidebar ); /*================================================================FOCUS EVENT - به‌روزرسانی از congress.html================================================================*/ window.addEventListener('focus', function () { const status=localStorage.getItem('statusfocuse') || ''; if (status==='renderCongressHistory') { localStorage.setItem('statusfocuse', ''); renderConferenceHistory(); } }); /*================================================================INITIALIZATION================================================================*/ function init() { const user=getCurrentUser(); if (user) { renderSidebarUser(); renderConferenceHistory(); messageInput.disabled=true; sendBtn.disabled=true; messageInput.placeholder='Please select a conference first...'; // بارگذاری پیام‌های ذخیره شده (در صورت وجود) const savedMessages=localStorage.getItem(`conferenceMessages_${user.email}`); if (savedMessages) { try { conferenceMessages=JSON.parse(savedMessages); } catch (e) { conferenceMessages={}; } } } else { renderSidebarUser(); renderConferenceHistory(); renderConferenceMessages(null); messageInput.disabled=true; sendBtn.disabled=true; messageInput.placeholder='Please login to ask questions...'; } } /*================================================================GLOBAL DEBUG FUNCTIONS================================================================*/ window.sendMessage=sendMessage; window.openLogin=function () { openModal( 'login' ); }; window.openRegister=function () { openModal( 'register' ); }; window.logout=logout; /*================================================================START================================================================*/ init(); //============================================================// دریافت action از URL //============================================================const urlParams=new URLSearchParams(window.location.search); const action=urlParams.get('action'); //============================================================// اگر action=login باشد، تابع login را اجرا کن //============================================================if (action==='login') { /* const emailFromUrl=urlParams.get('email'); const passwordFromUrl=urlParams.get('password'); */ openModal('login'); // حذف پارامتر action از Address Bar window.history.replaceState( {}, document.title, window.location.pathname ); } //console.log( // '✅ ConfSync loaded successfully!' //); //console.log( // '🔐 Authentication: Google Apps Script' //); //console.log( // '💾 Chat history: localStorage per user' //); //=====================================================function openCongressModal() { // نشانه‌گذاری برای تأیید لاگین //sessionStorage.setItem('login_verified', 'true'); // ذخیره نام کاربری //localStorage.setItem('offline_username', username); // باز کردن داشبورد const currentUser=getCurrentUser(); if (!currentUser) { showToastMessage("Please login first!"); return; } currentConference=null; conferenceMessages={}; const congressPage=window.open('congress.html', '_blank'); if (!congressPage) { //alert('لطفاً باز شدن پنجره‌های popup را در مرورگر خود مجاز کنید.'); window.location.href='congress.html'; } } function openQuestionModal() { /* const key=`conferenceMessages_ghfreza@gmail.com_1`; localStorage.removeItem(key); return */ const currentUser=getCurrentUser(); if (!currentUser) { showToastMessage("Please login first!"); return; } // باز کردن داشبورد const congressPage=window.open('questions.html', '_blank'); if (!congressPage) { //alert('لطفاً باز شدن پنجره‌های popup را در مرورگر خود مجاز کنید.'); window.location.href='questions.html'; } } function loadCongressHistoryAfterLogin(user) { if (!user || !user.email) { console.log('AfterLogin: Invalid user'); return; } // خواندن از selectedCongressList_ (همانند renderCongressHistory) const stored=localStorage.getItem(`selectedCongressList_${user.email}`); let congressList=[]; try { congressList=stored ? JSON.parse(stored) : []; } catch (error) { console.error('Invalid congress LocalStorage data:', error); congressList=[]; } } //==========================================================//==========================================================//==========================================================document.addEventListener( 'DOMContentLoaded', function () { renderConferenceHistory(); } ); window.addEventListener( 'focus', function () { const statusfocuse=localStorage.getItem("statusfocuse") || ""; if (statusfocuse==="renderCongressHistory") { localStorage.setItem("statusfocuse", ""); //console.log('focus'); renderConferenceHistory(); } else if (statusfocuse==="openQuestionModal") { localStorage.setItem("statusfocuse", ""); const messageInput=document.getElementById('messageInput'); // Assuming this exists if (messageInput) { const selectedText=localStorage.getItem("openQuestionModal_selected") || ""; messageInput.value=selectedText; localStorage.setItem("openQuestionModal_selected", ""); } } } ); //==========================================================messagesArea.addEventListener('click', function (event) { const button=event.target.closest('.message-tool'); if (!button) { return; } const action=button.dataset.action; const dbId=button.dataset.dbId; if (!dbId) { return; } switch (action) { case 'copy': copyMessage(dbId); break; case 'align': alignMessage(dbId); break; } }); async function copyMessage(dbId) { const messageElement=document.querySelector( `[data-db-id="${CSS.escape(dbId)}"]` ); if (!messageElement) { console.warn('Message element not found:', dbId); return; } const textElement=messageElement.querySelector('.msg-text'); if (!textElement) { console.warn('Message text not found:', dbId); return; } const text=textElement.innerText.trim(); if (!text) { console.warn('Nothing to copy:', dbId); return; } try { // روش جدید if ( navigator.clipboard && window.isSecureContext ) { await navigator.clipboard.writeText(text); //console.log('Message copied:', dbId); showCopySuccess(messageElement); return; } // Fallback برای HTTP / مرورگرهای محدود const textarea=document.createElement('textarea'); textarea.value=text; textarea.style.position='fixed'; textarea.style.left='-9999px'; textarea.style.top='0'; document.body.appendChild(textarea); textarea.focus(); textarea.select(); const successful=document.execCommand('copy'); document.body.removeChild(textarea); if (!successful) { throw new Error('execCommand copy failed'); } //console.log('Message copied:', dbId); showCopySuccess(messageElement); } catch (error) { //console.error('Copy failed:', error); } } function alignMessage(dbId) { const messageElement=document.querySelector( `[data-db-id="${CSS.escape(dbId)}"]` ); if (!messageElement) { console.warn('Message not found:', dbId); return; } const textElement=messageElement.querySelector('.msg-text'); if (!textElement) { return; } // وضعیت فعلی متن const currentAlignment=textElement.style.textAlign || 'left'; // تغییر بین راست‌چین و چپ‌چین const newAlignment=currentAlignment==='right' ? 'left' : 'right'; textElement.style.textAlign=newAlignment; } function showCopySuccess(messageElement) { const button=messageElement.querySelector( '[data-action="copy"]' ); if (!button) return; // جلوگیری از چند timer همزمان if (button._copyTimer) { clearTimeout(button._copyTimer); } // آیکون تیک button.innerHTML=` <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ><polyline points="20 6 9 17 4 12"></polyline></svg> `; button.classList.add('copied'); button._copyTimer=setTimeout(()=> { // برگشت به آیکون Copy button.innerHTML=` <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ><rect x="9" y="9" width="13" height="13" rx="2" ry="2" ></rect><path d="M5 15H4a2 2 0 0 1-2-2V4 a2 2 0 0 1 2-2h9 a2 2 0 0 1 2 2v1" ></path></svg> `; button.classList.remove('copied'); button._copyTimer=null; }, 1500); } //==========================================================//============================================================// FEATCH ALL CONFERENCE DATA BY ID //============================================================//================================================================// تابع نمایش Modal بارگذاری //================================================================function showLoadingModal(message='در حال دریافت اطلاعات...') { // حذف modal قبلی اگر وجود دارد const existingModal=document.getElementById('loadingModal'); if (existingModal) { existingModal.remove(); } // ایجاد modal const modal=document.createElement('div'); modal.id='loadingModal'; modal.style.cssText=` position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); display: flex; align-items: center; justify-content: center; z-index: 99999; backdrop-filter: blur(4px); `; modal.innerHTML=` <div style=" background: white; padding: 40px 50px; border-radius: 16px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); text-align: center; max-width: 400px; animation: fadeInModal 0.3s ease; "><div style=" width: 60px; height: 60px; margin: 0 auto 20px; border: 4px solid #e0e0e0; border-top: 4px solid #1a73e8; border-radius: 50%; animation: spin 1s linear infinite; "></div><h3 style=" color: #202123; font-weight: 500; margin-bottom: 8px; font-size: 18px; ">${message}</h3><p style=" color: #8e8ea0; font-size: 14px; margin: 0; ">لطفاً چند لحظه صبر کنید...</p></div> `; // اضافه کردن انیمیشن‌ها const style=document.createElement('style'); style.id='loadingModalStyles'; if (!document.getElementById('loadingModalStyles')) { style.textContent=` @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } } @keyframes fadeInModal { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } } `; document.head.appendChild(style); } document.body.appendChild(modal); } //================================================================// تابع مخفی کردن Modal بارگذاری //================================================================function hideLoadingModal() { const modal=document.getElementById('loadingModal'); if (modal) { modal.style.opacity='0'; modal.style.transition='opacity 0.3s ease'; setTimeout(()=> { modal.remove(); }, 300); } } //================================================================// تابع اصلی دریافت کنفرانس با Modal //================================================================async function featchconferencebyId(email, conferenceId, conferencecap) { const key=`conferenceMessages_${email}_${conferenceId}`; // نمایش Modal بارگذاری showLoadingModal(`در حال دریافت اطلاعات ${conferencecap}...`); try { // 1. پاک کردن کش localStorage.removeItem(key); delete conferenceMessages[conferenceId]; //console.log('🗑️ کش پاک شد'); // 2. دریافت از سرور //console.log('📡 دریافت از سرور...'); const success=await featchConferenceMessages(email, conferenceId); if (!success) { //console.error('❌خطای دریافت از سرور'); hideLoadingModal(); showToastMessage('خطا در دریافت اطلاعات!'); return; } // 3. بررسی conferenceMessages //console.log('📦 conferenceMessages:', conferenceMessages[conferenceId]); // 4. تنظیم currentConference if (!currentConference) { const stored=localStorage.getItem(`selectedCongressList_${email}`); if (stored) { const congressList=JSON.parse(stored); if (congressList && congressList.length > 0) { currentConference=congressList[0]; chatTitle.textContent=currentConference.nameFa || 'Conference'; } } } // 5. رندر پیام‌ها //console.log('🔄 رندر پیام‌ها...'); //renderConferenceMessages(conferenceId); // فعال کردن input messageInput.disabled=false; sendBtn.disabled=false; if (currentConference) { messageInput.placeholder=`Ask about ${currentConference.nameFa}...(250 characters)`; } // مخفی کردن Modal بعد از اتمام hideLoadingModal(); showToastMessage('✅ اطلاعات با موفقیت دریافت شد!'); // 6. بررسی نتیجه setTimeout(()=> { const messages=document.querySelectorAll('.message'); //console.log(`📊 تعداد پیام‌های رندر شده: ${messages.length}`); if (messages.length===0) { //console.warn('⚠️ هیچ پیامی رندر نشد!'); return; } messages.forEach((el, i)=> { const isUser=el.classList.contains('user'); const isAssistant=el.classList.contains('assistant'); const alignSelf=getComputedStyle(el).alignSelf; /* console.log(`📝 پیام ${i}:`, { کلاس: el.className, isUser: isUser, isAssistant: isAssistant, 'align-self': alignSelf }); */ }); const userCount=document.querySelectorAll('.message.user').length; const assistantCount=document.querySelectorAll('.message.assistant').length; //console.log(`📊 نتیجه: user=${userCount}, assistant=${assistantCount}`); if (userCount > 0 && assistantCount > 0) { console.log('✅ هر دو نوع پیام وجود دارند'); } else { console.warn('⚠️ فقط یک نوع پیام وجود دارد!'); } }, 500); } catch (error) { console.error('❌ خطا:', error); hideLoadingModal(); showToastMessage('خطا در دریافت اطلاعات!'); } } </script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ConfSync - AI Conference Assistant</title>
+    <link rel="stylesheet" href="assets/index.css">
+    <script src="js/marked.min.js"></script>
+    <script src="js/config.js"></script>
+</head>
+</head>
+<body>
+    <!-- ================================================================
+         SIDEBAR
+    ================================================================ -->
+    <div class="sidebar-overlay"
+         id="sidebarOverlay">
+    </div>
+    <div class="sidebar"
+         id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo-small">
+                <span class="conf">
+                    Conf
+                </span>
+                <span class="sync">
+                    Sync
+                </span>
+            </div>
+            <button class="new-chat-btn" id="newChatBtn" onclick="openCongressModal()" >
+                <span>➕/➖</span>
+                update Congress List
+            </button>
+        </div>
+        <div class="history-list"
+             id="historyList">
+        </div>
+        <div class="sidebar-footer">
+            <div id="sidebarUserInfo">
+            </div>
+        </div>
+    </div>
+    <!-- ================================================================
+         MAIN CONTENT
+    ================================================================ -->
+    <div class="main-content">
+        <!-- HEADER -->
+        <div class="chat-header">
+            <div style="display:flex;align-items:center;gap:12px;">
+                <button class="menu-toggle" id="menuToggle"
+                        style="
+                            font-size: 28px;
+                            font-weight: 900;
+                            background: none;
+                            border: none;
+                            cursor: pointer;
+                            color: #333;
+                            padding: 8px 12px;
+                            transition: all 0.3s ease;
+                            line-height: 1;
+                        "
+                        onmouseenter="this.style.color='#1a237e'; this.style.transform='scale(1.15)'"
+                        onmouseleave="this.style.color='#333'; this.style.transform='scale(1)'">
+                    ☰
+                </button>
+                
+                <span class="title" id="chatTitle" onclick="opensidebarpage()" style="cursor: pointer;">
+                    Please select a conference first...
+                </span>
+            </div>
+            <!-- دکمه‌های قبلی -->
+            <div class="input-actions">
+                <div class="action-group">
+                    <span class="conf-badge">🎯 AI Conference Assistant</span>
+                    <button class="modal-trigger-btn" id="modalTriggerBtn" onclick="openQuestionModal()">
+                        <svg viewBox="0 0 24 24" width="18" height="18">
+                            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zM7 10h2v7H7zm4-3h2v10h-2zm4-3h2v13h-2z" />
+                        </svg>
+                        <span class="btn-text">Questions</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- MESSAGES -->
+        <div class="messages-area"
+             id="messagesArea">
+            <div style="
+                display:flex;
+                flex-direction:column;
+                align-items:center;
+                justify-content:center;
+                height:100%;
+                color:#8e8ea0;
+                text-align:center;
+                padding:40px;
+            ">
+                <div style="
+                    font-size:48px;
+                    margin-bottom:16px;
+                ">
+                    <img src="assets/centericon.png"
+                         alt="Confsync Logo"
+                         style="width:280px;height:280px;display:block;margin:0 auto 10px;border-radius:50%;" />
+                </div>
+                <h3 style="
+                    color:#202123;
+                    font-weight:500;
+                    margin-bottom:8px;
+                ">
+                    Welcome to ConfSync
+                </h3>
+                <p style="
+                    font-size:14px;
+                    max-width:400px;
+                ">
+                    Ask questions about academic conferences
+                    and get accurate answers.
+                </p>
+                <p style="
+                    font-size:13px;
+                    margin-top:8px;
+                    color:#b0b0b0;
+                ">
+                    Type your question below to get started.
+                </p>
+            </div>
+        </div>
+        <!-- CHAT INPUT -->
+        <div class="chat-input-area">
+            <div class="input-wrapper" id="inputWrapper">
+                <textarea id="messageInput"
+                          rows="1"
+                          maxlength="250"
+                          placeholder="Please select a conference first..."
+                          disabled></textarea>
+                <div class="input-actions">
+                    <!--<div class="loading-spinner" id="loadingSpinner" style="display:none;">
+                    <div class="spinner"></div>
+                </div>
+                    -->
+                    <div class="loading-spinner" id="loadingSpinner" style="display:none;">
+                        <div class="spinner-dots">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </div>
+                    <button class="send-btn" id="sendBtn" disabled>Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ================================================================
+         AUTH MODAL
+    ================================================================ -->
+    <div class="modal-overlay" id="authModal">
+        <div class="modal-box">
+            <div style="display: flex; justify-content: flex-end; width: 100%; padding: 8px 12px;">
+                <button type="button" class="close-modal" id="closeModal"
+                        style="
+                background: #f0f0f0;
+                border: none;
+                width: 36px;
+                height: 36px;
+                border-radius: 50%;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.3s ease;
+                font-size: 18px;
+                color: #555;
+                padding: 0;
+            "
+                        onmouseenter="this.style.background='#e0e0e0'; this.style.transform='scale(1.1)'"
+                        onmouseleave="this.style.background='#f0f0f0'; this.style.transform='scale(1)'">
+                    ✕
+                </button>
+            </div>
+
+            <h2 id="modalTitle">Login</h2>
+            <p class="modal-sub" id="modalSub">Enter your phone number and password</p>
+
+            <form id="authForm" autocomplete="off">
+
+                <!-- REGISTER FIELDS -->
+                <div id="registerFields" style="display:none;">
+                    <div class="form-group">
+                        <label for="fullName">Full Name<span style="color:red;">*</span></label>
+                        <input type="text" id="fullName" placeholder="Enter First and last name">
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="university">University<span style="color:red;">*</span></label>
+                            <input type="text" id="university" placeholder="University of .....">
+                        </div>
+                        <div class="form-group">
+                            <label for="degree">Degree<span style="color:red;">*</span></label>
+                            <select id="degree">
+                                <option value="">Select...</option>
+                                <option value="Bachelor">Bachelor</option>
+                                <option value="Master">Master</option>
+                                <option value="PhD">PhD</option>
+                                <option value="Postdoc">Postdoc</option>
+                                <option value="Professor">Professor</option>
+                                <option value="Other">Other / Not Listed</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="fieldstudy">Field of Study<span style="color:red;">*</span></label>
+                        <input type="text" id="fieldstudy" placeholder="your Field of Study">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="researchInterest">Research Interest<span style="color:red;">*</span></label>
+                        <input type="text" id="researchInterest" placeholder="Favorite topics">
+                    </div>
+
+                    <!-- PHONE -->
+                    <div class="form-group" id="phoneGroup" style="display: none">
+                        <label for="phone">Phone Number<span style="color:red;">*</span></label>
+                        <input type="tel" id="phone" placeholder="Enter mobile number">
+                    </div>
+                </div>
+
+                <!-- EMAIL -->
+                <div id="emailGroup" class="form-group" style="display:none;">
+                    <label for="email">Email Address<span style="color:red;">*</span></label>
+                    <input type="email" id="email" placeholder="Enter your email address">
+                </div>
+
+
+                <!-- CHANGE PASSWORD FIELDS -->
+                <div id="changePasswordFields" style="display:none;">
+                    <div class="form-group">
+                        <label for="currentPassword">Current Password<span style="color:red;">*</span></label>
+                        <input type="password" id="currentPassword" placeholder="Enter your current password">
+                    </div>
+                    <div class="form-group">
+                        <label for="newPassword">New Password<span style="color:red;">*</span></label>
+                        <input type="password" id="newPassword" placeholder="Minimum 6 characters" minlength="6">
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmNewPassword">Confirm New Password<span style="color:red;">*</span></label>
+                        <input type="password" id="confirmNewPassword" placeholder="Re-enter new password">
+                    </div>
+                </div>
+
+                <!-- PASSWORD -->
+                <div class="form-group" id="passwordGroup">
+                    <label for="password">Password<span style="color:red;">*</span></label>
+                    <input type="password" id="password" placeholder="Minimum 6 characters" minlength="6">
+                </div>
+
+                <!-- PASSWORD CONFIRM -->
+                <div id="registerPasswordConfirm" style="display:none;">
+                    <div class="form-group">
+                        <label for="passwordConfirm">Confirm Password<span style="color:red;">*</span></label>
+                        <input type="password" id="passwordConfirm" placeholder="Re-enter password">
+                    </div>
+                </div>
+
+                <div class="form-error" id="formError"></div>
+                <div class="form-success" id="formSuccess"></div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary" id="submitBtn">Login</button>
+                    <button type="button" class="btn-secondary" id="cancelBtn">Cancel</button>
+                </div>
+
+                <div class="switch-auth" id="authSwitch">
+                    <span id="switchText">Don't have an account?</span>
+                    <a href="javascript:void(0)" id="switchLink">Sign up</a>
+                </div>
+
+                <div class="switch-auth" id="forgotPasswordWrapper">
+                    <span>Forgot your password?</span>
+                    <a href="javascript:void(0)" id="forgotpasswordLink">Reset Password</a>
+                </div>
+
+            </form>
+        </div>
+    </div>
+    <!-- ===== TOAST ===== -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle" id="toastIcon"></i>
+        <span id="toastMessage">پیام</span>
+    </div>
+    <script>
+        /* ================================================================
+           CONFIGURATION
+        ================================================================ */
+        const REGISTER_API_URL = CONFIG.REGISTER_API_URL;
+        const ASK_CONGRESS_API_URL = CONFIG.ASK_CONGRESS_API_URL;
+       /* ================================================================
+           STORAGE
+        ================================================================ */
+        const SESSION_KEY =
+            'confsync_session';
+        const CHATS_KEY =
+            'confsync_chats_';
+
+
+        function escapeHtml(value) {
+
+            return String(value || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+
+        }
+        // تابع نمایش پیام موقت
+        function showToastMessage(message) {
+            // می‌توانید از toast موجود خود استفاده کنید
+            const toast = document.getElementById('toast');
+            if (toast) {
+                toast.textContent = message;
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 2000);
+            } else {
+                alert(message);
+            }
+        }
+      /* ================================================================
+           SESSION FUNCTIONS
+        ================================================================ */
+        function getCurrentUser() {
+            try {
+                const _curtuser = JSON.parse(
+                    localStorage.getItem(
+                        SESSION_KEY
+                    )
+                ) || null;
+                return _curtuser
+            } catch (error) {
+                return null;
+            }
+        }
+        function setCurrentUser(user) {
+            if (user) {
+                //alert(JSON.stringify(user, null, 2));
+                localStorage.setItem(
+                    SESSION_KEY,
+                    JSON.stringify(user)
+                );
+            } else {
+                localStorage.removeItem(
+                    SESSION_KEY
+                );
+            }
+        }
+        /* ================================================================
+           CHAT STORAGE
+        ================================================================ */
+        function getChatStorageKey(userId) {
+            return CHATS_KEY + userId;
+        }
+        function getUserChats(userId) {
+            try {
+                return JSON.parse(
+                    localStorage.getItem(
+                        getChatStorageKey(userId)
+                    )
+                ) || [];
+            } catch (error) {
+                return [];
+            }
+        }
+        function saveUserChats(
+            userId,
+            chats
+        ) {
+            localStorage.setItem(
+                getChatStorageKey(userId),
+                JSON.stringify(chats)
+            );
+        }
+        function getCurrentChats() {
+            const user =
+                getCurrentUser();
+            if (!user) return [];
+            return getUserChats(
+                user.email
+            );
+        }
+        function saveCurrentChats(chats) {
+            const user =
+                getCurrentUser();
+            if (!user) return;
+            saveUserChats(
+                user.email,
+                chats
+            );
+        }
+        /* ================================================================
+           PHONE NORMALIZATION
+        ================================================================ */
+        function normalizePhone(value) {
+            return value
+            /*
+            let phoneNumber = String(value || '')
+                .trim()
+                .replace(/\s+/g, '')
+                .replace(/-/g, '');
+            // Persian digits → English
+            phoneNumber = phoneNumber.replace(/[۰-۹]/g, function (digit) {
+                return '۰۱۲۳۴۵۶۷۸۹'.indexOf(digit);
+            });
+            // Arabic digits → English
+            phoneNumber = phoneNumber.replace(/[٠-٩]/g, function (digit) {
+                return '٠١٢٣٤٥٦٧٨٩'.indexOf(digit);
+            });
+            return phoneNumber;
+            */
+        }
+        function isValidPhone(phoneNumber) {
+            // دقیقاً 11 رقم و شروع با 0
+            //return /^0\d{10}$/.test(phoneNumber);
+            return phoneNumber
+        }
+        function isValidEmail(email) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        }
+        /* ================================================================
+           API REQUEST
+        ================================================================ */
+        
+        async function authRequest(payload) {
+
+            if (
+                !REGISTER_API_URL ||
+                REGISTER_API_URL ===
+                'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL'
+            ) {
+                throw new Error(
+                    'Authentication API URL is not configured.'
+                );
+            }
+
+            console.log('========== AUTH REQUEST ==========');
+            console.log('API URL:', REGISTER_API_URL);
+            console.log('Origin:', window.location.origin);
+            console.log('Payload:', payload);
+            console.log('==================================');
+
+            let response;
+
+            try {
+
+                const params = new URLSearchParams();
+
+                Object.keys(payload).forEach(function (key) {
+                    params.append(
+                        key,
+                        payload[key] ?? ''
+                    );
+                });
+
+                response = await fetch(
+                    REGISTER_API_URL,
+                    {
+                        method: 'POST',
+
+                        headers: {
+                            'Content-Type':
+                                'application/x-www-form-urlencoded;charset=UTF-8'
+                        },
+
+                        body: params.toString()
+                    }
+                );
+
+            } catch (error) {
+
+                console.error(
+                    '========== AUTH FETCH ERROR =========='
+                );
+
+                console.error(
+                    'Name:',
+                    error?.name
+                );
+
+                console.error(
+                    'Message:',
+                    error?.message
+                );
+
+                console.error(
+                    'API URL:',
+                    REGISTER_API_URL
+                );
+
+                console.error(
+                    'Origin:',
+                    window.location.origin
+                );
+
+                console.error(
+                    '======================================'
+                );
+                /*
+                alert(
+                    'AUTH FETCH ERROR\n\n' +
+                    'Name: ' +
+                    (error?.name || '') +
+                    '\n\nMessage: ' +
+                    (error?.message || '') +
+                    '\n\nAPI URL:\n' +
+                    REGISTER_API_URL +
+                    '\n\nOrigin:\n' +
+                    window.location.origin
+                );
+                */
+                throw new Error(
+                    'Unable to connect to the authentication server.'
+                );
+            }
+
+            console.log(
+                'AUTH HTTP STATUS:',
+                response.status
+            );
+
+            if (!response.ok) {
+
+                const errorText =
+                    await response.text().catch(
+                        function () {
+                            return '';
+                        }
+                    );
+
+                console.error(
+                    'AUTH HTTP ERROR:',
+                    response.status,
+                    errorText
+                );
+
+                throw new Error(
+                    'Authentication server returned HTTP ' +
+                    response.status +
+                    (errorText
+                        ? ': ' + errorText
+                        : '')
+                );
+            }
+
+            let result;
+
+            try {
+
+                result = await response.json();
+
+            } catch (error) {
+
+                const responseText =
+                    await response.text().catch(
+                        function () {
+                            return '';
+                        }
+                    );
+
+                console.error(
+                    'Invalid JSON response:',
+                    responseText
+                );
+
+                throw new Error(
+                    'Invalid response from authentication server.'
+                );
+            }
+
+            console.log(
+                'AUTH RESPONSE:',
+                result
+            );
+
+            if (!result) {
+
+                throw new Error(
+                    'Empty response from authentication server.'
+                );
+            }
+
+            return result;
+        }
+
+        /* ================================================================
+           REGISTER
+        ================================================================ */
+        async function registerUser(
+            phoneNumber,
+            emailaddress,
+            passwordValue,
+            userData
+        ) {
+            const result =
+                await authRequest({
+                    action: 'register',
+                    phone:
+                        phoneNumber,
+                    email:
+                        emailaddress,
+                    password:
+                        passwordValue,
+                    fullName:
+                        userData.fullName,
+                    university:
+                        userData.university,
+                    major:
+                        userData.fieldstudy,
+                    degree:
+                        userData.degree,
+                    researchInterest:
+                        userData.researchInterest,
+                    urllocation: window.location.origin
+                });
+            if (!result.success) {
+                throw new Error(
+                    result.message ||
+                    'Registration failed.'
+                );
+            }
+            return result.user;
+        }
+        /* ================================================================
+           LOGIN
+        ================================================================ */
+        function opensidebarpage() {
+            // بررسی اینکه آیا کاربر لاگین است
+            const currentUser = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null');
+
+            if (!currentUser) {
+                openModal('login');
+                return;
+            }
+            openMobileSidebar()
+        }
+        // اضافه کردن استایل‌های hover با CSS
+        document.addEventListener('DOMContentLoaded', function () {
+            const chatTitle = document.getElementById('chatTitle');
+            if (chatTitle) {
+                chatTitle.addEventListener('mouseenter', function () {
+                    this.style.textDecoration = 'underline';
+                    this.style.color = '#0056b3';
+                });
+                chatTitle.addEventListener('mouseleave', function () {
+                    this.style.textDecoration = 'none';
+                    this.style.color = '';
+                });
+            }
+        });
+
+        async function loginUser(
+            emailAddress,
+            passwordValue
+        ) {
+            const result =
+                await authRequest({
+                    action: 'login',
+                    email:
+                        emailAddress,
+                    password:
+                        passwordValue
+                });
+            if (!result.success) {
+                throw new Error(
+                    result.message ||
+                    'Login failed.'
+                );
+            }
+            return result.user;
+        }
+        /* ================================================================
+           DOM ELEMENTS
+        ================================================================ */
+        const messageInput = document.getElementById('messageInput');
+
+        const sendBtn = document.getElementById('sendBtn');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        const messagesArea = document.getElementById('messagesArea');
+        const historyList = document.getElementById('historyList');
+        const chatTitle = document.getElementById('chatTitle');
+        const newChatBtn = document.getElementById('newChatBtn');
+        const sidebarUserInfo = document.getElementById('sidebarUserInfo');
+        const menuToggle = document.getElementById('menuToggle');
+        const sidebar = document.getElementById('sidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+        /* Auth */
+        const authModal = document.getElementById('authModal');
+        const closeModal = document.getElementById('closeModal');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalSub = document.getElementById('modalSub');
+        const submitBtn = document.getElementById('submitBtn');
+        const switchLink = document.getElementById('switchLink');
+        const switchText = document.getElementById('switchText');
+        const forgotPasswordWrapper = document.getElementById('forgotPasswordWrapper');
+        const emailGroup = document.getElementById('emailGroup');
+        const email = document.getElementById('email');
+        const passwordGroup = document.getElementById('passwordGroup');
+        const forgotpasswordLink = document.getElementById('forgotpasswordLink');
+        const formError = document.getElementById('formError');
+        const formSuccess = document.getElementById('formSuccess');
+        const authForm = document.getElementById('authForm');
+        const password = document.getElementById('password');
+        const changePasswordFields = document.getElementById('changePasswordFields');
+        const currentPasswordInput = document.getElementById('currentPassword');
+        const newPasswordInput = document.getElementById('newPassword');
+        const confirmNewPasswordInput = document.getElementById('confirmNewPassword');
+        const fullName = document.getElementById('fullName');
+        const university = document.getElementById('university');
+        const fieldstudy = document.getElementById('fieldstudy');
+        const degree = document.getElementById('degree');
+        const researchInterest = document.getElementById('researchInterest');
+        const passwordConfirm = document.getElementById('passwordConfirm');
+        const registerFields = document.getElementById('registerFields');
+        const registerPasswordConfirm = document.getElementById('registerPasswordConfirm')
+        const authSwitch = document.getElementById('authSwitch');
+        const phoneGroup = document.getElementById('phoneGroup');
+        /* Conference */
+        /*
+        const confSelectorBtn =
+            document.getElementById(
+                '`'
+            );
+        const confDropdown =
+            document.getElementById(
+                'confDropdown'
+            );
+        const applyConfBtn =
+            document.getElementById(
+                'applyConfBtn'
+            );
+            */
+        /* ================================================================
+            GLOBAL STATE
+        ================================================================ */
+        let isRegisterMode = false;
+        let isForgotPasswordMode = false;
+        let isChangePasswordMode = false;
+        let isProcessing = false;
+        let currentChatId = null;
+        let currentConference = null; // کنفرانس فعلی انتخاب شده
+        let conferenceMessages = {}; // { conferenceId: [messages] }
+        let allChats = [];
+        
+        /* ================================================================
+           CORE FUNCTIONS
+        ================================================================ */
+        function generateId() {
+            return Date.now().toString(36) +
+                Math.random()
+                    .toString(36)
+                    .substring(2, 7);
+        }
+        function getChatTitle(messages) {
+            if (
+                !messages ||
+                messages.length === 0
+            ) {
+                return 'Please select a conference first...';
+            }
+            const firstMsg =
+                messages.find(
+                    message =>
+                        message.role === 'user'
+                );
+            if (firstMsg) {
+                const text =
+                    firstMsg.content;
+                return text.length > 30
+                    ? text.substring(0, 30) + '...'
+                    : text;
+            }
+            return 'Please select a conference first...';
+        }
+        function formatTime() {
+            return new Date()
+                .toLocaleTimeString(
+                    'en-US',
+                    {
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    }
+                );
+        }
+        /* ================================================================
+           WELCOME SCREEN
+        ================================================================ */
+        function renderWelcome() {
+            messagesArea.innerHTML = `
+                        <div
+                            style="
+                                display:flex;
+                                flex-direction:column;
+                                align-items:center;
+                                justify-content:center;
+                                height:100%;
+                                color:#8e8ea0;
+                                text-align:center;
+                                padding:40px;
+                            "
+                        >
+                            <div
+                                style="
+                                    font-size:48px;
+                                    margin-bottom:16px;
+                                "
+                            >
+                         <img src="assets/centericon.png"
+                              alt="Confsync Logo"
+                              style="width:280px;height:280px;display:block;margin:0 auto 10px;border-radius:50%;" />
+
+                            </div>
+                            <h3
+                                style="
+                                    color:#202123;
+                                    font-weight:500;
+                                    margin-bottom:8px;
+                                "
+                            >
+                                Welcome to ConfSync
+                            </h3>
+                            <p
+                                style="
+                                    font-size:14px;
+                                    max-width:400px;
+                                "
+                            >
+                                Ask questions about academic conferences
+                                and get accurate answers.
+                            </p>
+                            <p
+                                style="
+                                    font-size:13px;
+                                    margin-top:8px;
+                                    color:#b0b0b0;
+                                "
+                            >
+                                Type your question below to get started.
+                            </p>
+                        </div>
+                    `;
+        }
+
+        
+        /* ================================================================
+           SIDEBAR USER
+        ================================================================ */
+        function renderSidebarUser() {
+            const user =
+                getCurrentUser();
+            if (user) {
+                const initial =
+                    (
+                        user.fullName ||
+                        'U'
+                    )
+                        .charAt(0)
+                        .toUpperCase();
+                sidebarUserInfo.innerHTML = `
+                            <div class="user-info">
+                                <div class="avatar">
+                                    ${escapeHtml(initial)}
+                                </div>
+                                <div class="details">
+                                    <div class="name">
+                                        ${escapeHtml(
+                    user.fullName ||
+                    'User'
+                )
+                    }
+                                    </div>
+                                    <div class="phone">
+                                        ${escapeHtml(
+                        user.phone || ''
+                    )
+                    }
+                                    </div>
+                                </div>
+                                <div class="user-actions">
+                                    <button type="button" class="change-password-btn" id="changePasswordBtn" title="Change Password">🔑 Change Password</button>
+                                    <button class="logout-icon" id="logoutBtn" title="Logout">🚪</button>
+                                </div>
+                            </div>
+                        `;
+                document
+                    .getElementById(
+                        'logoutBtn'
+                    )
+                    ?.addEventListener(
+                        'click',
+                        logout
+                    );
+            } else {
+                sidebarUserInfo.innerHTML = `
+                            <div class="login-prompt">
+                                <button
+                                    class="login-side-btn"
+                                    id="loginSideBtn"
+                                >
+                                    🔐 Login / Sign Up
+                                </button>
+                            </div>
+                        `;
+                document
+                    .getElementById(
+                        'loginSideBtn'
+                    )
+                    ?.addEventListener(
+                        'click',
+                        function () {
+                            openModal('login');
+                        }
+                    );
+            }
+        }
+
+        /* ================================================================
+           RENDER CONFERENCE HISTORY (SIDEBAR)
+        ================================================================ */
+        function renderConferenceHistory() {
+            const currentUser = getCurrentUser();
+            if (!currentUser || !currentUser.email) {
+                historyList.innerHTML = `
+                         <div class="history-empty">
+                             <p>🔒 Please login to see your conferences.</p>
+                         </div>
+                     `;
+                return;
+            }
+
+            const stored = localStorage.getItem(`selectedCongressList_${currentUser.email}`);
+            let congressList = [];
+
+            try {
+                congressList = stored ? JSON.parse(stored) : [];
+            } catch (error) {
+                console.error('Invalid congress data:', error);
+                congressList = [];
+            }
+
+            historyList.innerHTML = '';
+
+            if (!Array.isArray(congressList) || congressList.length === 0) {
+                historyList.innerHTML = `
+                         <div class="history-empty">
+                             <p>📭 No conferences selected.</p>
+                             <p style="font-size:13px; margin-top:8px;">Click "Select Conferences" to add.</p>
+                         </div>
+                     `;
+                return;
+            }
+
+            congressList.forEach(function (congress) {
+                const item = document.createElement('div');
+                item.className = 'history-item';
+                if (currentConference && currentConference.id === congress.id) {
+                    item.classList.add('active');
+                }
+                item.dataset.congressId = congress.id;
+
+                const messageCount = conferenceMessages[congress.id] ? conferenceMessages[congress.id].length : 0;
+
+                item.innerHTML = `
+                         <div class="history-icon">📚</div>
+                         <div class="history-content">
+                             <div class="history-title">${escapeHtml(congress.nameFa)}</div>
+                             <div class="history-meta">
+                                 <span>${escapeHtml(congress.yearFa)}</span>
+                                 <span>${escapeHtml(congress.locationFa)}</span>
+                                 <span style="color:#8e8ea0; font-size:11px;">💬 ${messageCount}</span>
+                             </div>
+                         </div>
+                     `;
+
+                item.addEventListener('click', function () {
+                    selectConference(currentUser.email, congress);
+                });
+
+                historyList.appendChild(item);
+            });
+        }
+
+        /* ================================================================
+           CACHE FOR ConferenceMessages
+        ================================================================ */
+        function saveConferenceMessages(email, conferenceId) {
+            const key = `conferenceMessages_${email}_${conferenceId}`;
+            const ONE_MONTH = 15 * 24 * 60 * 60 * 1000;
+
+            // اطلاعات فعلی کنفرانس
+            const conferenceData = conferenceMessages[conferenceId] || {
+                requestId: null,
+                messages: []
+            };
+
+            // بررسی اطلاعات قبلی برای حفظ زمان انقضا
+            const existing = localStorage.getItem(key);
+
+            let expiresAt = Date.now() + ONE_MONTH;
+
+            if (existing) {
+                try {
+                    const oldData = JSON.parse(existing);
+
+                    if (oldData.expiresAt) {
+                        expiresAt = oldData.expiresAt;
+                    }
+                } catch (error) {
+                    console.error(
+                        "Error reading existing conference messages:",
+                        error
+                    );
+                }
+            }
+
+            // اطلاعاتی که باید ذخیره شود
+            const data = {
+                requestId: conferenceData.requestId || null,
+                messages: conferenceData.messages || [],
+                expiresAt: expiresAt
+            };
+
+            // ذخیره در localStorage
+            localStorage.setItem(key, JSON.stringify(data));
+
+            //console.log("Conference messages saved:", data);
+        }
+
+        function loadConferenceMessages(email, conferenceId) {
+            const key = `conferenceMessages_${email}_${conferenceId}`;
+            const saved = localStorage.getItem(key);
+            // اگر چیزی ذخیره نشده باشد
+            if (!saved) {
+                conferenceMessages[conferenceId] = {
+                    requestId: null,
+                    messages: []
+                };
+
+                return;
+            }
+
+            try {
+                const data = JSON.parse(saved);
+
+                // بررسی تاریخ انقضا
+                if (
+                    !data.expiresAt ||
+                    Date.now() >= data.expiresAt
+                ) {
+                    localStorage.removeItem(key);
+
+                    conferenceMessages[conferenceId] = {
+                        requestId: null,
+                        messages: []
+                    };
+
+                    return;
+                }
+
+                // بازیابی اطلاعات
+                conferenceMessages[conferenceId] = {
+                    requestId: data.requestId || null,
+                    messages: Array.isArray(data.messages)
+                        ? data.messages
+                        : []
+                };
+
+                /*
+                console.log(
+                    "Conference messages loaded:",
+                    conferenceMessages[conferenceId]
+                );
+                */
+            } catch (error) {
+                console.error(
+                    "Error loading conference messages:",
+                    error
+                );
+
+                // اگر داده خراب باشد
+                localStorage.removeItem(key);
+
+                conferenceMessages[conferenceId] = {
+                    requestId: null,
+                    messages: []
+                };
+            }
+        }
+        /* ================================================================
+           SELECT CONFERENCE
+        ================================================================ */
+        async function selectConference(email, congress) {
+            const user = getCurrentUser();
+            if (!user) {
+                openModal('login');
+                return;
+            }
+
+            currentConference = congress;
+            chatTitle.textContent = congress.nameFa || 'Conference';
+
+            // فعال کردن input
+            messageInput.disabled = false;
+            sendBtn.disabled = false;
+            messageInput.placeholder = `Ask about ${congress.nameFa}...(250 characters)`;
+            messageInput.focus();
+            // به‌روزرسانی سایدبار
+            //==================
+            const key = `conferenceMessages_${email}_${congress.id}`;
+            const saved = localStorage.getItem(key);
+            // اگر چیزی ذخیره نشده باشد
+            if (!saved) {
+                await featchconferencebyId(email, congress.id, congress.nameFa)
+            }
+            else {
+                loadConferenceMessages(email, congress.id)
+            }
+            //==================
+            renderConferenceMessages(congress.id);
+            closeMobileSidebar();
+        }
+
+        /* ================================================================
+           RENDER CONFERENCE MESSAGES
+        ================================================================ */
+        
+        // ================================================================
+        // تابع دریافت پیام‌ها از سرور
+        // ================================================================
+        async function featchConferenceMessages(email, conferenceId) {
+            try {
+                //console.log("========== FETCH CONFERENCE MESSAGES ==========");
+                //console.log("Email:", email);
+                //console.log("Conference ID:", conferenceId);
+
+                const response = await fetch(ASK_CONGRESS_API_URL, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                    body: new URLSearchParams({
+                        action: "loadchats",
+                        email: email,
+                        congressId: conferenceId
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error("HTTP error: " + response.status);
+                }
+
+                const result = await response.json();
+                //console.log("📦 LOAD CHATS RESPONSE:", result);
+
+                if (result.success !== true) {
+                    throw new Error(result.error || "خطا در دریافت تاریخچه گفتگو");
+                }
+
+                // دریافت پیام‌ها از سرور
+                const rawMessages = Array.isArray(result.messages) ? result.messages : [];
+                //console.log(`📊 RAW MESSAGES: ${rawMessages.length} messages`);
+
+                // 🔥 ساخت پیام‌ها با role صحیح
+                const messages = rawMessages.map(function (msg, index) {
+                    // استخراج role
+                    let role = String(msg.role || "").toLowerCase().trim();
+
+                    // اگر role خالی بود، از روی محتوا تشخیص بده
+                    if (!role) {
+                        const content = String(msg.content || "").toLowerCase();
+                        if (content.includes("?") || content.includes("please") || content.includes("tell me")) {
+                            role = "user";
+                        } else if (content.length > 0) {
+                            role = "assistant";
+                        } else {
+                            role = "user";
+                        }
+                    }
+
+                    // اگر role معتبر نبود، تصحیح کن
+                    if (role !== 'user' && role !== 'assistant') {
+                        const content = String(msg.content || "").toLowerCase();
+                        if (content.includes("?") || content.includes("please")) {
+                            role = "user";
+                        } else {
+                            role = "assistant";
+                        }
+                    }
+
+                    //console.log(`📝 Message ${index}: role=${role}`);
+
+                    return {
+                        id: generateId(),
+                        dbId: msg.requestId || msg.id || null,
+                        requestId: msg.requestId || msg.id || null,
+                        role: role,
+                        content: String(msg.content || ""),
+                        time: msg.time || formatTime()
+                    };
+                });
+
+                //console.log(`📊 NORMALIZED MESSAGES: ${messages.length}`);
+                //console.log("📊 ROLES:", messages.map(m => m.role));
+
+                // 🔥 مهم: ذخیره در conferenceMessages
+                conferenceMessages[conferenceId] = {
+                    requestId: result.requestId || null,
+                    messages: messages
+                };
+                //console.log("✅ conferenceMessages updated:", conferenceMessages[conferenceId]);
+
+                // ذخیره در localStorage
+                const key = `conferenceMessages_${email}_${conferenceId}`;
+                const data = {
+                    requestId: result.requestId || null,
+                    messages: messages,
+                    expiresAt: Date.now() + (15 * 24 * 60 * 60 * 1000)
+                };
+                localStorage.setItem(key, JSON.stringify(data));
+                //console.log("💾 Saved to localStorage:", key);
+
+                //console.log("✅ Conference messages fetched and saved successfully!");
+                return true;
+
+            } catch (error) {
+                console.error("❌ Error:", error);
+                return false;
+            }
+        }        
+
+        // ================================================================
+        // تابع رندر پیام‌ها - اصلاح شده برای نمایش در دو سمت
+        // ================================================================
+        function renderConferenceMessages(conferenceId) {
+
+            const conferenceData =
+                conferenceMessages[conferenceId] || {
+                    messages: []
+                };
+
+            const messages = conferenceData.messages || [];
+
+            if (messages.length === 0) {
+
+                messagesArea.innerHTML = `
+            <div style="
+                display:flex;
+                flex-direction:column;
+                align-items:center;
+                justify-content:center;
+                height:100%;
+                color:#8e8ea0;
+                text-align:center;
+                padding:40px;
+            ">
+                <div style="font-size:48px; margin-bottom:16px;">
+                    <img src="assets/centericon.png"
+                         alt="Confsync Logo"
+                         style="width:280px;height:280px;display:block;margin:0 auto 10px;border-radius:50%;" />
+                </div>
+
+                <h3 style="
+                    color:#202123;
+                    font-weight:500;
+                    margin-bottom:8px;
+                ">
+                    ${escapeHtml(
+                    currentConference
+                        ? currentConference.nameFa
+                        : 'Select a Conference'
+                )}
+                </h3>
+
+                <p style="font-size:14px; max-width:400px;">
+                    ${currentConference
+                        ? 'Ask your first question about this conference.'
+                        : 'Select a conference from the sidebar to start.'
+                    }
+                </p>
+            </div>
+        `;
+
+                return;
+            }
+
+            const confName =
+                currentConference
+                    ? currentConference.nameFa || 'selected conference'
+                    : 'selected conference';
+
+            let html = '';
+
+            messages.forEach(function (message) {
+
+                const roleClass =
+                    message.role === 'user'
+                        ? 'user'
+                        : 'assistant';
+
+                // --------------------------------------------------------
+                // ID داخلی DOM
+                // --------------------------------------------------------
+
+                let attributes = `id="${message.id}"`;
+
+                // --------------------------------------------------------
+                // data-db-id
+                // --------------------------------------------------------
+
+                let dbId = '';
+
+                if (message.dbId) {
+                    dbId = `${message.role}_${message.dbId}`;
+
+                    attributes += ` data-db-id="${dbId}"`;
+                }
+
+                // --------------------------------------------------------
+                // Toolbar
+                // --------------------------------------------------------
+
+                let toolbar = '';
+
+                if (message.dbId) {
+
+                    toolbar = `
+        <div class="message-toolbar"
+             data-db-id="${dbId}">
+
+            <button
+                type="button"
+                class="message-tool copy-btn"
+                data-action="copy"
+                data-db-id="${dbId}"
+                title="Copy">
+
+                <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                >
+                    <rect
+                        x="9"
+                        y="9"
+                        width="13"
+                        height="13"
+                        rx="2"
+                        ry="2"
+                    ></rect>
+
+                    <path
+                        d="M5 15H4a2 2 0 0 1-2-2V4
+                           a2 2 0 0 1 2-2h9
+                           a2 2 0 0 1 2 2v1"
+                    ></path>
+                </svg>
+
+            </button>
+
+            <button
+                type="button"
+                class="message-tool align-btn"
+                data-action="align"
+                data-db-id="${dbId}"
+                title="Toggle alignment">
+                ⇤⇥
+            </button>
+        </div>
+    `;
+                }
+
+                // --------------------------------------------------------
+                // پیام
+                // --------------------------------------------------------
+
+                html += `
+    <div
+        class="message ${roleClass}"
+        ${attributes}
+    >
+
+        ${toolbar}
+
+        <div class="msg-content">
+
+            <div class="msg-text">
+                ${marked.parse(message.content || '')}
+            </div>
+
+        </div>
+
+        <div class="msg-footer-outside">
+
+            <span class="msg-time">
+                ${message.time || formatTime()}
+            </span>
+
+            <span class="msg-time">-</span>
+
+            <span class="msg-time">
+                ${escapeHtml(confName)}
+            </span>
+
+        </div>
+
+    </div>
+`;
+            });
+
+            messagesArea.innerHTML = html;
+
+            messagesArea.scrollTop =
+                messagesArea.scrollHeight;
+        }
+        /* ================================================================
+           SEND MESSAGE
+        =============================================================== */
+
+        /*
+         conference:
+         id, nameFa, nameEn, topicFa, topicEn, yearFa, typeFa, locationFa, website
+         user:
+         phoneNumber, emailAddress, pass, userData
+             userData:
+               fullName, university, fieldstudy, degree, researchInterest
+        */
+
+        async function sendMessage() {
+
+            const user = getCurrentUser();
+
+            if (!user) {
+                openModal('login');
+                return;
+            }
+
+            if (!currentConference) {
+                alert('Please select a conference first.');
+                return;
+            }
+
+            const text = messageInput.value.trim();
+
+            if (!text || isProcessing) {
+                return;
+            }
+
+            if (text.length > 250) {
+                alert('Your question cannot be longer than 250 characters.');
+                return;
+            }
+
+            const conferenceId = currentConference.id;
+
+            // ============================================================
+            // 1. ساخت ID موقت برای پیام کاربر
+            // ============================================================
+
+            const userMessageId = generateId();
+
+            // ============================================================
+            // 2. ساخت پیام کاربر
+            //
+            // dbId فعلاً null است چون هنوز پاسخ سرور نیامده
+            // ============================================================
+
+            const userMessage = {
+                id: userMessageId,
+                dbId: null,
+                role: 'user',
+                content: text,
+                time: formatTime()
+            };
+
+            // ============================================================
+            // 3. اطمینان از وجود اطلاعات کنفرانس
+            // ============================================================
+
+            if (!conferenceMessages[conferenceId]) {
+                conferenceMessages[conferenceId] = {
+                    messages: []
+                };
+            }
+
+            // ============================================================
+            // 4. ذخیره پیام کاربر
+            // ============================================================
+
+            conferenceMessages[conferenceId].messages.push(userMessage);
+
+            // ============================================================
+            // 5. پاک کردن Input
+            // ============================================================
+
+            messageInput.value = '';
+            messageInput.style.height = 'auto';
+
+            // ============================================================
+            // 6. نمایش Loading
+            // ============================================================
+
+            isProcessing = true;
+            sendBtn.disabled = true;
+
+            loadingSpinner.style.display = "block";
+            loadingSpinner.classList.add('active');
+
+            sendBtn.textContent = '...';
+
+            // ============================================================
+            // 7. نمایش فوری سؤال کاربر
+            // ============================================================
+
+            renderConferenceMessages(conferenceId);
+            renderConferenceHistory();
+
+            try {
+
+                // ========================================================
+                // 8. دریافت پاسخ واقعی از مدل / API
+                // ========================================================
+                const botResponse = await getAIResponse(
+                    text,
+                    user,
+                    currentConference
+                );
+                // ========================================================
+                // TEST RESPONSE
+                // این قسمت را بعداً با API واقعی جایگزین کنید
+                // ========================================================
+                /*
+                const botResponse = {
+                    requestId: "b136d79e-2101-456f-a549-52f6be1e428e",
+
+                    answer:
+                        "<p><strong>Glioma-related session at the 14th Neuro-Science Congress 2025</strong></p>" +
+                        "<ul>" +
+                        "<li><p><strong>Panel:</strong> <em>Personalized Treatment of Brain Tumors</em></p>" +
+                        "<ul>" +
+                        "<li><strong>Time:</strong> 09:45 – 11:15</li>" +
+                        "<li><strong>Location:</strong> Hall 2</li>" +
+                        "</ul>" +
+                        "</li>" +
+
+                        "<li><p><strong>Talk:</strong> <em>Surgical resection of Glioma in speech area</em></p>" +
+                        "<ul>" +
+                        "<li><strong>Speaker:</strong> <strong>Amir Hossein Javadi</strong></li>" +
+                        "<li><strong>Focus:</strong> The presentation will discuss surgical strategies for removing gliomas that involve the speech-related cortex.</li>" +
+                        "</ul>" +
+                        "</li>" +
+
+                        "</ul>" +
+
+                        "<p>These sessions provide insights into current advances in glioma surgery, personalized neuro-oncology diagnostics, and post-operative cognitive rehabilitation.</p>" +
+
+                        "<hr>" +
+
+                        "<p><strong>KEYWORDS:</strong><br>" +
+                        "glioma surgery, speech area resection, personalized brain tumor treatment, neuro-oncology</p>"
+                };
+                */
+                // ========================================================
+                // 9. پیدا کردن همان پیام کاربر
+                // ========================================================
+
+                const messages =
+                    conferenceMessages[conferenceId].messages;
+
+                const userMessageIndex =
+                    messages.findIndex(
+                        message => message.id === userMessageId
+                    );
+
+                if (userMessageIndex === -1) {
+                    throw new Error(
+                        `User message not found: ${userMessageId}`
+                    );
+                }
+
+                // ========================================================
+                // 10. ثبت ID واقعی دیتابیس روی پیام کاربر
+                //
+                // مهم:
+                // ID DOM تغییر نمی‌کند
+                // فقط data-db-id تغییر می‌کند
+                // ========================================================
+
+                messages[userMessageIndex].dbId =
+                    botResponse.requestId;
+
+                // ========================================================
+                // 11. به‌روزرسانی DOM پیام کاربر
+                // ========================================================
+
+                const userElement =
+                    document.getElementById(userMessageId);
+
+                if (userElement) {
+
+                    userElement.dataset.dbId =
+                        botResponse.requestId;
+
+                } else {
+
+                    console.warn(
+                        'User DOM element not found:',
+                        userMessageId
+                    );
+                }
+
+                // ========================================================
+                // 12. ساخت پیام Bot
+                // ========================================================
+
+                const botMessage = {
+
+                    // ID داخلی DOM
+                    id: generateId(),
+
+                    // ID واقعی دیتابیس
+                    dbId: botResponse.requestId,
+
+                    role: 'assistant',
+
+                    content: botResponse.answer,
+
+                    time: formatTime()
+                };
+
+                // ========================================================
+                // 13. ذخیره پاسخ Bot
+                // ========================================================
+
+                messages.push(botMessage);
+
+                // ========================================================
+                // 14. Render مجدد
+                // ========================================================
+
+                renderConferenceMessages(conferenceId);
+                renderConferenceHistory();
+
+            } catch (error) {
+
+                console.error('Error:', error);
+
+                const errorMessage = {
+
+                    id: generateId(),
+
+                    dbId: null,
+
+                    role: 'assistant',
+
+                    content:
+                        '⚠️ Sorry, I encountered an error. Please try again.',
+
+                    time: formatTime()
+                };
+
+                conferenceMessages[conferenceId].messages.push(
+                    errorMessage
+                );
+
+                renderConferenceMessages(conferenceId);
+                renderConferenceHistory();
+
+            } finally {
+
+                //-------------------------
+                saveConferenceMessages(user.email, currentConference.id);
+                //-------------------------
+                // ========================================================
+                // 15. پایان Loading
+                // ========================================================
+
+                isProcessing = false;
+
+                sendBtn.disabled = false;
+
+                sendBtn.textContent = 'Send';
+
+                loadingSpinner.style.display = "none";
+
+                loadingSpinner.classList.remove('active');
+
+                messageInput.focus();
+            }
+        }
+        /* ================================================================
+        AI RESPONSE
+        =============================================================== */
+        /*
+         conference:
+         id, groupname, nameFa, nameEn, topicFa, topicEn, yearFa, typeFa, locationFa, website
+         user:
+         phoneNumber, emailAddress, pass, userData
+             userData:
+               fullName, university, fieldstudy, degree, researchInterest
+        */
+        async function getAIResponse(question, user, conference) {
+            try {
+                const response = await fetch(ASK_CONGRESS_API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: new URLSearchParams({
+                        action: 'requestrag',
+                        question: question,
+                        user: JSON.stringify(user || {}),
+                        curconference: JSON.stringify(conference || {})
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error: ${response.status}`);
+                }
+
+                const text = await response.text();
+
+                //console.log("HTTP STATUS:", response.status);
+                //console.log("SERVER RESPONSE:", text);
+
+                if (!text.trim().startsWith("{")) {
+                    throw new Error(
+                        "سرور JSON برنگرداند. Response: " +
+                        text.substring(0, 300)
+                    );
+                }
+
+                const result = JSON.parse(text);
+                if (result.success === false) {
+                    throw new Error(result.error || 'RAG API error');
+                }
+                
+                // برگرداندن آبجکت با هر دو مقدار
+                return {
+                    requestId: result.requestId,
+                    answer: result.answer//marked.parse(result.answer || '')
+                };
+                //return result.answer || '';
+
+            } catch (error) {
+
+                console.error('RAG API Error:', error);
+
+                return 'خطا در دریافت پاسخ از سیستم هوش مصنوعی: ' +
+                    error.message;
+            }
+        }
+
+        /* ================================================================
+        SIDEBAR USER
+        ================================================================ */
+        function renderSidebarUser() {
+            const user = getCurrentUser();
+            if (user) {
+                const initial = (user.fullName || 'U').charAt(0).toUpperCase();
+                sidebarUserInfo.innerHTML = `
+        <div class="user-info">
+            <div class="avatar">${escapeHtml(initial)}</div>
+            <div class="details">
+                <div class="name">${escapeHtml(user.fullName || 'User')}</div>
+                <div class="phone">${escapeHtml(user.email || '')}</div>
+            </div>
+            <div class="user-actions">
+                <button type="button" class="change-password-btn" id="changePasswordBtn">🔑 Change Password</button>
+                <button class="logout-icon" id="logoutBtn">🚪</button>
+            </div>
+        </div>
+        `;
+                document.getElementById('logoutBtn')?.addEventListener('click', logout);
+                document.getElementById('changePasswordBtn')?.addEventListener('click', function () {
+                    openModal('changepassword');
+                });
+            } else {
+                sidebarUserInfo.innerHTML = `
+        <div class="login-prompt">
+            <button class="login-side-btn" id="loginSideBtn">🔐 Login / Sign Up</button>
+        </div>
+        `;
+                document.getElementById('loginSideBtn')?.addEventListener('click', function () {
+                    openModal('login');
+                });
+            }
+        }
+        /* ================================================================
+           LOGIN
+        ================================================================ */
+        /* ================================================================
+        LOGIN
+        ================================================================ */
+        function login(user) {
+            setCurrentUser(user);
+            currentConference = null;
+            conferenceMessages = {};
+            chatTitle.textContent = 'Select a Conference';
+            renderSidebarUser();
+            renderConferenceHistory();
+            renderConferenceMessages(null);
+            messageInput.disabled = true;
+            sendBtn.disabled = true;
+            messageInput.placeholder = 'Please select a conference first...';
+            closeModalFunc();
+            loadConferenceHistoryAfterLogin(user);
+        }
+        /* ================================================================
+           LOGOUT
+        ================================================================ */
+        function logout() {
+            if (!confirm('Are you sure you want to logout?')) {
+                return;
+            }
+            const currentUser = getCurrentUser();
+            if (!currentUser || !currentUser.email) {
+              return;
+            }
+            // ✅ ذخیره تاریخچه قبل از خروج
+            const historyList = localStorage.getItem(`historyList_${currentUser.email}`);
+            if (!historyList) {
+                const currentList = window.historyList || [];
+                localStorage.setItem(`historyList_${currentUser.email}`, JSON.stringify(currentList));
+            }
+            // ✅ خالی کردن UI
+            const historyListElement = document.getElementById('historyList');
+            if (historyListElement) {
+                historyListElement.innerHTML = '';
+            }
+            // ✅ پاک کردن متغیرهای global
+            if (typeof setCurrentUser === 'function') {
+                setCurrentUser(null);
+            }
+            window.allChats = [];
+            window.currentChatId = null;
+            // ✅ به‌روزرسانی UI
+            if (chatTitle) {
+                chatTitle.textContent = 'Please select a conference first...';
+            }
+            if (typeof renderSidebarUser === 'function') {
+                renderSidebarUser();
+            }
+            if (messageInput) {
+                messageInput.disabled = true;
+                messageInput.placeholder = 'Please login to ask questions...';
+            }
+            if (sendBtn) {
+                sendBtn.disabled = true;
+            }
+            // ✅ پاک کردن session
+            localStorage.removeItem(SESSION_KEY);
+            sessionStorage.removeItem('login_verified');
+            sessionStorage.removeItem('currentUser');
+            localStorage.removeItem('userData');
+            localStorage.removeItem('offline_username');
+            // ✅ هدایت به صفحه ورود
+            window.location.href = '/?action=login';
+        }         
+        /* ================================================================
+        LOAD CONFERENCE HISTORY AFTER LOGIN
+        ================================================================ */
+        function loadConferenceHistoryAfterLogin(user) {
+            if (!user || !user.email) return;
+            renderConferenceHistory();
+        }
+        /* ================================================================
+           AUTH MODAL / LOGIN / REGISTER / FORGOT PASSWORD
+        ================================================================ */
+
+        function clearAuthMessages() {
+            formError.textContent = '';
+            formError.classList.remove('show');
+            formSuccess.textContent = '';
+            formSuccess.classList.remove('show');
+        }
+
+        function setRequired(element, required) {
+            if (element) element.required = required;
+        }
+
+        function resetAuthVisibility() {
+            registerFields.style.display = 'none';
+            registerPasswordConfirm.style.display = 'none';
+            phoneGroup.style.display = 'none';
+            emailGroup.style.display = 'block';
+            passwordGroup.style.display = 'block';
+            authSwitch.style.display = 'block';
+            forgotPasswordWrapper.style.display = 'block';
+
+            setRequired(fullName, false);
+            setRequired(university, false);
+            setRequired(fieldstudy, false);
+            setRequired(degree, false);
+            setRequired(researchInterest, false);
+            setRequired(email, false);
+            setRequired(phone, false);
+            setRequired(password, false);
+            setRequired(passwordConfirm, false);
+            setRequired(currentPasswordInput, false);
+            setRequired(newPasswordInput, false);
+            setRequired(confirmNewPasswordInput, false);
+        }
+
+        function openModal(mode = 'login') {
+            isRegisterMode = mode === 'register';
+            isForgotPasswordMode = mode === 'forgotpassword';
+            isChangePasswordMode = mode === 'changepassword';
+
+            authModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            clearAuthMessages();
+            authForm.reset();
+            resetAuthVisibility();
+
+            if (isRegisterMode) {
+                modalTitle.textContent = 'Sign Up';
+                modalSub.textContent = 'Create your account to get started';
+                submitBtn.textContent = 'Sign Up';
+                switchText.textContent = 'Already have an account?';
+                switchLink.textContent = 'Login';
+
+                registerFields.style.display = 'block';
+                registerPasswordConfirm.style.display = 'block';
+                emailGroup.style.display = 'block';
+
+                setRequired(fullName, true);
+                setRequired(university, true);
+                setRequired(fieldstudy, true);
+                setRequired(degree, true);
+                setRequired(researchInterest, true);
+                setRequired(email, true);
+                setRequired(phone, false);
+                setRequired(password, true);
+                setRequired(passwordConfirm, true);
+                forgotPasswordWrapper.style.display = 'none';
+                return;
+            }
+
+            if (isForgotPasswordMode) {
+                modalTitle.textContent = 'Forgot Password';
+                submitBtn.textContent = 'Reset Password';
+                switchText.textContent = 'Remember your password?';
+                switchLink.textContent = 'Login';
+
+                emailGroup.style.display = 'block';
+                phoneGroup.style.display = 'none';
+                passwordGroup.style.display = 'none';
+                registerFields.style.display = 'none';
+                registerPasswordConfirm.style.display = 'none';
+                forgotPasswordWrapper.style.display = 'none';
+
+                setRequired(email, true);
+                setRequired(phone, false);
+                setRequired(password, false);
+                return;
+            }
+
+            if (isChangePasswordMode) {
+                
+                const currentUser = getCurrentUser();
+
+                //console.log("currentUser=",JSON.stringify(currentUser, null, 2));
+                if (!currentUser || !currentUser.email) {
+                    closeModalFunc();
+                    openModal('login');
+                    showAuthError('Please login first to change your password.');
+                    return;
+                }
+                modalTitle.textContent = 'Change Password';
+                modalSub.textContent = 'Enter your current password and choose a new password';
+                submitBtn.textContent = 'Change Password';
+                switchText.textContent = 'Want to return?';
+                switchLink.textContent = 'Login';
+                changePasswordFields.style.display = 'block';
+                passwordGroup.style.display = 'none';
+                registerFields.style.display = 'none';
+                registerPasswordConfirm.style.display = 'none';
+                emailGroup.style.display = 'none';
+                phoneGroup.style.display = 'none';
+                forgotPasswordWrapper.style.display = 'none';
+                setRequired(currentPasswordInput, true);
+                setRequired(newPasswordInput, true);
+                setRequired(confirmNewPasswordInput, true);
+                return;
+            }
+
+            modalTitle.textContent = 'Login';
+            modalSub.textContent = 'Enter your phone number and password';
+            submitBtn.textContent = 'Login';
+            switchText.textContent = "Don't have an account?";
+            switchLink.textContent = 'Sign up';
+
+            emailGroup.style.display = 'block';
+            passwordGroup.style.display = 'block';
+            
+            setRequired(phone, false);
+            setRequired(password, true);
+        }
+
+        function closeModalFunc() {
+            authModal.classList.remove('active');
+            document.body.style.overflow = '';
+            clearAuthMessages();
+        }
+
+        function showAuthError(message) {
+            formSuccess.classList.remove('show');
+            formError.textContent = message;
+            formError.classList.add('show');
+        }
+
+        function showAuthSuccess(message) {
+            formError.classList.remove('show');
+            formSuccess.textContent = message;
+            formSuccess.classList.add('show');
+        }
+
+        function showAuthSuccess_callback(message, callback) {
+            formError.classList.remove('show');
+            formSuccess.textContent = message;
+            formSuccess.classList.add('show');
+
+            setTimeout(function () {
+                formSuccess.classList.remove('show');
+
+                if (callback) callback();
+            }, 3000);
+        }
+
+        async function forgotPasswordUser(phoneNumber, emailAddress) {
+            const result = await authRequest({
+                action: 'forgotPassword',
+                urllocation: window.location.origin,
+                email: emailAddress
+            });
+
+            if (!result.success) {
+                throw new Error(result.message || 'Password reset request failed.');
+            }
+            return result;
+        }
+
+        authForm.addEventListener('submit', async function (event) {
+            event.preventDefault();
+            clearAuthMessages();
+
+            const phoneNumber = normalizePhone(phone.value);
+            const emailAddress = email.value.trim();
+
+            try {
+                /* =========================================================
+                   FORGOT PASSWORD
+                ========================================================= */
+                if (isForgotPasswordMode) {
+                    /*
+                    if (!isValidPhone(phoneNumber)) {
+                        showAuthError('Please enter a valid Iranian phone number. Example: 09123456789');
+                        phone.focus();
+                        return;
+                    }
+                    */
+                    if (!isValidEmail(emailAddress)) {
+                        showAuthError('Please enter a valid email address.');
+                        email.focus();
+                        return;
+                    }
+
+                    const originalText = submitBtn.textContent;
+                    submitBtn.disabled = true;
+                    submitBtn.textContent = 'Processing...';
+
+                    try {
+                        const result = await forgotPasswordUser(
+                            phoneNumber,
+                            emailAddress
+                        );
+                        showAuthSuccess_callback(result.message ||
+                            'Your password reset request was submitted successfully.',
+                             function () {
+                            openModal('login');
+                        });
+
+                    } finally {
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = originalText;
+                    }
+                    return;
+                }
+
+                /* =========================================================
+                   CHANGE PASSWORD
+                ========================================================= */
+                if (isChangePasswordMode) {
+                    const currentUser = getCurrentUser();
+                    if (!currentUser || !currentUser.email) {
+                        throw new Error('Please login first to change your password.');
+                    }
+                    const currentPassword = currentPasswordInput.value;
+                    const newPassword = newPasswordInput.value;
+                    const confirmNewPassword = confirmNewPasswordInput.value;
+
+                    if (!currentPassword) {
+                        showAuthError('Please enter your current password.');
+                        currentPasswordInput.focus();
+                        return;
+                    }
+                    if (!newPassword || newPassword.length < 6) {
+                        showAuthError('New password must be at least 6 characters.');
+                        newPasswordInput.focus();
+                        return;
+                    }
+                    if (newPassword === currentPassword) {
+                        showAuthError('New password must be different from your current password.');
+                        newPasswordInput.focus();
+                        return;
+                    }
+                    if (newPassword !== confirmNewPassword) {
+                        showAuthError('New passwords do not match.');
+                        confirmNewPasswordInput.focus();
+                        return;
+                    }
+
+                    const originalText = submitBtn.textContent;
+                    submitBtn.disabled = true;
+                    submitBtn.textContent = 'Changing Password...';
+                    //console.log("currentUser.email = " + currentUser.email)
+                    try {
+                        const result = await authRequest({
+                            action: 'changePassword',
+                            email: currentUser.email,
+                            currentPassword: currentPassword,
+                            newPassword: newPassword
+                        });
+                        if (!result.success) {
+                            throw new Error(result.message || 'Password change failed.');
+                        }
+
+                        showAuthSuccess_callback(result.message || 'Password changed successfully.', function () {
+                            authForm.reset(); closeModalFunc();
+                        });
+                    } finally {
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = originalText;
+                    }
+                    return;
+                }
+
+                /* =========================================================
+                   COMMON LOGIN / REGISTER VALIDATION
+                ========================================================= */
+                /*
+                if (!isValidPhone(phoneNumber)) {
+                    showAuthError('Please enter a valid Iranian phone number. Example: 09123456789');
+                    phone.focus();
+                    return;
+                }
+                */
+                if (!isValidEmail(emailAddress) && isRegisterMode) {
+                    showAuthError('Please enter a valid email address.');
+                    email.focus();
+                    return;
+                }
+
+                const pass = password.value;
+
+                if (!pass || pass.length < 6) {
+                    showAuthError('Password must be at least 6 characters.');
+                    password.focus();
+                    return;
+                }
+
+                const originalText = submitBtn.textContent;
+                submitBtn.disabled = true;
+                submitBtn.textContent = isRegisterMode
+                    ? 'Creating account...'
+                    : 'Logging in...';
+
+                if (isRegisterMode) {
+                    if (passwordConfirm.value !== pass) {
+                        throw new Error('Passwords do not match.');
+                    }
+
+                    const fullNameValue = fullName.value.trim();
+                    if (!fullNameValue) {
+                        throw new Error('Please enter your full name.');
+                    }
+
+                    const userData = {
+                        fullName: fullNameValue,
+                        university: university.value.trim(),
+                        fieldstudy: fieldstudy.value.trim(),
+                        degree: degree.value,
+                        researchInterest: researchInterest.value.trim()
+                    };
+
+                    const user = await registerUser(
+                        phoneNumber,
+                        emailAddress,
+                        pass,
+                        userData
+                    );
+                    /*
+                    showAuthSuccess ('✅ Registration successful! Verification email has been sent.');
+                    setTimeout(function () { login(user); }, 700);
+                    */
+                    showAuthSuccess_callback('✅ Registration successful! Verification email has been sent.', function () {
+                        openModal('login');
+                    });
+                } else {
+                    const user = await loginUser(emailAddress, pass);
+                    showAuthSuccess('✅ Login successful!');
+                    setTimeout(function () { login(user); loadCongressHistoryAfterLogin(user); }, 1000);
+                }
+
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
+
+            } catch (error) {
+                console.error('Authentication error:', error);
+                showAuthError(
+                    error.message ||
+                    'Something went wrong. Please try again.'
+                );
+                submitBtn.disabled = false;
+                submitBtn.textContent = isRegisterMode
+                    ? 'Sign Up'
+                    : (isForgotPasswordMode ? 'Reset Password' : 'Login');
+            }
+        });
+
+        /* ================================================================
+           AUTH EVENTS
+        ================================================================ */
+
+        document.getElementById('loginBtn')?.addEventListener('click', function () {
+            openModal('login');
+        });
+
+        closeModal.addEventListener('click', closeModalFunc);
+        cancelBtn.addEventListener('click', closeModalFunc);
+
+        authModal.addEventListener('click', function (event) {
+            if (event.target === authModal) {
+                //closeModalFunc();
+            }
+        });
+
+        switchLink.addEventListener('click', function (event) {
+            event.preventDefault();
+
+            if (isRegisterMode || isForgotPasswordMode || isChangePasswordMode) {
+                openModal('login');
+            } else {
+                openModal('register');
+            }
+        });
+
+        /* IMPORTANT: Forgot Password has its own event. */
+        forgotpasswordLink.addEventListener('click', function (event) {
+            event.preventDefault();
+            openModal('forgotpassword');
+        });
+
+        document.addEventListener('click', function (event) {
+            if (event.target.closest('#changePasswordBtn')) {
+                event.preventDefault();
+                openModal('changepassword');
+            }
+        });
+
+       /* ================================================================
+           SEND MESSAGE
+        ================================================================ */
+        sendBtn.addEventListener(
+            'click',
+            sendMessage
+        );
+        /* ================================================================
+           TEXTAREA AUTO RESIZE
+        ================================================================ */
+        messageInput.addEventListener(
+            'input',
+            function () {
+                this.style.height =
+                    'auto';
+                this.style.height =
+                    Math.min(
+                        this.scrollHeight,
+                        150
+                    ) + 'px';
+            }
+        );
+        /* ================================================================
+           CONFERENCE DROPDOWN
+        ================================================================ */
+        /*
+        confSelectorBtn.addEventListener(
+            'click',
+            function (event) {
+                event.stopPropagation();
+                confDropdown.classList.toggle(
+                    'active'
+                );
+            }
+        );
+        document.addEventListener(
+            'click',
+            function () {
+                confDropdown.classList.remove(
+                    'active'
+                );
+            }
+        );
+        confDropdown.addEventListener(
+            'click',
+            function (event) {
+                event.stopPropagation();
+            }
+        );
+        
+        applyConfBtn.addEventListener(
+            'click',
+            function () {
+                const checked =
+                    document.querySelectorAll(
+                        '.conf-item input:checked'
+                    );
+                const names =
+                    Array.from(
+                        checked
+                    ).map(
+                        checkbox =>
+                            checkbox
+                                .nextElementSibling
+                                .textContent
+                                .trim()
+                    );
+                alert(
+                    names.length
+                        ? `✅ Selected conferences:\n${names.join(', ')}`
+                        : '⚠️ No conference selected.'
+                );
+                confDropdown.classList.remove(
+                    'active'
+                );
+            }
+        );
+        */
+        /* ================================================================
+           MOBILE SIDEBAR
+        ================================================================ */
+        function closeMobileSidebar() {
+            sidebar.classList.remove(
+                'open'
+            );
+            sidebarOverlay.classList.remove(
+                'active'
+            );
+        }
+        function openMobileSidebar() {
+            sidebar.classList.add('open');
+            sidebarOverlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        menuToggle.addEventListener(
+            'click',
+            function () {
+                sidebar.classList.toggle(
+                    'open'
+                );
+                sidebarOverlay.classList.toggle(
+                    'active'
+                );
+            }
+        );
+        sidebarOverlay.addEventListener(
+            'click',
+            closeMobileSidebar
+        );
+        /* ================================================================
+        FOCUS EVENT - به‌روزرسانی از congress.html
+        ================================================================ */
+        window.addEventListener('focus', function () {
+            const status = localStorage.getItem('statusfocuse') || '';
+            if (status === 'renderCongressHistory') {
+                localStorage.setItem('statusfocuse', '');
+                renderConferenceHistory();
+            }
+        });
+        /* ================================================================
+           INITIALIZATION
+        ================================================================ */
+        function init() {
+            const user = getCurrentUser();
+            if (user) {
+                renderSidebarUser();
+                renderConferenceHistory();
+                messageInput.disabled = true;
+                sendBtn.disabled = true;
+                messageInput.placeholder = 'Please select a conference first...';
+                // بارگذاری پیام‌های ذخیره شده (در صورت وجود)
+                const savedMessages = localStorage.getItem(`conferenceMessages_${user.email}`);
+                if (savedMessages) {
+                    try {
+                        conferenceMessages = JSON.parse(savedMessages);
+                    } catch (e) {
+                        conferenceMessages = {};
+                    }
+                }
+            } else {
+                renderSidebarUser();
+                renderConferenceHistory();
+                renderConferenceMessages(null);
+                messageInput.disabled = true;
+                sendBtn.disabled = true;
+                messageInput.placeholder = 'Please login to ask questions...';
+            }
+        }
+        /* ================================================================
+           GLOBAL DEBUG FUNCTIONS
+        ================================================================ */
+        window.sendMessage =
+            sendMessage;
+        window.openLogin =
+            function () {
+                openModal(
+                    'login'
+                );
+            };
+        
+        window.openRegister =
+            function () {
+                openModal(
+                    'register'
+                );
+            };
+        
+        window.logout =
+            logout;
+        /* ================================================================
+           START
+        ================================================================ */
+        init();
+        // ============================================================
+        //  دریافت action از URL
+        // ============================================================
+        const urlParams = new URLSearchParams(window.location.search);
+        const action = urlParams.get('action');
+
+        // ============================================================
+        //  اگر action=login باشد، تابع login را اجرا کن
+        // ============================================================
+        if (action === 'login') {
+            /*
+            const emailFromUrl = urlParams.get('email');
+            const passwordFromUrl = urlParams.get('password');
+            */
+            openModal('login');
+            // حذف پارامتر action از Address Bar
+            window.history.replaceState(
+                {},
+                document.title,
+                window.location.pathname
+            );
+        }
+
+        //console.log(
+        //    '✅ ConfSync loaded successfully!'
+        //);
+        //console.log(
+        //    '🔐 Authentication: Google Apps Script'
+        //);
+        //console.log(
+        //    '💾 Chat history: localStorage per user'
+        //);
+        //=====================================================
+        function openCongressModal() {
+            // نشانه‌گذاری برای تأیید لاگین
+            //sessionStorage.setItem('login_verified', 'true');
+
+            // ذخیره نام کاربری
+            //localStorage.setItem('offline_username', username);
+
+            // باز کردن داشبورد
+            const currentUser = getCurrentUser();
+            if (!currentUser) {
+                showToastMessage("Please login first!");
+                return;
+            }
+
+            currentConference = null;
+            conferenceMessages = {};
+
+            const congressPage = window.open('congress.html', '_blank');
+
+            if (!congressPage) {
+
+                //alert('لطفاً باز شدن پنجره‌های popup را در مرورگر خود مجاز کنید.');
+
+                window.location.href = 'congress.html';
+
+            }
+        }
+
+        function openQuestionModal() {
+            
+            /*
+            const key = `conferenceMessages_ghfreza@gmail.com_1`;
+            localStorage.removeItem(key);
+            return
+            */
+            const currentUser = getCurrentUser();
+            if (!currentUser) {
+                showToastMessage("Please login first!");
+                return;
+            }
+            // باز کردن داشبورد
+            const congressPage = window.open('questions.html', '_blank');
+            if (!congressPage) {
+                //alert('لطفاً باز شدن پنجره‌های popup را در مرورگر خود مجاز کنید.');
+                window.location.href = 'questions.html';
+            }
+        }
+
+
+        function loadCongressHistoryAfterLogin(user) {
+            if (!user || !user.email) {
+                console.log('AfterLogin: Invalid user');
+                return;
+            }
+
+            // خواندن از selectedCongressList_ (همانند renderCongressHistory)
+            const stored = localStorage.getItem(`selectedCongressList_${user.email}`);
+
+            let congressList = [];
+
+            try {
+                congressList = stored ? JSON.parse(stored) : [];
+            } catch (error) {
+                console.error('Invalid congress LocalStorage data:', error);
+                congressList = [];
+            }
+
+        }
+
+      
+        //==========================================================
+        //==========================================================
+        //==========================================================
+        document.addEventListener(
+            'DOMContentLoaded',
+            function () {
+                renderConferenceHistory();
+            }
+        );
+
+        window.addEventListener(
+            'focus',
+            function () {
+                const statusfocuse = localStorage.getItem("statusfocuse") || "";
+
+                if (statusfocuse === "renderCongressHistory") {
+                    localStorage.setItem("statusfocuse", "");
+                    //console.log('focus');
+                    renderConferenceHistory();
+                }
+                else if (statusfocuse === "openQuestionModal") {
+                    localStorage.setItem("statusfocuse", "");
+
+                    const messageInput = document.getElementById('messageInput'); // Assuming this exists
+                    if (messageInput) {
+                        const selectedText = localStorage.getItem("openQuestionModal_selected") || "";
+                        messageInput.value = selectedText;
+                        localStorage.setItem("openQuestionModal_selected", "");
+                    }
+                }
+            }
+        );
+        //==========================================================
+        messagesArea.addEventListener('click', function (event) {
+
+            const button =
+                event.target.closest('.message-tool');
+
+            if (!button) {
+                return;
+            }
+
+            const action =
+                button.dataset.action;
+
+            const dbId =
+                button.dataset.dbId;
+
+            if (!dbId) {
+                return;
+            }
+
+            switch (action) {
+
+                case 'copy':
+                    copyMessage(dbId);
+                    break;
+
+                case 'align':
+                    alignMessage(dbId);
+                    break;
+            }
+        });
+        async function copyMessage(dbId) {
+
+            const messageElement = document.querySelector(
+                `[data-db-id="${CSS.escape(dbId)}"]`
+            );
+
+            if (!messageElement) {
+                console.warn('Message element not found:', dbId);
+                return;
+            }
+
+            const textElement = messageElement.querySelector('.msg-text');
+
+            if (!textElement) {
+                console.warn('Message text not found:', dbId);
+                return;
+            }
+
+            const text = textElement.innerText.trim();
+
+            if (!text) {
+                console.warn('Nothing to copy:', dbId);
+                return;
+            }
+
+            try {
+
+                // روش جدید
+                if (
+                    navigator.clipboard &&
+                    window.isSecureContext
+                ) {
+                    await navigator.clipboard.writeText(text);
+
+                    //console.log('Message copied:', dbId);
+                    showCopySuccess(messageElement);
+
+                    return;
+                }
+
+                // Fallback برای HTTP / مرورگرهای محدود
+                const textarea = document.createElement('textarea');
+
+                textarea.value = text;
+
+                textarea.style.position = 'fixed';
+                textarea.style.left = '-9999px';
+                textarea.style.top = '0';
+
+                document.body.appendChild(textarea);
+
+                textarea.focus();
+                textarea.select();
+
+                const successful =
+                    document.execCommand('copy');
+
+                document.body.removeChild(textarea);
+
+                if (!successful) {
+                    throw new Error('execCommand copy failed');
+                }
+
+                //console.log('Message copied:', dbId);
+                showCopySuccess(messageElement);
+
+            } catch (error) {
+
+                //console.error('Copy failed:', error);
+
+            }
+        }
+
+        function alignMessage(dbId) {
+            const messageElement = document.querySelector(
+                `[data-db-id="${CSS.escape(dbId)}"]`
+            );
+
+            if (!messageElement) {
+                console.warn('Message not found:', dbId);
+                return;
+            }
+
+            const textElement = messageElement.querySelector('.msg-text');
+
+            if (!textElement) {
+                return;
+            }
+
+            // وضعیت فعلی متن
+            const currentAlignment =
+                textElement.style.textAlign || 'left';
+
+            // تغییر بین راست‌چین و چپ‌چین
+            const newAlignment =
+                currentAlignment === 'right' ? 'left' : 'right';
+
+            textElement.style.textAlign = newAlignment;
+        }
+        
+        function showCopySuccess(messageElement) {
+
+            const button = messageElement.querySelector(
+                '[data-action="copy"]'
+            );
+
+            if (!button) return;
+
+            // جلوگیری از چند timer همزمان
+            if (button._copyTimer) {
+                clearTimeout(button._copyTimer);
+            }
+
+            // آیکون تیک
+            button.innerHTML = `
+        <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+        >
+            <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+    `;
+
+            button.classList.add('copied');
+
+            button._copyTimer = setTimeout(() => {
+
+                // برگشت به آیکون Copy
+                button.innerHTML = `
+            <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+            >
+                <rect
+                    x="9"
+                    y="9"
+                    width="13"
+                    height="13"
+                    rx="2"
+                    ry="2"
+                ></rect>
+
+                <path
+                    d="M5 15H4a2 2 0 0 1-2-2V4
+                       a2 2 0 0 1 2-2h9
+                       a2 2 0 0 1 2 2v1"
+                ></path>
+            </svg>
+        `;
+
+                button.classList.remove('copied');
+
+                button._copyTimer = null;
+
+            }, 1500);
+        }
+        //==========================================================
+
+        // ============================================================
+        // FEATCH ALL CONFERENCE DATA BY ID
+        // ============================================================
+
+
+        // ================================================================
+        // تابع نمایش Modal بارگذاری
+        // ================================================================
+
+        function showLoadingModal(message = 'در حال دریافت اطلاعات...') {
+            // حذف modal قبلی اگر وجود دارد
+            const existingModal = document.getElementById('loadingModal');
+            if (existingModal) {
+                existingModal.remove();
+            }
+
+            // ایجاد modal
+            const modal = document.createElement('div');
+            modal.id = 'loadingModal';
+            modal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 99999;
+        backdrop-filter: blur(4px);
+    `;
+
+            modal.innerHTML = `
+        <div style="
+            background: white;
+            padding: 40px 50px;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            text-align: center;
+            max-width: 400px;
+            animation: fadeInModal 0.3s ease;
+        ">
+            <div style="
+                width: 60px;
+                height: 60px;
+                margin: 0 auto 20px;
+                border: 4px solid #e0e0e0;
+                border-top: 4px solid #1a73e8;
+                border-radius: 50%;
+                animation: spin 1s linear infinite;
+            "></div>
+            <h3 style="
+                color: #202123;
+                font-weight: 500;
+                margin-bottom: 8px;
+                font-size: 18px;
+            ">${message}</h3>
+            <p style="
+                color: #8e8ea0;
+                font-size: 14px;
+                margin: 0;
+            ">لطفاً چند لحظه صبر کنید...</p>
+        </div>
+    `;
+
+            // اضافه کردن انیمیشن‌ها
+            const style = document.createElement('style');
+            style.id = 'loadingModalStyles';
+            if (!document.getElementById('loadingModalStyles')) {
+                style.textContent = `
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+            @keyframes fadeInModal {
+                from {
+                    opacity: 0;
+                    transform: scale(0.9);
+                }
+                to {
+                    opacity: 1;
+                    transform: scale(1);
+                }
+            }
+        `;
+                document.head.appendChild(style);
+            }
+
+            document.body.appendChild(modal);
+        }
+
+        // ================================================================
+        // تابع مخفی کردن Modal بارگذاری
+        // ================================================================
+
+        function hideLoadingModal() {
+            const modal = document.getElementById('loadingModal');
+            if (modal) {
+                modal.style.opacity = '0';
+                modal.style.transition = 'opacity 0.3s ease';
+                setTimeout(() => {
+                    modal.remove();
+                }, 300);
+            }
+        }
+
+        // ================================================================
+        // تابع اصلی دریافت کنفرانس با Modal
+        // ================================================================
+
+        async function featchconferencebyId(email, conferenceId, conferencecap) {
+            const key = `conferenceMessages_${email}_${conferenceId}`;
+
+            // نمایش Modal بارگذاری
+            showLoadingModal(`در حال دریافت اطلاعات  ${conferencecap}...`);
+
+            try {
+                // 1. پاک کردن کش
+                localStorage.removeItem(key);
+                delete conferenceMessages[conferenceId];
+                //console.log('🗑️ کش پاک شد');
+
+                // 2. دریافت از سرور
+                //console.log('📡 دریافت از سرور...');
+                const success = await featchConferenceMessages(email, conferenceId);
+
+                if (!success) {
+                    //console.error('❌خطای دریافت از سرور');
+                    hideLoadingModal();
+                    showToastMessage('خطا در دریافت اطلاعات!');
+                    return;
+                }
+
+                // 3. بررسی conferenceMessages
+                //console.log('📦 conferenceMessages:', conferenceMessages[conferenceId]);
+
+                // 4. تنظیم currentConference
+                if (!currentConference) {
+                    const stored = localStorage.getItem(`selectedCongressList_${email}`);
+                    if (stored) {
+                        const congressList = JSON.parse(stored);
+                        if (congressList && congressList.length > 0) {
+                            currentConference = congressList[0];
+                            chatTitle.textContent = currentConference.nameFa || 'Conference';
+                        }
+                    }
+                }
+
+                // 5. رندر پیام‌ها
+                //console.log('🔄 رندر پیام‌ها...');
+                //renderConferenceMessages(conferenceId);
+
+                // فعال کردن input
+                messageInput.disabled = false;
+                sendBtn.disabled = false;
+                if (currentConference) {
+                    messageInput.placeholder = `Ask about ${currentConference.nameFa}...(250 characters)`;
+                }
+
+                // مخفی کردن Modal بعد از اتمام
+                hideLoadingModal();
+                showToastMessage('✅ اطلاعات با موفقیت دریافت شد!');
+
+                // 6. بررسی نتیجه
+                setTimeout(() => {
+                    const messages = document.querySelectorAll('.message');
+                    //console.log(`📊 تعداد پیام‌های رندر شده: ${messages.length}`);
+
+                    if (messages.length === 0) {
+                        //console.warn('⚠️ هیچ پیامی رندر نشد!');
+                        return;
+                    }
+
+                    messages.forEach((el, i) => {
+                        const isUser = el.classList.contains('user');
+                        const isAssistant = el.classList.contains('assistant');
+                        const alignSelf = getComputedStyle(el).alignSelf;
+
+                        /*
+                        console.log(`📝 پیام ${i}:`, {
+                            کلاس: el.className,
+                            isUser: isUser,
+                            isAssistant: isAssistant,
+                            'align-self': alignSelf
+                        });
+                        */
+                    });
+
+                    const userCount = document.querySelectorAll('.message.user').length;
+                    const assistantCount = document.querySelectorAll('.message.assistant').length;
+                    //console.log(`📊 نتیجه: user=${userCount}, assistant=${assistantCount}`);
+
+                    if (userCount > 0 && assistantCount > 0) {
+                        console.log('✅ هر دو نوع پیام وجود دارند');
+                    } else {
+                        console.warn('⚠️ فقط یک نوع پیام وجود دارد!');
+                    }
+                }, 500);
+
+            } catch (error) {
+                console.error('❌ خطا:', error);
+                hideLoadingModal();
+                showToastMessage('خطا در دریافت اطلاعات!');
+            }
+        }
+
+
+    </script>
+</body>
+</html>
