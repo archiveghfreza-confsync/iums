@@ -619,7 +619,7 @@
             }
 
         /* ================================================================
-           RESPONSIVE BREAKPOINTS
+           RESPONSIVE BREAKPOINTS - IMPROVED FOR MOBILE
         ================================================================ */
 
         /* Tablet and below */
@@ -684,42 +684,276 @@
             }
         }
 
-        /* Mobile */
+        /* Mobile - IMPROVED FONT SIZES AND SPACING */
         @media (max-width: 768px) {
             body {
-                padding: 6px;
+                padding: 10px;
             }
 
             .container {
-                padding: 8px 10px;
+                padding: 12px 14px;
                 border-radius: var(--radius-sm);
             }
 
             .page-header {
-                padding: 4px 8px !important;
-                min-height: 36px !important;
+                padding: 8px 12px !important;
+                min-height: 48px !important;
+                gap: 6px 10px;
+                border-radius: var(--radius-sm);
+            }
+
+            .title-group .icon {
+                font-size: 18px !important;
+            }
+
+            .title-group h1 {
+                font-size: 16px !important;
+            }
+
+            .title-group .subtitle {
+                font-size: 11px !important;
+                display: block;
+            }
+
+            .header-right {
+                gap: 6px;
+            }
+
+            .selected-badge {
+                font-size: 12px !important;
+                padding: 3px 12px !important;
+            }
+
+                .selected-badge .count {
+                    font-size: 13px !important;
+                    min-width: 18px;
+                }
+
+            .btn-back {
+                font-size: 11px !important;
+                padding: 3px 12px !important;
+            }
+
+            .filter-card {
+                padding: 10px 14px !important;
+                margin-bottom: 10px !important;
+            }
+
+            .filter-row {
+                gap: 6px 10px;
+            }
+
+            .filter-row-first {
+                padding: 8px 12px !important;
+                border-radius: 8px !important;
+                flex-wrap: wrap;
+                gap: 6px 8px;
+            }
+
+                .filter-row-first label {
+                    font-size: 13px !important;
+                }
+
+                .filter-row-first select {
+                    min-width: 90px;
+                    font-size: 13px !important;
+                    padding: 5px 12px !important;
+                    height: 34px;
+                    border-width: 2px !important;
+                }
+
+                .filter-row-first .btn-update,
+                .filter-row-first .btn-save {
+                    font-size: 11px !important;
+                    padding: 4px 14px !important;
+                    height: 32px;
+                    border-radius: 16px !important;
+                }
+
+                    .filter-row-first .btn-update .update-icon {
+                        font-size: 12px !important;
+                    }
+
+            #lastUpdateTime {
+                font-size: 10px !important;
+            }
+
+            .search-box {
+                max-width: 100%;
+            }
+
+                .search-box input {
+                    font-size: 13px !important;
+                    height: 34px;
+                    padding: 6px 32px 6px 14px !important;
+                    border-radius: 20px !important;
+                    border-width: 2px !important;
+                }
+
+                .search-box .search-icon {
+                    font-size: 14px !important;
+                    left: 12px;
+                }
+
+            .table-header {
+                padding: 10px 14px;
+                flex-direction: row;
+                flex-wrap: wrap;
+                align-items: center;
+                gap: 6px 12px;
+            }
+
+            .title-section strong {
+                font-size: 14px;
+            }
+
+            .count-badge {
+                font-size: 12px;
+                padding: 2px 12px;
+            }
+
+            .select-all-wrapper {
+                font-size: 13px;
+            }
+
+                .select-all-wrapper input[type="checkbox"] {
+                    width: 18px;
+                    height: 18px;
+                }
+
+            .table-wrapper {
+                margin: 0;
+                padding: 0;
+                overflow-x: auto;
+            }
+
+            table {
+                font-size: 13px;
+                min-width: 500px;
+            }
+
+            thead th {
+                padding: 10px 12px;
+                font-size: 12px;
+            }
+
+                thead th.checkbox-cell {
+                    width: 44px;
+                }
+
+            tbody td {
+                padding: 8px 12px;
+                font-size: 13px;
+            }
+
+            .checkbox-cell input[type="checkbox"] {
+                width: 18px;
+                height: 18px;
+            }
+
+            .congress-type {
+                font-size: 11px;
+                padding: 2px 10px;
+            }
+
+            .congress-website a {
+                font-size: 12px;
+            }
+
+            .state-container {
+                padding: 16px 20px;
+                min-height: 70px;
+            }
+
+                .state-container .state-icon {
+                    font-size: 28px;
+                }
+
+                .state-container .state-title {
+                    font-size: 14px;
+                }
+
+                .state-container .state-desc {
+                    font-size: 12px;
+                }
+
+                .state-container.loading {
+                    padding: 10px 16px !important;
+                    min-height: 44px !important;
+                    gap: 10px;
+                }
+
+                    .state-container.loading .state-icon {
+                        font-size: 20px !important;
+                    }
+
+                    .state-container.loading .state-title {
+                        font-size: 13px !important;
+                    }
+
+                    .state-container.loading .state-desc {
+                        font-size: 11px !important;
+                        display: block;
+                    }
+
+            .action-bar {
+                margin-top: 14px;
+                padding-top: 12px;
+                justify-content: flex-end;
+            }
+
+            .action-buttons {
+                gap: 8px;
+                width: auto;
+                justify-content: flex-end;
+            }
+
+            .btn {
+                padding: 8px 20px;
+                font-size: 13px;
+                border-radius: 8px;
+            }
+
+            .save-message {
+                font-size: 13px;
+                padding: 8px 16px;
+            }
+        }
+
+        /* Small phones - IMPROVED */
+        @media (max-width: 480px) {
+            body {
+                padding: 8px;
+            }
+
+            .container {
+                padding: 10px 12px;
+                border-radius: 6px;
+            }
+
+            .page-header {
+                padding: 6px 10px !important;
+                min-height: 44px !important;
+                border-radius: 6px !important;
                 gap: 4px 8px;
             }
 
             .title-group .icon {
-                font-size: 15px !important;
+                font-size: 16px !important;
             }
 
             .title-group h1 {
-                font-size: 13px !important;
+                font-size: 14px !important;
             }
 
             .title-group .subtitle {
-                font-size: 9px !important;
-            }
-
-            .header-right {
-                gap: 4px;
+                font-size: 10px !important;
+                display: block;
             }
 
             .selected-badge {
                 font-size: 10px !important;
-                padding: 1px 8px !important;
+                padding: 2px 10px !important;
             }
 
                 .selected-badge .count {
@@ -728,42 +962,36 @@
                 }
 
             .btn-back {
-                font-size: 9px !important;
-                padding: 2px 8px !important;
+                font-size: 10px !important;
+                padding: 2px 10px !important;
             }
 
             .filter-card {
-                padding: 6px 10px !important;
+                padding: 8px 10px !important;
                 margin-bottom: 8px !important;
             }
 
-            .filter-row {
+            .filter-row-first {
+                padding: 6px 10px !important;
                 gap: 4px 8px;
             }
 
-            .filter-row-first {
-                padding: 4px 8px !important;
-                border-radius: 6px !important;
-                flex-wrap: wrap;
-            }
-
                 .filter-row-first label {
-                    font-size: 11px !important;
+                    font-size: 12px !important;
                 }
 
                 .filter-row-first select {
-                    min-width: 70px;
-                    font-size: 11px !important;
-                    padding: 3px 8px !important;
-                    height: 26px;
-                    border-width: 1.5px !important;
+                    min-width: 80px;
+                    font-size: 12px !important;
+                    padding: 4px 10px !important;
+                    height: 30px;
                 }
 
                 .filter-row-first .btn-update,
                 .filter-row-first .btn-save {
-                    font-size: 9px !important;
-                    padding: 2px 8px !important;
-                    height: 24px;
+                    font-size: 10px !important;
+                    padding: 3px 12px !important;
+                    height: 28px;
                     border-radius: 14px !important;
                 }
 
@@ -772,81 +1000,76 @@
                     }
 
             #lastUpdateTime {
-                font-size: 8px !important;
+                font-size: 9px !important;
             }
 
-            .search-box {
-                max-width: 100%;
+            .search-box input {
+                font-size: 12px !important;
+                height: 30px;
+                padding: 4px 28px 4px 12px !important;
             }
 
-                .search-box input {
-                    font-size: 11px !important;
-                    height: 26px;
-                    padding: 3px 26px 3px 10px !important;
-                    border-radius: 16px !important;
-                }
-
-                .search-box .search-icon {
-                    font-size: 11px !important;
-                    left: 8px;
-                }
+            .search-box .search-icon {
+                font-size: 12px !important;
+                left: 10px;
+            }
 
             .table-header {
-                padding: 6px 10px;
-                flex-direction: column;
-                align-items: stretch;
-                gap: 4px;
+                padding: 8px 12px;
+                flex-direction: row;
+                flex-wrap: wrap;
+                gap: 4px 8px;
             }
 
             .title-section strong {
-                font-size: 12px;
+                font-size: 13px;
             }
 
             .count-badge {
                 font-size: 10px;
-                padding: 1px 8px;
+                padding: 1px 10px;
             }
 
             .select-all-wrapper {
-                font-size: 11px;
+                font-size: 12px;
             }
 
                 .select-all-wrapper input[type="checkbox"] {
-                    width: 14px;
-                    height: 14px;
+                    width: 16px;
+                    height: 16px;
                 }
 
             .table-wrapper {
-                margin: 0 -10px;
-                padding: 0 10px;
+                margin: 0 -8px;
+                padding: 0 8px;
             }
 
             table {
-                font-size: 11px;
-                min-width: 400px;
+                font-size: 12px;
+                min-width: 420px;
             }
 
             thead th {
-                padding: 6px 8px;
+                padding: 8px 10px;
                 font-size: 10px;
             }
 
                 thead th.checkbox-cell {
-                    width: 36px;
+                    width: 38px;
                 }
 
             tbody td {
-                padding: 5px 8px;
-                font-size: 11px;
+                padding: 6px 10px;
+                font-size: 12px;
             }
 
             .checkbox-cell input[type="checkbox"] {
-                width: 14px;
-                height: 14px;
+                width: 16px;
+                height: 16px;
             }
 
             .congress-type {
-                font-size: 9px;
+                font-size: 10px;
                 padding: 1px 8px;
             }
 
@@ -855,350 +1078,144 @@
             }
 
             .state-container {
-                padding: 12px 16px;
+                padding: 14px 16px;
                 min-height: 60px;
             }
 
                 .state-container .state-icon {
-                    font-size: 22px;
+                    font-size: 24px;
                 }
 
                 .state-container .state-title {
-                    font-size: 12px;
+                    font-size: 13px;
                 }
 
                 .state-container .state-desc {
-                    font-size: 10px;
+                    font-size: 11px;
                 }
 
                 .state-container.loading {
-                    padding: 6px 12px !important;
-                    min-height: 36px !important;
+                    padding: 8px 14px !important;
+                    min-height: 38px !important;
                     gap: 8px;
                 }
 
                     .state-container.loading .state-icon {
-                        font-size: 16px !important;
+                        font-size: 18px !important;
                     }
 
                     .state-container.loading .state-title {
-                        font-size: 10px !important;
+                        font-size: 12px !important;
                     }
 
                     .state-container.loading .state-desc {
-                        font-size: 9px !important;
+                        font-size: 10px !important;
+                        display: block;
                     }
 
             .action-bar {
                 margin-top: 10px;
                 padding-top: 8px;
-                justify-content: center;
+                justify-content: flex-end;
             }
 
             .action-buttons {
                 gap: 6px;
-                width: 100%;
-                justify-content: center;
+                width: auto;
+                justify-content: flex-end;
             }
 
             .btn {
-                padding: 5px 14px;
-                font-size: 11px;
+                padding: 6px 16px;
+                font-size: 12px;
                 border-radius: 6px;
             }
 
             .save-message {
-                font-size: 11px;
+                font-size: 12px;
                 padding: 6px 12px;
-            }
-        }
-
-        /* Small phones */
-        @media (max-width: 480px) {
-            body {
-                padding: 4px;
-            }
-
-            .container {
-                padding: 4px 6px;
-            }
-
-            .page-header {
-                padding: 3px 6px !important;
-                min-height: 32px !important;
-                border-radius: 6px !important;
-            }
-
-            .title-group .icon {
-                font-size: 13px !important;
-            }
-
-            .title-group h1 {
-                font-size: 11px !important;
-            }
-
-            .title-group .subtitle {
-                display: none;
-            }
-
-            .selected-badge {
-                font-size: 8px !important;
-                padding: 1px 6px !important;
-            }
-
-                .selected-badge .count {
-                    font-size: 9px !important;
-                    min-width: 12px;
-                }
-
-            .btn-back {
-                font-size: 8px !important;
-                padding: 1px 6px !important;
-            }
-
-            .filter-card {
-                padding: 4px 6px !important;
-                margin-bottom: 6px !important;
-            }
-
-            .filter-row-first {
-                padding: 3px 6px !important;
-                gap: 3px 6px;
-            }
-
-                .filter-row-first label {
-                    font-size: 9px !important;
-                }
-
-                .filter-row-first select {
-                    min-width: 60px;
-                    font-size: 9px !important;
-                    padding: 2px 6px !important;
-                    height: 22px;
-                }
-
-                .filter-row-first .btn-update,
-                .filter-row-first .btn-save {
-                    font-size: 8px !important;
-                    padding: 1px 6px !important;
-                    height: 20px;
-                    border-radius: 10px !important;
-                }
-
-                    .filter-row-first .btn-update .update-icon {
-                        font-size: 8px !important;
-                    }
-
-            #lastUpdateTime {
-                font-size: 7px !important;
-            }
-
-            .search-box input {
-                font-size: 10px !important;
-                height: 22px;
-                padding: 2px 22px 2px 8px !important;
-            }
-
-            .search-box .search-icon {
-                font-size: 9px !important;
-                left: 6px;
-            }
-
-            .table-header {
-                padding: 4px 6px;
-            }
-
-            .title-section strong {
-                font-size: 10px;
-            }
-
-            .count-badge {
-                font-size: 8px;
-                padding: 1px 6px;
-            }
-
-            .select-all-wrapper {
-                font-size: 9px;
-            }
-
-                .select-all-wrapper input[type="checkbox"] {
-                    width: 12px;
-                    height: 12px;
-                }
-
-            .table-wrapper {
-                margin: 0 -6px;
-                padding: 0 6px;
-            }
-
-            table {
-                font-size: 9px;
-                min-width: 320px;
-            }
-
-            thead th {
-                padding: 4px 6px;
-                font-size: 8px;
-            }
-
-                thead th.checkbox-cell {
-                    width: 28px;
-                }
-
-            tbody td {
-                padding: 3px 6px;
-                font-size: 9px;
-            }
-
-            .checkbox-cell input[type="checkbox"] {
-                width: 12px;
-                height: 12px;
-            }
-
-            .congress-name {
-                font-weight: 600;
-            }
-
-            .congress-type {
-                font-size: 7px;
-                padding: 0 6px;
-                border-radius: 8px;
-            }
-
-            .congress-website a {
-                font-size: 8px;
-            }
-
-            .state-container {
-                padding: 8px 12px;
-                min-height: 40px;
-            }
-
-                .state-container .state-icon {
-                    font-size: 18px;
-                }
-
-                .state-container .state-title {
-                    font-size: 10px;
-                }
-
-                .state-container .state-desc {
-                    font-size: 9px;
-                }
-
-                .state-container.loading {
-                    padding: 4px 8px !important;
-                    min-height: 28px !important;
-                    gap: 6px;
-                }
-
-                    .state-container.loading .state-icon {
-                        font-size: 13px !important;
-                    }
-
-                    .state-container.loading .state-title {
-                        font-size: 9px !important;
-                    }
-
-                    .state-container.loading .state-desc {
-                        display: none;
-                    }
-
-            .action-bar {
-                margin-top: 6px;
-                padding-top: 6px;
-            }
-
-            .btn {
-                padding: 3px 10px;
-                font-size: 9px;
-                border-radius: 4px;
-                gap: 4px;
-            }
-
-            .save-message {
-                font-size: 9px;
-                padding: 4px 8px;
             }
         }
 
         /* Landscape phones */
         @media (max-height: 500px) and (orientation: landscape) {
             .page-header {
-                min-height: 30px !important;
-                padding: 2px 8px !important;
-            }
-
-            .title-group h1 {
-                font-size: 12px !important;
-            }
-
-            .title-group .subtitle {
-                display: none;
-            }
-
-            .filter-card {
+                min-height: 36px !important;
                 padding: 4px 10px !important;
             }
 
+            .title-group h1 {
+                font-size: 14px !important;
+            }
+
+            .title-group .subtitle {
+                display: inline-block;
+                font-size: 10px !important;
+            }
+
+            .filter-card {
+                padding: 6px 12px !important;
+            }
+
             .filter-row-first {
-                padding: 3px 10px !important;
+                padding: 4px 12px !important;
             }
 
                 .filter-row-first select {
-                    height: 22px;
-                    font-size: 10px !important;
-                    padding: 2px 8px !important;
-                    min-width: 70px;
+                    height: 28px;
+                    font-size: 12px !important;
+                    padding: 3px 10px !important;
+                    min-width: 80px;
                 }
 
                 .filter-row-first .btn-update,
                 .filter-row-first .btn-save {
-                    height: 20px;
-                    font-size: 8px !important;
-                    padding: 1px 8px !important;
+                    height: 26px;
+                    font-size: 10px !important;
+                    padding: 2px 12px !important;
                 }
 
             .state-container.loading {
-                min-height: 24px !important;
-                padding: 2px 12px !important;
+                min-height: 30px !important;
+                padding: 4px 14px !important;
             }
 
                 .state-container.loading .state-icon {
-                    font-size: 14px !important;
+                    font-size: 16px !important;
                 }
 
                 .state-container.loading .state-title {
-                    font-size: 9px !important;
+                    font-size: 11px !important;
                 }
 
                 .state-container.loading .state-desc {
-                    display: none;
+                    display: inline-block;
+                    font-size: 10px !important;
                 }
 
             table {
-                font-size: 10px;
-                min-width: 350px;
+                font-size: 11px;
+                min-width: 380px;
             }
 
             thead th {
-                padding: 4px 6px;
-                font-size: 9px;
+                padding: 5px 8px;
+                font-size: 10px;
             }
 
             tbody td {
-                padding: 3px 6px;
-                font-size: 9px;
+                padding: 4px 8px;
+                font-size: 11px;
             }
 
             .action-bar {
-                margin-top: 4px;
+                margin-top: 6px;
                 padding-top: 4px;
             }
 
             .btn {
-                padding: 2px 10px;
-                font-size: 9px;
+                padding: 4px 14px;
+                font-size: 11px;
             }
         }
     </style>
