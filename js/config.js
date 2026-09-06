@@ -1,6 +1,6 @@
 const CONFIG = {
     REGISTER_API_URL:
-        'https://hooshteb-api.ghfreza.workers.dev/api/REGISTER_API_URhjjkhjkhjhjkhjkhL',
+        'https://hooshteb-api.ghfreza.workers.dev/api/REGISTER_API_URL',
 
     ASK_CONGRESS_API_URL:
         'https://hooshteb-api.ghfreza.workers.dev/api/ASK_CONGRESS_API_URL',
