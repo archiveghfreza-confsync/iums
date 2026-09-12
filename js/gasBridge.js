@@ -1,322 +1,208 @@
-const CHANNEL = 'Mhttps://script.google.com/macros/s/AKfycbyORoLPh3JxP1KIYy1pbO5tRtt8M7sJAztHyCReHapr2v5F56wJG9JwtBI8LZccjsC0/exec';
-
-class GasBridge {
-
-  constructor({
-    url,
-    timeout = 30000
-  }) {
-
-    if (!url) {
-      throw new Error('GasBridge URL is required.');
-    }
-
-    this.url = url;
-    this.timeout = timeout;
-
-    this.iframe = null;
-
-    /*
-     * Origin واقعی iframe بعد از redirect
-     * خود Apps Script اینجا ذخیره می‌شود.
-     */
-    this.bridgeOrigin = null;
-
-    this.pending = new Map();
-
-    this.readyPromise = null;
-    this.readyResolve = null;
-    this.readyReject = null;
-
-    this.handleMessage =
-      this.handleMessage.bind(this);
-  }
+const GAS_BRIDGE_URL =
+    'https://script.google.com/macros/s/AKfycbyORoLPh3JxP1KIYy1pbO5tRtt8M7sJAztHyCReHapr2v5F56wJG9JwtBI8LZccjsC0/exec';
 
 
-  init() {
+const pendingRequests = new Map();
 
-    if (this.readyPromise) {
-      return this.readyPromise;
+let bridgeFrame = null;
+
+let bridgeReadyPromise = null;
+
+
+function initGasBridge() {
+
+    if (bridgeReadyPromise) {
+        return bridgeReadyPromise;
     }
 
 
-    this.readyPromise = new Promise(
-      (resolve, reject) => {
+    bridgeReadyPromise =
+        new Promise(function(resolve, reject) {
 
-        this.readyResolve = resolve;
-        this.readyReject = reject;
+            bridgeFrame =
+                document.createElement('iframe');
 
-      }
-    );
+            bridgeFrame.src =
+                GAS_BRIDGE_URL;
 
+            bridgeFrame.style.position =
+                'fixed';
 
-    window.addEventListener(
-      'message',
-      this.handleMessage
-    );
+            bridgeFrame.style.width =
+                '1px';
 
+            bridgeFrame.style.height =
+                '1px';
 
-    const iframe =
-      document.createElement('iframe');
+            bridgeFrame.style.opacity =
+                '0';
 
-    iframe.src = this.url;
+            bridgeFrame.style.pointerEvents =
+                'none';
 
-    iframe.setAttribute(
-      'aria-hidden',
-      'true'
-    );
+            bridgeFrame.style.left =
+                '-10000px';
 
-    /*
-     * مخفی، ولی همچنان load می‌شود.
-     */
-    Object.assign(
-      iframe.style,
-      {
-        position: 'fixed',
-        width: '1px',
-        height: '1px',
-        border: '0',
-        opacity: '0',
-        pointerEvents: 'none',
-        left: '-10000px',
-        top: '-10000px'
-      }
-    );
+            bridgeFrame.style.border =
+                '0';
 
 
-    this.iframe = iframe;
+            bridgeFrame.onload =
+                function() {
 
-    document.body.appendChild(iframe);
+                    resolve();
 
+                };
 
-    /*
-     * Timeout برای load اولیه Bridge
-     */
-    setTimeout(() => {
 
-      if (!this.bridgeOrigin) {
+            bridgeFrame.onerror =
+                function() {
 
-        this.readyReject(
-          new Error(
-            'Apps Script Bridge initialization timeout.'
-          )
-        );
+                    reject(
+                        new Error(
+                            'Unable to load Apps Script Bridge.'
+                        )
+                    );
 
-      }
+                };
 
-    }, 15000);
 
+            document.body.appendChild(
+                bridgeFrame
+            );
 
-    return this.readyPromise;
-  }
+        });
 
 
-  handleMessage(event) {
-
-    /*
-     * بسیار مهم:
-     * پیام باید از همان iframe آمده باشد.
-     */
-    if (
-      !this.iframe ||
-      event.source !== this.iframe.contentWindow
-    ) {
-      return;
-    }
-
-
-    const message = event.data;
-
-    if (
-      !message ||
-      message.channel !== CHANNEL
-    ) {
-      return;
-    }
-
-
-    /*
-     * اولین پیام، origin واقعی
-     * googleusercontent را مشخص می‌کند.
-     */
-    if (message.type === 'READY') {
-
-      this.bridgeOrigin = event.origin;
-
-      if (this.readyResolve) {
-        this.readyResolve(this);
-      }
-
-      return;
-    }
-
-
-    /*
-     * بعد از handshake فقط همان origin
-     * پذیرفته می‌شود.
-     */
-    if (
-      this.bridgeOrigin &&
-      event.origin !== this.bridgeOrigin
-    ) {
-      return;
-    }
-
-
-    if (message.type !== 'RESPONSE') {
-      return;
-    }
-
-
-    const pending =
-      this.pending.get(message.id);
-
-
-    if (!pending) {
-      return;
-    }
-
-
-    clearTimeout(pending.timer);
-
-    this.pending.delete(message.id);
-
-
-    if (message.ok) {
-
-      pending.resolve(message.data);
-
-    } else {
-
-      const error = new Error(
-        message.error?.message ||
-        'Apps Script Bridge error.'
-      );
-
-      error.code =
-        message.error?.code ||
-        'BRIDGE_ERROR';
-
-      pending.reject(error);
-
-    }
-
-  }
-
-
-  async call(
-    action,
-    payload = {},
-    options = {}
-  ) {
-
-    await this.init();
-
-
-    if (!this.bridgeOrigin) {
-      throw new Error(
-        'Apps Script Bridge is not ready.'
-      );
-    }
-
-
-    const id = crypto.randomUUID();
-
-    const timeout =
-      options.timeout ||
-      this.timeout;
-
-
-    return new Promise(
-      (resolve, reject) => {
-
-        const timer = setTimeout(() => {
-
-          this.pending.delete(id);
-
-          reject(
-            new Error(
-              `Bridge timeout: ${action}`
-            )
-          );
-
-        }, timeout);
-
-
-        this.pending.set(
-          id,
-          {
-            resolve,
-            reject,
-            timer
-          }
-        );
-
-
-        this.iframe.contentWindow.postMessage(
-          {
-            channel: CHANNEL,
-            type: 'CALL',
-            id,
-            action,
-            payload
-          },
-
-          /*
-           * origin از handshake گرفته شده،
-           * بنابراین "*" نداریم.
-           */
-          this.bridgeOrigin
-        );
-
-      }
-    );
-
-  }
-
-
-  destroy() {
-
-    window.removeEventListener(
-      'message',
-      this.handleMessage
-    );
-
-
-    for (
-      const { reject, timer }
-      of this.pending.values()
-    ) {
-
-      clearTimeout(timer);
-
-      reject(
-        new Error(
-          'Bridge destroyed.'
-        )
-      );
-
-    }
-
-
-    this.pending.clear();
-
-
-    if (this.iframe) {
-
-      this.iframe.remove();
-
-      this.iframe = null;
-
-    }
-
-
-    this.bridgeOrigin = null;
-    this.readyPromise = null;
-
-  }
-
+    return bridgeReadyPromise;
 }
 
 
-export default GasBridge;
+window.addEventListener(
+    'message',
+    function(event) {
+
+        if (
+            !bridgeFrame ||
+            event.source !==
+                bridgeFrame.contentWindow
+        ) {
+            return;
+        }
+
+
+        const response =
+            event.data;
+
+
+        if (
+            !response ||
+            response.type !==
+                'GAS_RESPONSE'
+        ) {
+            return;
+        }
+
+
+        const pending =
+            pendingRequests.get(
+                response.id
+            );
+
+
+        if (!pending) {
+            return;
+        }
+
+
+        clearTimeout(
+            pending.timeout
+        );
+
+
+        pendingRequests.delete(
+            response.id
+        );
+
+
+        if (response.success) {
+
+            pending.resolve(
+                response.data
+            );
+
+        } else {
+
+            pending.reject(
+                new Error(
+                    response.error ||
+                    'Apps Script error.'
+                )
+            );
+
+        }
+
+    }
+);
+
+
+async function gasCall(
+    action,
+    payload = {}
+) {
+
+    await initGasBridge();
+
+
+    const id =
+        crypto.randomUUID();
+
+
+    return new Promise(
+        function(resolve, reject) {
+
+            const timeout =
+                setTimeout(
+                    function() {
+
+                        pendingRequests.delete(
+                            id
+                        );
+
+                        reject(
+                            new Error(
+                                'Apps Script request timeout.'
+                            )
+                        );
+
+                    },
+                    30000
+                );
+
+
+            pendingRequests.set(
+                id,
+                {
+                    resolve,
+                    reject,
+                    timeout
+                }
+            );
+
+
+            bridgeFrame
+                .contentWindow
+                .postMessage(
+                    {
+                        type: 'GAS_CALL',
+                        id: id,
+                        action: action,
+                        payload: payload
+                    },
+                    '*'
+                );
+
+        }
+    );
+
+}
