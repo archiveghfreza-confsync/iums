@@ -1,4 +1,4 @@
-const CHANNEL = 'MDP_GAS_BRIDGE';
+const CHANNEL = 'Mhttps://script.google.com/macros/s/AKfycbyORoLPh3JxP1KIYy1pbO5tRtt8M7sJAztHyCReHapr2v5F56wJG9JwtBI8LZccjsC0/exec';
 
 class GasBridge {
 
