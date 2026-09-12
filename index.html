@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ConfSync - AI Conference Assistant</title>
     <link rel="stylesheet" href="assets/index.css">
-    <script src="js/gasBridge.js"></script>
     <script src="js/marked.min.js"></script>
     <script src="js/config.js"></script>
 </head>
@@ -553,7 +552,7 @@
            API REQUEST
         ================================================================ */
 
-        async function authRequest_old(payload) {
+        async function authRequest(payload) {
 
             if (
                 !REGISTER_API_URL ||
@@ -619,11 +618,11 @@
                     REGISTER_API_URL
                 );
 
-                console.error(
+                /*console.error(
                     'Origin:',
                     window.location.origin
                 );
-
+                */
                 console.error(
                     '======================================'
                 );
@@ -708,56 +707,7 @@
             return result;
         }
 
-        async function authRequest(payload) {
-
-            if (
-                !payload ||
-                typeof payload !== 'object'
-            ) {
-                throw new Error(
-                    'Invalid authentication request.'
-                );
-            }
-
-
-            const action =
-                payload.action;
-
-
-            if (!action) {
-                throw new Error(
-                    'Authentication action is required.'
-                );
-            }
-
-
-            const data = {
-                ...payload
-            };
-
-
-            delete data.action;
-
-
-            try {
-
-                return await gasCall(
-                    'auth.' + action,
-                    data
-                );
-
-            } catch (error) {
-
-                console.error(
-                    'AUTH BRIDGE ERROR:',
-                    error
-                );
-
-                throw error;
-
-            }
-
-        }
+        
         /* ================================================================
            REGISTER
         ================================================================ */
@@ -785,8 +735,7 @@
                     degree:
                         userData.degree,
                     researchInterest:
-                        userData.researchInterest,
-                    urllocation: window.location.origin
+                        userData.researchInterest
                 });
             if (!result.success) {
                 throw new Error(
@@ -2240,7 +2189,6 @@
         async function forgotPasswordUser(phoneNumber, emailAddress) {
             const result = await authRequest({
                 action: 'forgotPassword',
-                urllocation: window.location.origin,
                 email: emailAddress
             });
 
