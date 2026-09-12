@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ConfSync - AI Conference Assistant</title>
     <link rel="stylesheet" href="assets/index.css">
+    <script src="js/gasBridge.js"></script>
     <script src="js/marked.min.js"></script>
     <script src="js/config.js"></script>
 </head>
@@ -552,7 +553,7 @@
            API REQUEST
         ================================================================ */
 
-        async function authRequest(payload) {
+        async function authRequest_old(payload) {
 
             if (
                 !REGISTER_API_URL ||
@@ -707,7 +708,7 @@
             return result;
         }
 
-        async function authRequest_bride(payload) {
+        async function authRequest(payload) {
 
             if (
                 !payload ||
@@ -2332,7 +2333,7 @@
                     const originalText = submitBtn.textContent;
                     submitBtn.disabled = true;
                     submitBtn.textContent = 'Changing Password...';
-                    alert(1)
+                    
                     console.log(currentUser.token)
                     //console.log("currentUser.email = " + currentUser.email)
                     try {
@@ -2420,7 +2421,6 @@
                     });
                 } else {
                     const user = await loginUser(emailAddress, pass);
-                    alert(user.token)
                     showAuthSuccess('✅ Login successful!');
                     setTimeout(function () { login(user); loadCongressHistoryAfterLogin(user); }, 1000);
                 }
